@@ -21,10 +21,12 @@ class CartPage extends StatelessWidget {
           int count = cart[giftIndex];
           String productIndex = productInfo.keys.toList()[index];
           String imgPath = productInfo[productIndex].imgPath;
-          print(imgPath);
+          print('FUU $count');
+          if(count==0 ){
+            return Padding(padding: EdgeInsets.all(0),);
+          }
           return Padding(
             padding: const EdgeInsets.only(bottom: 10),
-            
             child: ListTile(
               leading: Container(
                 height: 70,
@@ -50,7 +52,7 @@ class CartPage extends StatelessWidget {
               
             ),
           );
-        },
+        }
       ),
     );
   }

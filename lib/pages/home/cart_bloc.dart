@@ -17,6 +17,15 @@ class CartBloc with ChangeNotifier {
     _cartInfo[index]=product;
     notifyListeners();
   }
+  void subToCart(index,product) {
+    if (_cart.containsKey(index)) {
+      _cart[index] -= 1;
+    } else {
+      _cart[index] = 1;
+    }
+    _cartInfo[index]= product;
+    notifyListeners();
+  }
 
   void clear(index) {
     if (_cart.containsKey(index)) {

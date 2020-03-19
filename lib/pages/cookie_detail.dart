@@ -9,18 +9,6 @@ ProductDetail({this.imgPath, this.price, this.productName});
       appBar: appBar(true,context),
       body: ListView(
         children: [
-          SizedBox(height: 15.0),
-          // Padding(
-          //   padding: EdgeInsets.only(left: 20.0),
-          //   child: Text(
-          //     'Cookie',
-          //     style: TextStyle(
-          //             fontFamily: 'Varela',
-          //             fontSize: 42.0,
-          //             fontWeight: FontWeight.bold,
-          //             color: Color(0xFFF17532))
-          //   ),
-          // ),
             SizedBox(height: 15.0),
             Hero(
               tag: imgPath,
@@ -83,12 +71,6 @@ ProductDetail({this.imgPath, this.price, this.productName});
             )
         ]
       ),
-    //   floatingActionButton: FloatingActionButton(onPressed: () {},
-    //   backgroundColor: Color(0xFFF17532),
-    //   child: Icon(Icons.fastfood),
-    //   ),
-    //   floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-    //  // bottomNavigationBar: BottomBar(),
      );
   }
 }

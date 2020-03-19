@@ -35,6 +35,12 @@ class _StorePageState extends State<StorePage> with SingleTickerProviderStateMix
         print(totalCount );
        });
     }
+    void _decrement(String index,Product product){
+      setState((){
+        bloc.subToCart(index,product);
+        print(totalCount );
+       });
+    }
     return Scaffold(
       appBar:appBar(true,context),
       body: ListView(
@@ -72,8 +78,8 @@ class _StorePageState extends State<StorePage> with SingleTickerProviderStateMix
                   children: [
                    // products('drinks',context),
                     
-                    Products(_increment,product),
-                    Products(_increment,product),
+                    Products(_increment,_decrement,product),
+                    Products(_increment,_decrement,product),
 
                     // products('fresh_fruits',context),
                     // products('veg',context),
