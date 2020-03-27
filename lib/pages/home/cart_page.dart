@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shopping_now/pages/home/cart_bloc.dart';
+import 'package:volc/pages/home/cart_bloc.dart';
 class CartPage extends StatelessWidget {
   CartPage({Key key}) : super(key: key);
 
@@ -13,6 +13,7 @@ class CartPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Shopping Cart"),
+        backgroundColor: Colors.black54,
       ),
       body: ListView.builder(
         itemCount: cart.length,

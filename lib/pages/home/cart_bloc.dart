@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shopping_now/pages/product/product.dart';
+import 'package:volc/pages/product/product.dart';
 
 class CartBloc with ChangeNotifier {
   Map<String, int> _cart = {};
@@ -30,6 +30,7 @@ class CartBloc with ChangeNotifier {
   void clear(index) {
     if (_cart.containsKey(index)) {
       _cart.remove(index);
+      _cartInfo.remove(index);
       notifyListeners();
     }
   }

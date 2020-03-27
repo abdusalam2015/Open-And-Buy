@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shopping_now/pages/home/app_bar.dart';
-import 'package:shopping_now/pages/home/cart_bloc.dart';
-import 'package:shopping_now/pages/product/product.dart';
-import 'package:shopping_now/pages/store_pages/products.dart';
+import 'package:volc/pages/home/app_bar.dart';
+import 'package:volc/pages/home/cart_bloc.dart';
+import 'package:volc/pages/home/drawer.dart';
+import 'package:volc/pages/product/product.dart';
+import 'package:volc/pages/store_pages/products.dart';
 
  class StorePage extends StatefulWidget{
   final imgPath, storeDiscount, storeName;
@@ -28,7 +29,7 @@ class _StorePageState extends State<StorePage> with SingleTickerProviderStateMix
     if (bloc.cart.length > 0) {
       totalCount = bloc.cart.values.reduce((a, b) => a + b);
     }
-    Product product = null;
+    Product product ;
     void _increment(String index,Product product){
       setState((){
         bloc.addToCart(index,product);
@@ -42,8 +43,21 @@ class _StorePageState extends State<StorePage> with SingleTickerProviderStateMix
        });
     }
     return Scaffold(
-      appBar:appBar(true,context),
-      body: ListView(
+      appBar: PreferredSize(
+                preferredSize: Size.fromHeight(55.0), // here the desired height
+                child: AppBarWidget(),
+            ),
+      
+      //appBar(true, context),
+      body: _productsList(_increment,_decrement,product),
+      drawer: DrawerWidget(),
+      
+
+    );
+  }
+  
+  Widget _productsList(_increment,_decrement,product){
+    return ListView(
         padding: EdgeInsets.only(left: 20.0),
         children: <Widget>[
           SizedBox(height: 10.0),
@@ -91,8 +105,7 @@ class _StorePageState extends State<StorePage> with SingleTickerProviderStateMix
                   )
               )
         ],
-      ),
-    );
+      );
   }
   Widget categoryText(String text, double fsize){
     return Text(

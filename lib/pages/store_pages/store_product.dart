@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shopping_now/pages/bottom_bar.dart';
+import 'package:volc/pages/bottom_bar.dart';
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();

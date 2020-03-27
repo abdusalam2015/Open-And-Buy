@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:shopping_now/pages/store_pages/store_page.dart';
+import 'package:volc/pages/store_pages/store_page.dart';
   
 Widget body(BuildContext context){
   return ListView(

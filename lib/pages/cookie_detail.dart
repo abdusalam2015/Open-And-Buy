@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:shopping_now/pages/home/app_bar.dart';
+import 'package:volc/pages/home/app_bar.dart';
 class ProductDetail extends StatelessWidget {
   final imgPath, price, productName;
 ProductDetail({this.imgPath, this.price, this.productName});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(true,context),
+      appBar: PreferredSize(
+                preferredSize: Size.fromHeight(55.0), // here the desired height
+                child: AppBarWidget(),
+            ),
       body: ListView(
         children: [
             SizedBox(height: 15.0),
