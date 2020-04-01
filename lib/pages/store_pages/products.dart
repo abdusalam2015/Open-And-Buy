@@ -3,7 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:volc/pages/cookie_detail.dart';
 import 'package:volc/pages/product/product.dart';
 import 'package:volc/pages/home/cart_bloc.dart';
+import 'package:volc/models/user.dart';
 
+import 'package:volc/models/user_detail.dart';
 
 class Products extends StatefulWidget {
  final Function increment;
@@ -23,7 +25,13 @@ class Products extends StatefulWidget {
     }
     @override
     Widget build(BuildContext context) {
-      
+
+        final user = Provider.of<User>(context).uid;
+       // final userDetail = Provider.of<UserDetail>(context);
+
+        print('User in product: $user');
+     //     print('userDetail in product: $userDetail');
+
       return Container(
         padding: EdgeInsets.only(right: 10.0),
       width: MediaQuery.of(context).size.width - 30.0,
@@ -164,8 +172,7 @@ class Products extends StatefulWidget {
                          onTap: () {
                          Product product = new Product(id,name,imagePath,price,detail);
                          widget.decrement(id,product);
-                         print('id = $id');
-                         },
+                          },
                          child:Icon(Icons.remove_circle_outline, color: Colors.pink[400], size: 24.0),
                          ),
                          Text(

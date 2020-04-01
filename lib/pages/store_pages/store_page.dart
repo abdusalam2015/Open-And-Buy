@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:volc/models/user.dart';
+import 'package:volc/pages/authenticate/authenticate.dart';
 import 'package:volc/pages/home/app_bar.dart';
 import 'package:volc/pages/home/cart_bloc.dart';
 import 'package:volc/pages/home/drawer.dart';
 import 'package:volc/pages/product/product.dart';
 import 'package:volc/pages/store_pages/products.dart';
+import 'package:volc/models/user_detail.dart';
+
 
  class StorePage extends StatefulWidget{
   final imgPath, storeDiscount, storeName;
@@ -24,6 +28,8 @@ class _StorePageState extends State<StorePage> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
+    //final userDetail = Provider.of<UserDetail>(context);
+    //print('UserDeal in body: $userDetail');
     var bloc = Provider.of<CartBloc>(context);
     int totalCount = 0;
     if (bloc.cart.length > 0) {
@@ -33,7 +39,7 @@ class _StorePageState extends State<StorePage> with SingleTickerProviderStateMix
     void _increment(String index,Product product){
       setState((){
         bloc.addToCart(index,product);
-        print(totalCount );
+        print(totalCount);
        });
     }
     void _decrement(String index,Product product){
@@ -42,6 +48,11 @@ class _StorePageState extends State<StorePage> with SingleTickerProviderStateMix
         print(totalCount );
        });
     }
+    final user = Provider.of<User>(context);
+    if(user == null){
+      Navigator.of(context).pop();
+      return Authenticate();
+    }else{  
     return Scaffold(
       appBar: PreferredSize(
                 preferredSize: Size.fromHeight(55.0), // here the desired height
@@ -51,9 +62,8 @@ class _StorePageState extends State<StorePage> with SingleTickerProviderStateMix
       //appBar(true, context),
       body: _productsList(_increment,_decrement,product),
       drawer: DrawerWidget(),
-      
-
     );
+    }
   }
   
   Widget _productsList(_increment,_decrement,product){

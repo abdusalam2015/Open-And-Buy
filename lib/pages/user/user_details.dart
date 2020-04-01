@@ -1,11 +1,11 @@
 
-class UserDetail{
+class UserDetail2{
   final String providerDetails;
   final String userName;
   final String photoUrl;
   final String email;
   final List<ProviderDetail> providerData;
-  UserDetail(this.providerDetails, this.userName, this.photoUrl, this.email, this.providerData);
+  UserDetail2(this.providerDetails, this.userName, this.photoUrl, this.email, this.providerData);
 }
 class ProviderDetail{
   final String providerDetails;

@@ -27,21 +27,21 @@ class _SignInState extends State<SignIn> {
     accessToken: googleAuth.accessToken,
     idToken: googleAuth.idToken,
 );
-    FirebaseUser userDetail = (await _firebaseAuth.signInWithCredential(credential)).user ;
-    ProviderDetail providerInfo = new  ProviderDetail(userDetail.providerId);
-    List<ProviderDetail> providerData = new List<ProviderDetail>();
-    providerData.add(providerInfo);
-    print('Provider Info: $providerInfo');
-    UserDetail detail = new UserDetail(userDetail.providerId,userDetail.displayName,
-    userDetail.photoUrl,userDetail.email,providerData);
-    print(' detail: $detail');
-    Navigator.push(context,
-    new MaterialPageRoute(
-    builder: (context) => 
-    new ProfileScreen(detailUser: detail),
-    )
-    );
-    return userDetail;
+    // FirebaseUser userDetail = (await _firebaseAuth.signInWithCredential(credential)).user ;
+    // ProviderDetail providerInfo = new  ProviderDetail(userDetail.providerId);
+    // List<ProviderDetail> providerData = new List<ProviderDetail>();
+    // providerData.add(providerInfo);
+    // print('Provider Info: $providerInfo');
+    // // UserDetail detail = new UserDetail(userDetail.providerId,userDetail.displayName,
+    // // userDetail.photoUrl,userDetail.email,providerData);
+    // print(' detail: $detail');
+    // Navigator.push(context,
+    // new MaterialPageRoute(
+    // builder: (context) => 
+    // new ProfileScreen(detailUser: detail),
+    // )
+    // );
+    return null;//userDetail;
   }
   @override
   Widget build(BuildContext context) {

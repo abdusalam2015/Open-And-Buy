@@ -1,10 +1,28 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:volc/models/user.dart';
+import 'package:provider/provider.dart';
+import 'package:volc/models/user_detail.dart';
 import 'package:volc/pages/user/account_settings.dart';
-
-class DrawerWidget extends StatelessWidget {
-
+import 'package:volc/pages/user/edit_account.dart';
+class DrawerWidget extends StatefulWidget {
   @override
-   Widget build( BuildContext context) {
+  _DrawerWidgetState createState() => _DrawerWidgetState();
+}
+
+class _DrawerWidgetState extends State<DrawerWidget> {
+  @override
+  Widget build(BuildContext context) {
+    // get the all the users details  ==> look at it in the future
+    final userDetail = Provider.of<UserDetail>(context);
+    //get the current user details
+    final userID = Provider.of<User>(context);
+    print(userDetail.photoURL.toString());
+    //UserFunctions databaseService = new UserFunctions(userID.uid);
+    //UserDetail userDetail= databaseService.getUserDetail(usersDetail);
+
+    
     return Drawer(
       child: Padding(
         padding: const EdgeInsets.only(top:28.0),
@@ -17,8 +35,30 @@ class DrawerWidget extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
-                    Icon(Icons.account_circle,color: Colors.white,size: 80,),
-                    Text('Abdulsalam Fadhel' ,
+                  Hero(
+                    tag: userDetail.photoURL.toString(),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: (){
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => EditAccount (
+                                userDetail,
+                              )
+                            )
+                            );        
+                        },
+                      child:CircleAvatar(
+                      backgroundImage:userDetail.photoURL.toString() != '' ?
+                       NetworkImage(userDetail.photoURL.toString())
+                       :AssetImage('assets/profile_picture.png'),
+                      radius: 50.0,
+                        ),
+                      ),
+                    ),
+                  ),
+                    Text(userDetail.first_name + ' '+userDetail.last_name ,
                     style: TextStyle(color: Colors.white,fontSize: 18),),
                   ],
                 ),
@@ -50,11 +90,16 @@ class DrawerWidget extends StatelessWidget {
               ),
               ListTile(
                 title: items('Settings',Icon(Icons.settings)),
-                 onTap: () {
-                   Navigator.of(context).pushNamed('/accountsettings');
-                    //update
-                  //  Navigator.pop(context);//lcose the drawer
-                  },
+                 onTap: (){
+                   Navigator.pop(context);
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => AccountSettings(
+                      userDetail,
+                    )
+                  )
+                  );        
+              },
                 ),
             ],
           ),
@@ -71,6 +116,7 @@ class DrawerWidget extends StatelessWidget {
         ],
       );       
   }
+
  Widget itemsCategory(name,icon){
   return  Container(
     color: Colors.greenAccent,

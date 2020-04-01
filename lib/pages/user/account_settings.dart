@@ -1,9 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:volc/models/user_detail.dart';
+import 'package:volc/services/auth.dart';
+import 'package:volc/shared/loading.dart';
+import 'package:volc/pages/user/edit_account.dart';
 
-class AccountSettings extends StatelessWidget {
+
+class AccountSettings extends StatefulWidget {
+ UserDetail userDetail;
+ AccountSettings(this.userDetail);
   @override
+  _AccountSettingsState createState() => _AccountSettingsState();
+}
+class _AccountSettingsState extends State<AccountSettings> {
+  final AuthService _auth = new AuthService();
+  bool loading = false;
+ 
+     @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return loading? Loading() : Scaffold(
       body:CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
@@ -17,7 +31,14 @@ class AccountSettings extends StatelessWidget {
           ),
            SliverList(
               delegate: SliverChildBuilderDelegate(
-                (context, index) =>items(index), 
+                (context, index) {
+                if(index == 0)return item1();//ProfilePage();
+                else if(index == 1)return item2();
+                else if(index == 2)return item3();
+                else if(index == 3)return item4();
+                else if(index == 4)return item5();
+                else return signOut();
+                }, 
                 childCount: 6,
               ),
               
@@ -27,57 +48,80 @@ class AccountSettings extends StatelessWidget {
       )
     );
   }
+
+
+
     Widget divider(){
       return Divider(
         color: Colors.grey,
         thickness: 1,
       );
     }
+
     Widget textItem(name){
       return Text(
         name,
         style: TextStyle(fontSize: 14,color:Colors.black, ),
       );
     }
-     Widget items(index){
-       print('Index: $index');
-       if(index == 0)return item1();
-       else if(index == 1)return item2();
-       else if(index == 2)return item3();
-       else if(index == 3)return item4();
-       else if(index == 4)return item5();
-       else return item6();
-     }
-    Widget item1(){
-      return Column(
-        children: <Widget>[
-          SizedBox(height: 20,),
-          Padding(
-             padding: EdgeInsets.only(left: 20),
-            child: Row(
-            //  mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                CircleAvatar(
-                backgroundImage: AssetImage('assets/profile_picture.png'),
-                radius: 35.0,
-              ),
-              SizedBox(width: 10,),
-                Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                  textItem('Abdulsalam Fadhel                   '),
-                  textItem('+46735517944                        '),
-                  textItem('abdussalm9393@gmail.com'),
 
-                ],),
-                   ],),
-                   
-          ),
-         SizedBox(height: 10,),
-          divider()
-        ],
-      );
+    //  Widget items(index){
+    //    print('Index: $index');
+    //    if(index == 0)return item1();//ProfilePage();
+    //    else if(index == 1)return item2();
+    //    else if(index == 2)return item3();
+    //    else if(index == 3)return item4();
+    //    else if(index == 4)return item5();
+    //    else return signOut();
+    //  }
+    Widget item1(){
+      return InkWell(
+        child: Column(
+          children: <Widget>[
+            Padding(
+                padding: EdgeInsets.only(left: 20,top: 20.0),
+                 child: Row(
+                   children: <Widget>[
+                     CircleAvatar(
+                      backgroundImage:widget.userDetail.photoURL.toString() != '' ?
+                       NetworkImage(widget.userDetail.photoURL.toString())
+                       :AssetImage('assets/profile_picture.png'),
+                      radius: 40.0,
+                        ), 
+                  SizedBox(width: 10,),
+              Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Text(
+               'Abdulsalam',
+                style: TextStyle(fontSize: 14,color:Colors.black, ),
+               ),
+               Text(
+                 '+46735517944',
+                 style: TextStyle(fontSize: 14,color:Colors.black, ),),
+
+                Text(
+                  'abdussalm9393@gmail.com',
+                 style: TextStyle(fontSize: 14,color:Colors.black, ),),
+            ],),
+
+            ],),),
+            SizedBox(height: 10.0,),
+            divider(),
+          ],
+        ),
+        onTap: (){
+          Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => EditAccount (
+              widget.userDetail,
+            )
+          )
+          );       
+        },
+      ); 
     }
+
  Widget item2(){
       return Column(
         children: <Widget>[
@@ -123,7 +167,7 @@ class AccountSettings extends StatelessWidget {
                   ),
                   onTap: (){},
                 ),
-                          SizedBox(height: 30,),
+                SizedBox(height: 30,),
 
               ],
               ),
@@ -134,7 +178,7 @@ class AccountSettings extends StatelessWidget {
       );
     }
 
-     Widget item4(){
+Widget item4(){
       return Column(
         children: <Widget>[
           Padding(
@@ -165,7 +209,6 @@ class AccountSettings extends StatelessWidget {
         ],
       );
     }
-
 
      Widget item3(){
       return Column(
@@ -210,9 +253,6 @@ class AccountSettings extends StatelessWidget {
       );
     }
 
-
-
-
      Widget item5(){
       return Column(
         children: <Widget>[
@@ -230,7 +270,7 @@ class AccountSettings extends StatelessWidget {
               SizedBox(height: 5.0,),
                 InkWell(
                 child: Row(
-                    children: <Widget>[
+                  children: <Widget>[
                     Text('Control your account security with 2-step verification',style: TextStyle(color: Colors.grey,fontSize: 14),),
                   ],
                   ),
@@ -244,8 +284,8 @@ class AccountSettings extends StatelessWidget {
         ],
       );
     }
-    
-     Widget item6(){
+
+     Widget signOut(){
       return Column(
         children: <Widget>[
           Padding(
@@ -258,8 +298,15 @@ class AccountSettings extends StatelessWidget {
                  child: Row(
                   children: <Widget>[
                   Text('Sign Out'),
-                  ],
-                  ),
+              ],
+              ),
+                  onTap: () async{
+                  Navigator.of(context).pop();
+                  setState(() {
+                  loading = true;
+                  });
+                  _auth.signOut();
+                  },
               ),
               Column(
                 children: <Widget>[
@@ -276,5 +323,18 @@ class AccountSettings extends StatelessWidget {
           ),
         ],
       );
+
+
     }
 }
+  // Future getData() async {
+  //   var url = 'http://volcshopping.000webhostapp.com/get.php';
+  //   http.Response response = await http.get(url);
+  //    var data = jsonDecode(response.body);
+  //    print(data.toString());
+
+  // }
+  // @override
+  // void initState(){
+  //   getData();
+  // }

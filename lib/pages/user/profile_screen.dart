@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:volc/pages/user/user_details.dart';
 class ProfileScreen extends StatelessWidget {
-  final UserDetail detailUser;
+  final UserDetail2 detailUser;
 
   const ProfileScreen({Key key, this.detailUser}) : super(key: key);
 

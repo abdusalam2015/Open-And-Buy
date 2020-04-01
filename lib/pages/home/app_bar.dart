@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:volc/pages/home/cart_page.dart';
 import 'package:volc/pages/home/cart_bloc.dart';
 import 'package:volc/pages/home/setting.dart';
-import 'package:volc/pages/user/sign_in.dart';
 import 'package:volc/pages/user/sign_up.dart';
 
 class AppBarWidget extends StatefulWidget {
@@ -107,7 +106,8 @@ class _AppBarWidgetState extends State<AppBarWidget> {
         ],
       );
   }
-void actionChoice(String choice){
+
+  void actionChoice(String choice){
     if(choice == 'signUp'){
        Navigator.of(context).push(
           MaterialPageRoute(builder: (context) => SignUp(  
@@ -117,14 +117,31 @@ void actionChoice(String choice){
           MaterialPageRoute(builder: (context) => SignUp(  
         )));
     }else if(choice == 'signIn'){
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => SignIn(  
-        )));
+        // Navigator.of(context).push(
+        //   MaterialPageRoute(builder: (context) => SignIn(  )));
     }else{
         print('object');
         
     }
   }
+// void actionChoice(String choice){
+//     if(choice == 'signUp'){
+//        Navigator.of(context).push(
+//           MaterialPageRoute(builder: (context) => SignUp(  
+//         )));
+//     }else if(choice == 'Feedback'){
+//          Navigator.of(context).push(
+//           MaterialPageRoute(builder: (context) => SignUp(  
+//         )));
+//     }else if(choice == 'signIn'){
+//         Navigator.of(context).push(
+//           MaterialPageRoute(builder: (context) => SignIn(  
+//         )));
+//     }else{
+//         print('object');
+        
+//     }
+//   }
 }
 
 

@@ -1,14 +1,25 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
 import 'package:volc/pages/store_pages/store_page.dart';
-  
-Widget body(BuildContext context){
-  return ListView(
+import 'package:volc/models/user_detail.dart';
+
+class Body extends StatefulWidget {
+  @override
+  _BodyState createState() => _BodyState();
+}
+
+class _BodyState extends State<Body> {
+  @override
+  Widget build(BuildContext context) {
+    final userDetail = Provider.of<UserDetail>(context);
+    //print('UserDeal in body: $userDetail');
+    return ListView(
     padding: EdgeInsets.all(8),
     children: <Widget>[
       categoryName('supermarkets near to me'),
-      categoryStores(context,'supermarkets'),
+      categoryStores(context, 'supermarkets'),
       SizedBox(height: 10),
       categoryName('Shops near to me'),
       categoryStores(context,'shops'),
@@ -17,12 +28,31 @@ Widget body(BuildContext context){
       categoryStores(context,'restaurants'),
       SizedBox(height: 10),
       categoryName('Pharmacy near to me'),
-      categoryStores(context,'pharmacy'),
-    ],
+      categoryStores( context,'pharmacy' ),
+    ],    
+  );
+  }
+// }
+// Widget body(BuildContext context){
+//   return ListView(
+//     padding: EdgeInsets.all(8),
+//     children: <Widget>[
+//       categoryName('supermarkets near to me'),
+//       categoryStores(context, 'supermarkets'),
+//       SizedBox(height: 10),
+//       categoryName('Shops near to me'),
+//       categoryStores(context,'shops'),
+//       SizedBox(height: 10),
+//       categoryName('Restaurant near to me'),
+//       categoryStores(context,'restaurants'),
+//       SizedBox(height: 10),
+//       categoryName('Pharmacy near to me'),
+//       categoryStores( context,'pharmacy' ),
+//     ],
     
           
-  );
-}
+//   );
+// }
 Widget categoryName(String name){
   return Text(
           name,
@@ -161,4 +191,4 @@ Widget _listView(context,String name){
             )
           );
 }
-
+}
