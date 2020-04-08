@@ -41,7 +41,6 @@ class DatabaseService{
   }
   Stream<UserDetail> get user  {
     return userCollection.snapshots().map(_userDetailFromSnapshot);
-
   }
 
  

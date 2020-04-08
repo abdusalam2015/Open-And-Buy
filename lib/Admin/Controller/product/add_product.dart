@@ -2,12 +2,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
-import 'package:volc/Admin/Controller/edit_store_pages/edit_store_email.dart';
-import 'package:volc/Admin/Controller/edit_store_pages/edit_store_location.dart';
-import 'package:volc/Admin/Controller/edit_store_pages/edit_store_name.dart';
-import 'package:volc/Admin/Controller/edit_store_pages/edit_store_phone_umber.dart';
+import 'package:volc/Admin/Controller/product/category_list.dart';
 import 'package:volc/Admin/Controller/store_home_pages/store_home_page.dart';
 import 'package:volc/Admin/Service/storeDatabase.dart';
+import 'package:volc/SharedModels/store/category.dart';
 import 'package:volc/SharedModels/store/store.dart';
 import 'package:volc/SharedWidgets/constant.dart';
 import 'package:volc/SharedWidgets/shared_functions.dart';
@@ -15,10 +13,10 @@ import 'package:volc/User/Model/user_detail.dart';
 import 'package:volc/User/Service/user/auth.dart';
 
 class AddProduct extends StatefulWidget {
-
+  final List<Category> categoriesList;
   final BuildContext cont;
   final StoreDetail storeDetail;
-  AddProduct(this.cont,this.storeDetail);
+  AddProduct(this.cont,this.storeDetail,this.categoriesList);
   @override
   _AddProductState createState() => _AddProductState();
 }
@@ -32,13 +30,12 @@ class _AddProductState extends State<AddProduct> {
   final AuthService _auth = new AuthService();
   final StoreDatabaseService _store = new StoreDatabaseService();
   final _formKey2 = GlobalKey<FormState>();
-  StoreDetail storeDetail = new StoreDetail('','','','','','','','','',) ;
+  //StoreDetail storeDetail = new StoreDetail('','','','','','','','','',) ;
   bool isUploaded = false;
   @override
   Widget build(BuildContext context){
   userDetail = Provider.of<UserDetail>(widget.cont);
   c_width = MediaQuery.of(context).size.width*0.8;
-  //userDetail  = Provider.of<UserDetail>(widget.cont);
     return Scaffold(
       body: Builder(
         builder: (context) => CustomScrollView(
@@ -56,15 +53,15 @@ class _AddProductState extends State<AddProduct> {
                 delegate: SliverChildBuilderDelegate(
                   (context, index){
                     if(index == 0)return profilePicture(context);
-                    else if(index == 1) return _form(userDetail);
-                    // else if(index == 1)return storeName('Store Name', widget.storeDetail.name,context);
+                    else if(index == 1)return CategoriesList(widget.storeDetail,userDetail,widget.categoriesList); 
+                    else if(index == 2)return _form(userDetail);
                     // else if(index == 2)return location('Location',  widget.storeDetail.location,context);
                     // else if(index == 3)return phoneNumber('Phone Number', widget.storeDetail.phoneNumber,true,context);
                     // else if(index == 4)return email('Email', widget.storeDetail.email, false,context );
                     // else if(index == 5)return password('Password', '.......');
-                    else return button();  
+                    else return SizedBox(height: 300,);  
                   }, //=>items(index), 
-                  childCount: 3,
+                  childCount: 4,
                 ),
                 ),
                 ],
@@ -81,98 +78,81 @@ class _AddProductState extends State<AddProduct> {
               child:  Form(
                 key: _formKey2,
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     SizedBox(height: 20.0,),
+                    Text('Product Name',style: TextStyle(fontWeight: FontWeight.bold)),SizedBox(height: 5,),
                     TextFormField(
-                      decoration: textInputDecoration.copyWith(hintText:'Store Name'),
-                      validator: (val) =>  val.isEmpty || val =='' ?'Enter Store Name':null,
+                      decoration: textInputDecoration.copyWith(hintText:'Product Name'),
+                      validator: (val) =>  val.isEmpty || val =='' ?'Enter Product Name':null,
                       onChanged: (val){
                         setState(() {
-                          storeDetail.name = val;
+                          widget.storeDetail.name = val;
                         });
                       }
                     ),
-                    // SizedBox(height: 20.0,),
-                    // TextFormField(
-                    //   decoration: textInputDecoration.copyWith(hintText:'Email'),
-                    //   validator: (val) =>  val.isEmpty || val =='' ?'Enter an email':null,
-                    //   onChanged: (val){
-                    //     setState(() {
-                    //       storeDetail.email = val;
-                    //     });
-                    //   }
-                    // ),
-                    // SizedBox(height: 20.0,),
-
-                    // TextFormField(
-                    //   decoration: textInputDecoration.copyWith(hintText:'Location'),
-                    //   validator: (val) =>  val.isEmpty || val =='' ?'Enter the store Location':null,
-                    //   onChanged: (val){
-                    //     setState(() {
-                    //       storeDetail.location = val;
-                    //     });
-                    //   }
-                    // ),
-                    //               SizedBox(height: 20.0,),
-
-                    // TextFormField(
-                    //   decoration: textInputDecoration.copyWith(hintText:'Phone Number'),
-                    //   validator: (val) =>  val.isEmpty || val =='' ?'Enter Phone Number':null,
-                    //   onChanged: (val){
-                    //     setState(() {
-                    //       storeDetail.phoneNumber = val;
-                    //     });
-                    //   }
-                    // ),
-                    // SizedBox(height: 20.0,),
-                    // TextFormField(
-                    //   decoration: textInputDecoration.copyWith(hintText:'Password'),
-                    //   obscureText: true,
-                    //   validator: (val) =>  val.length< 6 ? 'Enter a password 6+ chars long': null,
-                    //   onChanged: (val){
-                    //     setState(() {
-                    //       storeDetail.password = val;
-                    //     });
-                    //   } ),
                     SizedBox(height: 20.0,),
-                    RaisedButton(
-                      color:Colors.pink[400],
-                      child: Text(
-                        'Save & Next ->',
-                        style: TextStyle(color: Colors.white),
-                        ),
-                        onPressed: () async{
-                           if(_formKey2.currentState.validate()){//_formKey2.currentState.validate()
-                             setState(() => loading = true);
-                             storeDetail.sid = userDetail.userID;
-                             storeDetail.coveredArea = '2Kilo';
-                             storeDetail.storeType = 'Normal';
-                             dynamic result  = await _store.updateStoreData(storeDetail,userDetail.userID);
-                              if (result != null){
-                                setState(() {
-                                  error = 'Registration Problem!!';
-                                  loading = false;
-                                });
-                              }else {
-                                print('GOOOD TO GO');
-                                setState(() => loading = false);
-                              // Navigator.pop(context);
-                              //   final result = Navigator.of(context).push(
-                              //       MaterialPageRoute(
-                              //         builder: (context) => EditStoreAccount(
-                              //           widget.cont,
-                              //           storeDetail,
-                              //         )
-                              //       )
-                              // ); 
-                              // make sure that if it is already updated or not
-                                // result != null ? Scaffold.of(context).showSnackBar(SnackBar(
-                                // content: Text('Last Name Updated', style: TextStyle(color: Colors.white),),
-                                // backgroundColor: Colors.green)):Container();
+                    Text('Product Price',style: TextStyle(fontWeight: FontWeight.bold)),SizedBox(height: 5,),
+                    TextFormField(
+                      decoration: textInputDecoration.copyWith(hintText:'Price'),
+                      validator: (val) =>  val.isEmpty || val =='' ?'Enter the Product Price':null,
+                      onChanged: (val){
+                        setState(() {
+                          widget.storeDetail.location = val;
+                        });
+                      }
+                    ),
+                    SizedBox(height: 20.0,),
+                    Text('Product Description:',style: TextStyle(fontWeight: FontWeight.bold)),SizedBox(height: 5,),
+                    TextFormField(
+                      decoration: textInputDecoration.copyWith(hintText:'Description'),
+                      validator: (val) =>  val.isEmpty || val =='' ?'Enter product description':null,
+                      onChanged: (val){
+                        setState(() {
+                          widget.storeDetail.email = val;
+                        });
+                      }
+                    ),
+                    SizedBox(height: 60.0,),
+                    ButtonTheme(
+                      height: 60,
+                      minWidth: 300,
+                       child: RaisedButton(
+                        color:Colors.black,
+                        child: Text(
+                          'ADD PRODUCT',
+                          style: TextStyle(color: Colors.white),
+                          ),
+                          onPressed: () async{
+                             if(_formKey2.currentState.validate()){//_formKey2.currentState.validate()
+                               setState(() => loading = true);
+                            dynamic result ;// = await _store.addProduct(storeDetail,userDetail.userID);
+                                if (result != null){
+                                  setState(() {
+                                    error = 'Error!!';
+                                    loading = false;
+                                  });
+                                }else {
+                                  print('GOOOD TO GO');
+                                  setState(() => loading = false);
+                                 Navigator.pop(context);
+                                //   final result = Navigator.of(context).push(
+                                //       MaterialPageRoute(
+                                //         builder: (context) => EditStoreAccount(
+                                //           widget.cont,
+                                //           storeDetail,
+                                //         )
+                                //       )
+                                // ); 
+                                // make sure that if it is already updated or not
+                                  // result != null ? Scaffold.of(context).showSnackBar(SnackBar(
+                                  // content: Text('Last Name Updated', style: TextStyle(color: Colors.white),),
+                                  // backgroundColor: Colors.green)):Container();
 
-                              }
-                             }
-                        },
+                                }
+                               }
+                          },
+                      ),
                     ),
                     SizedBox(height: 12.0,),
                     Text(

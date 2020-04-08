@@ -30,7 +30,6 @@ class _EditStoreAccountState extends State<EditStoreAccount> {
   Widget build(BuildContext context){
   userDetail = Provider.of<UserDetail>(widget.cont);
   c_width = MediaQuery.of(context).size.width*0.8;
-  userDetail  = Provider.of<UserDetail>(widget.cont);
     return Scaffold(
       body: Builder(
         builder: (context) => CustomScrollView(

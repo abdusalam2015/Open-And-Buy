@@ -5,4 +5,7 @@ class Product {
   String price;
   String info;
   Product(this.id,this.name,this.imgPath,this.price,this.info);
+
+
+  
 }

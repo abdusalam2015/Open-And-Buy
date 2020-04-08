@@ -33,7 +33,7 @@ class _RegisterYourStoreState extends State<RegisterYourStore> {
   Widget build(BuildContext context) {
     
     //creating new initailized store's object  to avoid nulls value
-  storeDetail = _store.initStore(storeDetail);
+  //storeDetail = _store.initStore(storeDetail);
     return  Scaffold(
       resizeToAvoidBottomPadding: false,
       backgroundColor: Colors.grey[300],

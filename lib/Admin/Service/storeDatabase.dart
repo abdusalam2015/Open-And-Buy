@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:volc/Admin/Controller/store_home_pages/store_home_page.dart';
+import 'package:volc/SharedModels/store/category.dart';
 import 'package:volc/SharedModels/store/store.dart';
 
 class StoreDatabaseService{
-String sid;
+ String sid;
 StoreDatabaseService({this.sid});
   final CollectionReference storeCollection = Firestore.instance.collection('stores');
 Future updateStoreData(StoreDetail storeDetail,String uid) async{
@@ -27,39 +29,44 @@ StoreDetail initStore(StoreDetail storeDetail) => StoreDetail(
   storeDetail.coveredArea??'',storeDetail.storeType??'',storeDetail.phoneNumber??'');
 
 
-
-  // register with email and password
-  Future registerNewStore(StoreDetail storeDetail)async{
+  // add new category
+  //final CollectionReference categoryCollection = Firestore.instance.collection('stores');
+  Future addCategory(StoreDetail storeDetail, Category category, String userID)async{
+      final DocumentReference categoryCollection = Firestore.instance.collection('stores')
+      .document(userID).collection('categories').document();
     try{
-        // final FirebaseAuth _auth  = FirebaseAuth.instance;
-        // String x =  _auth.currentUser().toString();
-        // print("userID: $x");
-      // AuthResult result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-      // FirebaseUser user = result.user;
-      // Create a new document for the user with the uid 
-      // await StoreDatabaseService (sid:' user.uid').updateStoreData(email,'', '',
-      //  '', '','' ,'','','');
-      // return x;
+        return await categoryCollection.setData({
+          'name' : category.name,
+          'categoryID' : categoryCollection.documentID,
+          'productsNumber' : category.productNumbers,
+        });
     }catch(e){
       print(e.toString());
       return null;
     }
   }
 
-final CollectionReference testCollection = Firestore.instance.collection('stores');
-Future test(String uid) async{
-       return await testCollection.document(uid).collection('Category #3').
-       document().collection('Product #4').document().setData({
-        'product Name':  'juce2' ,
-        'product price':  '60' ,
-     });
+  Future getcategories(String userID) async {
+    var firestore = Firestore.instance;
+    QuerySnapshot qn = await  firestore.collection('stores').
+    document(userID).collection('categories').getDocuments();
+
+      //Mapping ....
+       return qn.documents.map((doc) {
+       return Category(
+        categoryID: doc.data['categoryID'],
+        productNumbers: doc.data['productNumber'],
+        name: doc.data['name']);
+      }).toList();
+
   }
-
-
-
-
-
-
+  // List<Category> getAllCategories(String userID) { 
+  //     List<Category> _categoriesList = new List<Category>();
+  //     Future<dynamic> _list =  getcategories(userID); 
+  //     var x = getcategories(userID);
+   
+  //  // return _categoriesList;
+  // }
 
 }
 
