@@ -3,19 +3,23 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:volc/Admin/Controller/product/add_product.dart';
-import 'package:volc/Admin/Controller/store_home_pages/products_tapbar.dart';
 import 'package:volc/Admin/Service/storeDatabase.dart';
+import 'package:volc/SharedModels/product/product.dart';
 import 'package:volc/SharedModels/store/category.dart';
 import 'package:volc/SharedModels/store/store.dart';
+import 'package:volc/SharedWidgets/product_card.dart';
 import 'package:volc/SharedWidgets/shared_functions.dart';
 import 'package:volc/User/Model/user_detail.dart';
+import 'package:volc/SharedWidgets/store_card.dart';
 
 
 class StoreHomePage extends StatefulWidget {
 
   final BuildContext cont;
   final StoreDetail storeDetail;
-  StoreHomePage(this.cont,this.storeDetail);
+  final List<Category>categoriesList;
+  final List<Product> productsList;
+  StoreHomePage(this.cont,this.storeDetail,this.categoriesList,this.productsList);
   @override
   _StoreHomePageState createState() => _StoreHomePageState();
 }
@@ -29,6 +33,7 @@ class _StoreHomePageState extends State<StoreHomePage> {
   @override
   Widget build(BuildContext context){
   userDetail = Provider.of<UserDetail>(widget.cont);
+  Product product ;
   c_width = MediaQuery.of(context).size.width*0.8;
     return Scaffold(
       appBar: AppBar(
@@ -47,10 +52,11 @@ class _StoreHomePageState extends State<StoreHomePage> {
       ),
       
       body:Container(
-        child: ListView(children: <Widget>[
-          _storeCard(),
+        child: ListView(
+          children: <Widget>[
+          storeCard(widget.storeDetail),
           button(),
-          ProductsTapBar(),
+          productsGridList(null,null,widget.productsList,context,true),
         ],),
       ),
     );  
@@ -75,7 +81,7 @@ class _StoreHomePageState extends State<StoreHomePage> {
           ),
             onPressed: () async{ 
               StoreDatabaseService obj = new StoreDatabaseService(sid: widget.storeDetail.sid);   
-              List<Category> categoriesList = await obj.getcategories(userDetail.userID); 
+              List<Category> categoriesList = await obj.getcategories(userDetail.userID);
                   Navigator.pop(context);
                     final result = Navigator.of(context).push(
                         MaterialPageRoute(
@@ -83,6 +89,7 @@ class _StoreHomePageState extends State<StoreHomePage> {
                             widget.cont,
                             widget.storeDetail,
                             categoriesList,
+                            widget.productsList
                           )
                         )); 
               // make sure that if it is already updated or not
@@ -94,100 +101,6 @@ class _StoreHomePageState extends State<StoreHomePage> {
       ),
     );
   }
-Widget _storeCard() {
-  return Padding(
-    padding: EdgeInsets.all(5),
-    child: InkWell(
-        onTap: () {
-          // Navigator.of(context).push(
-          //     MaterialPageRoute(builder: (context) => StorePage(
-          //       imgPath: imgPath,
-          //       storeDiscount:dis,
-          //       storeName: name,
-          //       cont: widget.cont,
-                
-          //     )));
-        },
-    child: Container(
-      // height: 50,
-      // width: 280,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5.0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 2.0,
-                blurRadius: 4.0)
-            ],
-        color: Colors.pink[400],
-        ),
-        child: Column(
-          children: [
-          Padding(
-              padding: EdgeInsets.all(1.0),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                  //  true ? Icon(Icons.star_half, color: Colors.yellow): Icon(Icons.star,color: Colors.yellow),
-                        Text(
-                          '5.0',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.white
-                          ),
-                          )
-                          ,]
-                  ),
-                ),
-          Hero(
-              tag: 'assets/storesImages/netto.png',
-              child: Container(
-                height: 140.0,
-                width: 300.0,
-                decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: widget.storeDetail.backgroundImage != '' ?
-                          NetworkImage(widget.storeDetail.backgroundImage.toString())
-                          :AssetImage('assets/storesImages/netto.png'),
-                          fit: BoxFit.contain,
-                          )
-                    ), 
-                ),
-          ),
-          Padding(
-              padding: EdgeInsets.all(1.0),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                      Column(children: <Widget>[
-                        Text(
-                        widget.storeDetail.name,
-                        style: TextStyle(
-                            fontFamily: 'Varela',
-                            color: Colors.white,
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold)
-                      ),
-                      Row(children: <Widget>[
-                      Icon(Icons.location_on,
-                      color: Colors.white,
-                        size: 24.0),
-                        Text(
-                        widget.storeDetail.coveredArea,
-                        style: TextStyle(
-                            fontFamily: 'Varela',
-                            color: Colors.white,
-                            fontSize: 18.0)
-                      ),
-                      ],)  
-                      ],),  
-                  ])
-                  ),
-                  ])
-                )
-            )
-          );
-}
 }
 
 class CategoryLists extends StatefulWidget {

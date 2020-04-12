@@ -22,7 +22,6 @@ class CartPage extends StatelessWidget {
           int count = cart[giftIndex];
           String productIndex = productInfo.keys.toList()[index];
           String imgPath = productInfo[productIndex].imgPath;
-          print('FUU $count');
           if(count==0 ){
             return Padding(padding: EdgeInsets.all(0),);
           }
@@ -34,8 +33,10 @@ class CartPage extends StatelessWidget {
                 width: 70,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage(imgPath),
-                    fit: BoxFit.fitWidth,
+                    image:  imgPath !='' && imgPath != null  ?
+                         NetworkImage(imgPath)
+                        :AssetImage('assets/chocolate/3.png'),
+                        fit: BoxFit.fitWidth,
                   ),
                   borderRadius: BorderRadius.circular(12),
                 ),

@@ -137,7 +137,7 @@ class _RegisterYourStoreState extends State<RegisterYourStore> {
                               ); 
                               // make sure that if it is already updated or not
                                 result != null ? Scaffold.of(context).showSnackBar(SnackBar(
-                                content: Text('Last Name Updated', style: TextStyle(color: Colors.white),),
+                                content: Text('Name Updated', style: TextStyle(color: Colors.white),),
                                 backgroundColor: Colors.green)):Container();
 
                               }

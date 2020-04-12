@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:volc/Admin/Controller/product/products_list.dart';
+import 'package:volc/SharedModels/store/category.dart';
+import 'package:volc/SharedModels/store/store.dart';
+import 'package:volc/User/Model/user_detail.dart';
 
  class ProductsTapBar extends StatefulWidget{
+   UserDetail userDetail;
+   StoreDetail storeDetail;
+   List<Category> categoriesList;
+   ProductsTapBar(this.userDetail,this.storeDetail,this.categoriesList);
   @override
   _ProductsTapBarState createState() => _ProductsTapBarState();
   }
@@ -10,7 +16,12 @@ class _ProductsTapBarState extends State<ProductsTapBar> with SingleTickerProvid
   @override
   void initState(){
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length:3, vsync: this);
+  }
+    @override
+  void dispose() {
+    super.dispose();
+    _tabController.dispose();
   }
 
   @override
@@ -26,10 +37,8 @@ class _ProductsTapBarState extends State<ProductsTapBar> with SingleTickerProvid
                   unselectedLabelColor: Color(0xFFCDCDCD),
                   tabs: [
                     Tab(child: categoryText('Drinks',14.0),),
-                     Tab(child: categoryText('Fresh Fruits',14.0)),
+                    Tab(child: categoryText('Fresh Fruits',14.0)),
                     Tab(child: categoryText('Drinks',14.0),),
-
-                    
                   ]
                   ),
                   Container(
@@ -40,8 +49,7 @@ class _ProductsTapBarState extends State<ProductsTapBar> with SingleTickerProvid
                   children: [
                     Text('Products'),
                     Text('Products'),
-                   // Text('Products'),
-                    ProductsList(),
+                   // ProductsList(),
                     //Products(_increment,_decrement,product,widget.cont),
                   ]
                 )    

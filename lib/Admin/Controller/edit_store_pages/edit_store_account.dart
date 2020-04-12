@@ -7,6 +7,9 @@ import 'package:volc/Admin/Controller/edit_store_pages/edit_store_location.dart'
 import 'package:volc/Admin/Controller/edit_store_pages/edit_store_name.dart';
 import 'package:volc/Admin/Controller/edit_store_pages/edit_store_phone_umber.dart';
 import 'package:volc/Admin/Controller/store_home_pages/store_home_page.dart';
+import 'package:volc/Admin/Service/storeDatabase.dart';
+import 'package:volc/SharedModels/product/product.dart';
+import 'package:volc/SharedModels/store/category.dart';
 import 'package:volc/SharedModels/store/store.dart';
 import 'package:volc/SharedWidgets/shared_functions.dart';
 import 'package:volc/User/Model/user_detail.dart';
@@ -81,12 +84,17 @@ class _EditStoreAccountState extends State<EditStoreAccount> {
             ],
           ),
             onPressed: () async{
+              StoreDatabaseService obj = new StoreDatabaseService(sid: widget.storeDetail.sid);   
+              List<Category> categoriesList = await obj.getcategories(userDetail.userID);
+               List<Product> productsList =  await obj.getStoreProducts(userDetail.userID,(categoriesList.length >0)?categoriesList[0].categoryID:'') ;
                   Navigator.pop(context);
                     final result = Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => StoreHomePage(
                            widget.cont,
                             widget.storeDetail,
+                            categoriesList,
+                            productsList
                           )
                         )); 
               // make sure that if it is already updated or not

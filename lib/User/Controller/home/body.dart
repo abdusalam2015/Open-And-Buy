@@ -3,100 +3,76 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:volc/Admin/Controller/store_home_pages/store_page.dart';
+import 'package:volc/Admin/Service/storeDatabase.dart';
+import 'package:volc/SharedModels/product/product.dart';
+import 'package:volc/SharedModels/store/category.dart';
+import 'package:volc/SharedModels/store/store.dart';
 import 'package:volc/User/Model/user_detail.dart';
 
 class Body extends StatefulWidget {
   final BuildContext cont;
-  Body(this.cont);
+  final List<StoreDetail> storesList;
+  Body(this.cont,this.storesList);
   @override
   _BodyState createState() => _BodyState();
 }
-
+UserDetail userDetail;
 class _BodyState extends State<Body> {
   @override
   Widget build(BuildContext context) {
-    final userDetail = Provider.of<UserDetail>(widget.cont);
+     userDetail = Provider.of<UserDetail>(widget.cont);
     //print('UserDeal in body: $userDetail');
-    return ListView(
-    padding: EdgeInsets.all(8),
-    children: <Widget>[
-      categoryName('supermarkets near to me'),
-      categoryStores(context, 'supermarkets'),
-      SizedBox(height: 10),
-      categoryName('Shops near to me'),
-      categoryStores(context,'shops'),
-      SizedBox(height: 10),
-      categoryName('Restaurant near to me'),
-      categoryStores(context,'restaurants'),
-      SizedBox(height: 10),
-      categoryName('Pharmacy near to me'),
-      categoryStores( context,'pharmacy' ),
-    ],    
+    return ListView.builder(
+      padding: EdgeInsets.all(8),
+      itemCount: widget.storesList != null ? widget.storesList.length : 0 ,
+      itemBuilder: (context, i){
+        return InkWell(
+        child: _buildCard(widget.storesList[i].name, widget.storesList[i].email,
+        widget.storesList[i].backgroundImage,
+        widget.storesList[i].coveredArea, false, context),
+          onTap: () async{
+      StoreDatabaseService obj = new StoreDatabaseService(sid: userDetail.userID);   
+      List<Category> categoryList;
+      List<Product> productsList;
+      try{categoryList  =  await obj.getcategories(widget.storesList[i].sid);}catch(e){}
+      try{ productsList=  await obj.getStoreProducts(widget.storesList[i].sid,
+      (categoryList.length >0 ) ?categoryList[0].categoryID:'') ;}catch(e){}
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => StorePage(
+            storeDetail:widget.storesList[i],
+            cont: widget.cont,
+            categoryList:categoryList,
+            productsList:productsList,
+      )));
+      }, );
+      },   
   );
   }
-Widget categoryName(String name){
-  return Text(
-          name,
-          style: TextStyle(
-              fontFamily: 'Varela',
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold
-              )
-  );
-}
-Widget categoryStores(context,String name){
-     return Container(
-      constraints: BoxConstraints(
-        maxHeight: 230.0,
-        minHeight: 180.0,
-     ),
-     child:_listView(context,name),
-     );
-}
-Widget _listView(context,String name){
-  return ListView(
-                scrollDirection: Axis.horizontal,
-                children: <Widget>[
-                  if (name == 'supermarkets')...{
-                    _buildCard('Netto', '5%', 'assets/storesImages/netto.png',
-                      '2 km away', false, context),
-                    _buildCard('ICA', '5%', 'assets/storesImages/ica.png',
-                      '4 km away', false, context),
-                  } else if(name == 'shops')... {
-                    _buildCard('IKEA', '\$1.99',
-                      'assets/storesImages/ikea.png', '25 km away', true, context),
-                     _buildCard('JYSK', '\$2.99', 'assets/storesImages/jysk.png',
-                      '6 km away', false, context),
-                     _buildCard('H & M', '\$2.99', 'assets/storesImages/hm.png',
-                      '3 km away', false, context),
-                  } else if(name == 'restaurants')...{
-                  _buildCard('Halal Food ', '\$2.99', 'assets/storesImages/halal.png',
-                      '4.5 km away', false, context),
-                  }else ...{
-                  _buildCard('Pharmacy', '\$2.99', 'assets/storesImages/pharmacy.png',
-                  '4.3 km away', false, context) 
-                   },
-         ],
-      );
-}
   Widget _buildCard(String name, String dis, String imgPath, String location,
       bool isFavorite, context) {
   return Padding(
-    padding: EdgeInsets.all(5),
-    child: InkWell(
-        onTap: () {
-          Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => StorePage(
-                imgPath: imgPath,
-                storeDiscount:dis,
-                storeName: name,
-                cont: widget.cont,
-                
-              )));
-        },
+  padding: EdgeInsets.all(5),
+  child: InkWell(
+    // onTap: () async{
+    //   StoreDatabaseService obj = new StoreDatabaseService(sid: userDetail.userID);   
+    //   List<Category> categoryList;
+    //   StoreDetail storeDetail;
+    //   List<Product> productsList;
+    //   try{categoryList  =  await obj.getcategories(userDetail.userID);}catch(e){}
+    //  // try{ storeDetail = await obj.getStoreInfo(userDetail.userID.toString());}catch(e){}
+    //   try{ productsList=  await obj.getStoreProducts(userDetail.userID,
+    //   (categoryList.length >0 ) ?categoryList[0].categoryID:'') ;}catch(e){}
+    //   Navigator.of(context).push(
+    //       MaterialPageRoute(builder: (context) => StorePage(
+    //         storeDetail:storeDetail,
+    //         cont: widget.cont,
+    //         categoryList:categoryList,
+    //         productsList:productsList,
+    //       )));
+    // },
     child: Container(
-      height: 50,
-      width: 280,
+      // height: 50,
+      // width: 280,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5.0),
             boxShadow: [
@@ -126,13 +102,15 @@ Widget _listView(context,String name){
                   ),
                 ),
           Hero(
-              tag: imgPath,
+              tag: imgPath+name,
               child: Container(
                 height: 140.0,
                 width: 300.0,
                 decoration: BoxDecoration(
                       image: DecorationImage(
-                          image: AssetImage(imgPath),
+                          image: imgPath != '' && imgPath != null  ?
+                        NetworkImage(imgPath)
+                        :AssetImage('assets/storesImages/netto.png'),
                           fit: BoxFit.contain,
                           )
                     ), 
@@ -172,5 +150,5 @@ Widget _listView(context,String name){
                 )
             )
           );
-}
-}
+      }
+    }

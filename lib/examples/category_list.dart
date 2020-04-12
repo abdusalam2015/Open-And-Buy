@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:volc/Admin/Service/storeDatabase.dart';
 import 'package:volc/SharedModels/store/category.dart';
 import 'package:volc/SharedModels/store/store.dart';
-import 'package:volc/User/Controller/EditUserDetails/edit_first_name.dart';
 import 'package:volc/User/Model/user_detail.dart';
 
 class CategoriesList extends StatefulWidget {
@@ -135,7 +134,6 @@ TextEditingController _mycontroller = new TextEditingController();
                   result =  StoreDatabaseService().addCategory(widget.storeDetail, category, widget.userDetail.userID);
                   result != null ? Navigator.of(context).pop(_mycontroller.text.toString())
                   :Navigator.of(context).pop('');
-                  
                 },
               ), 
             

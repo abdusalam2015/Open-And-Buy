@@ -23,11 +23,11 @@ import 'package:volc/User/Model/cart_bloc.dart';
     }
     @override
     Widget build(BuildContext context) {
-
+   
         //final user = Provider.of<User>(context).uid;
        // final userDetail = Provider.of<UserDetail>(context);
       return Container(
-        padding: EdgeInsets.only(right: 10.0),
+      padding: EdgeInsets.only(right: 10.0),
       width: MediaQuery.of(context).size.width - 30.0,
       height: MediaQuery.of(context).size.height - 50.0,
         child: GridView.count(
@@ -45,7 +45,6 @@ import 'package:volc/User/Model/cart_bloc.dart';
                     productCard('5','Vodka Moscco', '\$1.99','assets/alcoholic_drinks/4.png',false,context,'HI'),
                     productCard('6','Fast Food', '\$3.99','assets/normal/6.png',false,context,'Hi'),
                     productCard('7','Cleaner', '\$2.99','assets/cleaner/4.png',false,context,'Hi'),
-
                     }else ...{
                     productCard('4' ,'Ice-Cream', '\$3.99','assets/chocolate/1.png',true,context,'Hi'),
                   //  productCard('Swebar', '\$5.99','assets/chocolate/2.png',false,context),
@@ -55,10 +54,11 @@ import 'package:volc/User/Model/cart_bloc.dart';
       );
     }
   Widget productCard(String id,String name ,  String price, String imagePath, bool added,context, String detail){
-    var bloc = Provider.of<CartBloc>(context);
+    var bloc = Provider.of<CartBloc>(context);  
     var cart = bloc.cart;
     int count = cart[id];
-    
+    Product product = new Product(id:id,name:name,imgPath:imagePath,price:price,info:detail);
+
    // print('COUNT= $count');
     return Padding(
         padding: EdgeInsets.only(top:3,left: 3,right: 3,bottom: 1),
@@ -136,17 +136,21 @@ import 'package:volc/User/Model/cart_bloc.dart';
                       ),
                     ),
                //  addToCart()
+                buttonToAdd(count,product,id),
                 ],
               ),
             ),
       ),
-           
-              Padding(
-                padding: EdgeInsets.all(0.0),
-                child: Container(color: Color(0xFFEBEBEB),height: 1.0,),
-                ),
-            if(count != 0 && count != null )...[
-             Container(
+          ]  
+        )
+        );
+
+          
+  }
+
+  Widget buttonToAdd(count,product,id){
+
+   return   (count != 0 && count != null )?  Container(
                 height: 30,
                 width: 100,
                 decoration: BoxDecoration(
@@ -165,7 +169,6 @@ import 'package:volc/User/Model/cart_bloc.dart';
                      children: <Widget>[
                        GestureDetector(
                          onTap: () {
-                         Product product = new Product(id,name,imagePath,price,detail);
                          widget.decrement(id,product);
                           },
                          child:Icon(Icons.remove_circle_outline, color: Colors.pink[400], size: 24.0),
@@ -181,7 +184,7 @@ import 'package:volc/User/Model/cart_bloc.dart';
                          ),
                          GestureDetector(
                          onTap: () {
-                         Product product = new Product(id,name,imagePath,price,detail);
+                        // Product product = new Product(id,name,imagePath,price,detail);
                          widget.increment(id,product);
                       // print('id = $id');
                        },
@@ -189,11 +192,10 @@ import 'package:volc/User/Model/cart_bloc.dart';
                        )
                    ],
                ),
-             ),
-            ]else...[
+             ):  
             InkWell(
               onTap: (){
-                Product product = new Product(id,name,imagePath,price,detail);
+               // Product product = new Product(id,name,imagePath,price,detail);
                 widget.increment(id,product);
               },
               child: Container(
@@ -222,10 +224,6 @@ import 'package:volc/User/Model/cart_bloc.dart';
                     ),
                   ),
                 ),
-              ),
-            ),
-              ],     
-            ],
         ),  
         );
   }

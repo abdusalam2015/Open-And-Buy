@@ -2,9 +2,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
-import 'package:volc/Admin/Controller/product/category_list.dart';
 import 'package:volc/Admin/Controller/store_home_pages/store_home_page.dart';
 import 'package:volc/Admin/Service/storeDatabase.dart';
+import 'package:volc/SharedModels/product/product.dart';
 import 'package:volc/SharedModels/store/category.dart';
 import 'package:volc/SharedModels/store/store.dart';
 import 'package:volc/SharedWidgets/constant.dart';
@@ -16,11 +16,34 @@ class AddProduct extends StatefulWidget {
   final List<Category> categoriesList;
   final BuildContext cont;
   final StoreDetail storeDetail;
-  AddProduct(this.cont,this.storeDetail,this.categoriesList);
+  final List<Product> productsList;
+  AddProduct(this.cont,this.storeDetail,this.categoriesList,this.productsList);
   @override
   _AddProductState createState() => _AddProductState();
 }
-class _AddProductState extends State<AddProduct> {
+class _AddProductState extends State<AddProduct> { 
+  List<DropdownMenuItem<Category>> _dropdownMenuItems;
+  Category _selectedCategory= new Category(productNumbers: '',name:'',categoryID: '');
+ // Product product = new Product('', '', '', '', '');
+ Product product = new Product(id:'',name: '',imgPath: '', price:'',info: '') ;
+
+  
+  StoreDatabaseService sds;
+
+ onChangeDropdwonItem(Category selectedCategory){
+    setState(() {
+      _selectedCategory = selectedCategory;
+    });
+  }
+
+  @override
+  void initState() {
+    _dropdownMenuItems = buildDropdownMenuItems(widget.categoriesList);
+    _selectedCategory = _dropdownMenuItems.length != 0 ?  _dropdownMenuItems[0].value 
+    : Category(categoryID: '',name: 'No Categories!!',productNumbers: '3' );
+    super.initState();
+  }
+
   final SharedFunctions sharedfun = new SharedFunctions();
   bool loading = false;
   UserDetail userDetail ;
@@ -32,46 +55,137 @@ class _AddProductState extends State<AddProduct> {
   final _formKey2 = GlobalKey<FormState>();
   //StoreDetail storeDetail = new StoreDetail('','','','','','','','','',) ;
   bool isUploaded = false;
+ 
   @override
   Widget build(BuildContext context){
   userDetail = Provider.of<UserDetail>(widget.cont);
   c_width = MediaQuery.of(context).size.width*0.8;
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Shopping Now',style: TextStyle(color: Colors.white),),
+        backgroundColor: Colors.black,
+      ),
       body: Builder(
-        builder: (context) => CustomScrollView(
-          slivers: <Widget>[
-            SliverAppBar(
-              expandedHeight: 100.0,
-              pinned: true,
-              floating: true,
-              flexibleSpace: FlexibleSpaceBar(
-                title: Text('Add Product',style: TextStyle(fontSize: 22,color: Colors.white),),
-              ),
-              backgroundColor: Colors.black,
-              ),
-               SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index){
-                    if(index == 0)return profilePicture(context);
-                    else if(index == 1)return CategoriesList(widget.storeDetail,userDetail,widget.categoriesList); 
-                    else if(index == 2)return _form(userDetail);
-                    // else if(index == 2)return location('Location',  widget.storeDetail.location,context);
-                    // else if(index == 3)return phoneNumber('Phone Number', widget.storeDetail.phoneNumber,true,context);
-                    // else if(index == 4)return email('Email', widget.storeDetail.email, false,context );
-                    // else if(index == 5)return password('Password', '.......');
-                    else return SizedBox(height: 300,);  
-                  }, //=>items(index), 
-                  childCount: 4,
-                ),
-                ),
-                ],
-              ), 
-               
-          ),
-
-        );
+        builder: (context) => ListView(
+          children: <Widget>[
+            profilePicture(context),
+            categoriesListFun(),
+            _formToAddProduct(userDetail),
+          ],
+    ), 
+  ),
+  );
   }
-  Widget _form(userDetail){
+  Widget categoriesListFun(){
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text('Select A Category',style: TextStyle(fontSize: 20.0),),
+                  FlatButton(
+                    child: Text('Add A Category',style: TextStyle(fontSize: 14.0,color: Colors.blue)),
+                    onPressed: (){
+                      createAlertDialog(context).then((onValue){
+                        if(onValue != '' && onValue != null){
+                          SnackBar mySnackBar = SnackBar(content: Text('$onValue Added Scuccessfully!'),backgroundColor: Colors.green,);
+                          Scaffold.of(context).showSnackBar(mySnackBar);
+                        }
+                      });
+                    },
+                  ),
+                ],
+              ),
+              SizedBox(height: 15.0,),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  height: 50,
+                  width: 500,
+                //  color: Colors.red,
+                  child: DropdownButton(
+                    value: _selectedCategory,
+                    items: _dropdownMenuItems,
+                    onChanged: onChangeDropdwonItem,
+                  ),
+                ),
+              ),
+              SizedBox(height: 20.0,),
+              Center(
+              child: Container(
+                color: Colors.grey[200],
+                width: 400,
+                height: 60,
+                child: Center(child: Text(_selectedCategory.name,style: TextStyle(color: Colors.green,fontSize: 25,fontWeight: FontWeight.bold),))
+              )
+            ) 
+          ],
+        ),
+      ),
+    );
+
+  }
+  List<DropdownMenuItem<Category>> buildDropdownMenuItems(List categories){
+    List<DropdownMenuItem<Category>> items = List();
+    for( Category category in categories){
+      items.add(
+      DropdownMenuItem(
+        value: category,
+        child: Text(category.name), 
+      )
+      );
+    }
+    return items;
+
+  }
+ TextEditingController _mycontroller = new TextEditingController();
+ Future<String> createAlertDialog(BuildContext context){
+    return showDialog(
+      context: context,
+      builder: (context){
+        return AlertDialog(
+          title: Text('The Category Name?'),
+          content: TextField(
+             controller:_mycontroller ,
+             
+          ),
+          actions: <Widget>[
+          
+                 MaterialButton(
+                elevation: 5.0,
+                color: Colors.red,
+                child: Text('Cancel'),
+                onPressed: (){
+                  Navigator.of(context).pop('');
+                },
+              ),
+              SizedBox(width: 100,),
+              MaterialButton(
+                elevation: 0.0,
+                color: Colors.blue,
+                child: Text('Submit'),
+                onPressed: (){
+                  Category category = new Category(categoryID: '',name: '',productNumbers: '');
+                  category.name = _mycontroller.text.toString();
+                  dynamic result;
+                  result =  StoreDatabaseService().addCategory(widget.storeDetail, category, userDetail.userID);
+                  result != null ? Navigator.of(context).pop(_mycontroller.text.toString())
+                  :Navigator.of(context).pop('');
+                },
+              ), 
+            
+          ],
+          );
+      }
+      );
+  }
+
+  Widget _formToAddProduct(userDetail){
+    //print(_selectedCategory.name +"  HHH Yes");
     String error='';
     return Container(
               padding: EdgeInsets.symmetric(vertical: 20.0,horizontal: 50.0),
@@ -87,7 +201,7 @@ class _AddProductState extends State<AddProduct> {
                       validator: (val) =>  val.isEmpty || val =='' ?'Enter Product Name':null,
                       onChanged: (val){
                         setState(() {
-                          widget.storeDetail.name = val;
+                          product.name = val;
                         });
                       }
                     ),
@@ -98,7 +212,7 @@ class _AddProductState extends State<AddProduct> {
                       validator: (val) =>  val.isEmpty || val =='' ?'Enter the Product Price':null,
                       onChanged: (val){
                         setState(() {
-                          widget.storeDetail.location = val;
+                          product.price = val;
                         });
                       }
                     ),
@@ -109,7 +223,7 @@ class _AddProductState extends State<AddProduct> {
                       validator: (val) =>  val.isEmpty || val =='' ?'Enter product description':null,
                       onChanged: (val){
                         setState(() {
-                          widget.storeDetail.email = val;
+                          product.info = val;
                         });
                       }
                     ),
@@ -125,8 +239,28 @@ class _AddProductState extends State<AddProduct> {
                           ),
                           onPressed: () async{
                              if(_formKey2.currentState.validate()){//_formKey2.currentState.validate()
-                               setState(() => loading = true);
-                            dynamic result ;// = await _store.addProduct(storeDetail,userDetail.userID);
+                               product.imgPath = img.toString();
+                               print(product.imgPath + "  IMagePatheProduct");
+                               dynamic result  =
+                               await _store.addProduct(img,product,userDetail.userID,_selectedCategory,widget.storeDetail);
+                               //////////////////////////////
+                                                          
+                                if(img == null){
+                                  setState(() =>loading = false);
+                                // print('jksldf');
+                                }else {
+                                 print(product.name+'  Po name');
+                               //  await sharedfun.uploadProductImage( img, _selectedCategory,  product, widget.storeDetail);
+                                  setState(() =>loading = true);
+                                // await sharedfun.uploadStorePic(_image, userDetail.userID, widget.storeDetail);
+                                  isUploaded = true;
+                                  loading = false;
+                                  // Scaffold.of(cont).showSnackBar(SnackBar(
+                                  // content: Text('Photo Updated', style: TextStyle(color: Colors.white),),
+                                  // backgroundColor: Colors.green));
+                                  setState(() => loading = false);
+                                } 
+                                
                                 if (result != null){
                                   setState(() {
                                     error = 'Error!!';
@@ -135,7 +269,7 @@ class _AddProductState extends State<AddProduct> {
                                 }else {
                                   print('GOOOD TO GO');
                                   setState(() => loading = false);
-                                 Navigator.pop(context);
+                                  Navigator.pop(context);
                                 //   final result = Navigator.of(context).push(
                                 //       MaterialPageRoute(
                                 //         builder: (context) => EditStoreAccount(
@@ -184,6 +318,9 @@ class _AddProductState extends State<AddProduct> {
                           builder: (context) => StoreHomePage(
                            widget.cont,
                             widget.storeDetail,
+                            widget.categoriesList,
+                            widget.productsList
+                            
                           )
                         )); 
               // make sure that if it is already updated or not
@@ -235,29 +372,48 @@ Widget profilePicture(cont){
             ],),
      ),
      onTap: () async{
-     File _image;
+    // File _image;
      try{
-       _image= await sharedfun.getImage();
+       img= await sharedfun.getImage();
        } catch(e){
          print(e);
        }
-    if(_image == null){
-      setState(() =>loading = false);
-     // print('jksldf');
-    }else {
-      img = _image;
-      setState(() =>loading = true);
-      await sharedfun.uploadStorePic(_image, userDetail.userID, widget.storeDetail);
-      isUploaded = true;
-     
-      loading = false;
-      Scaffold.of(cont).showSnackBar(SnackBar(
-      content: Text('Photo Updated', style: TextStyle(color: Colors.white),),
-      backgroundColor: Colors.green));
-     
-      setState(() => loading = false);
-    }
      },
    );
 }
 }
+
+// return Scaffold(
+//       body: Builder(
+//         builder: (context) => CustomScrollView(
+//           slivers: <Widget>[
+//             SliverAppBar(
+//               expandedHeight: 100.0,
+//               pinned: true,
+//               floating: true,
+//               flexibleSpace: FlexibleSpaceBar(
+//                 title: Text('Add Product',style: TextStyle(fontSize: 22,color: Colors.white),),
+//               ),
+//               backgroundColor: Colors.black,
+//               ),
+//                SliverList(
+//                 delegate: SliverChildBuilderDelegate(
+//                   (context, index){
+//                     if(index == 0)return profilePicture(context);
+//                     else if(index == 1)return CategoriesList(widget.storeDetail,userDetail,widget.categoriesList); 
+//                     else if(index == 2)return _form(userDetail);
+//                     // else if(index == 2)return location('Location',  widget.storeDetail.location,context);
+//                     // else if(index == 3)return phoneNumber('Phone Number', widget.storeDetail.phoneNumber,true,context);
+//                     // else if(index == 4)return email('Email', widget.storeDetail.email, false,context );
+//                     // else if(index == 5)return password('Password', '.......');
+//                     else return SizedBox(height: 300,);  
+//                   }, //=>items(index), 
+//                   childCount: 4,
+//                 ),
+//                 ),
+//                 ],
+//               ), 
+               
+//           ),
+
+//         );
