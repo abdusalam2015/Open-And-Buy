@@ -38,31 +38,35 @@ class _StorePageState extends State<StorePage> with SingleTickerProviderStateMix
     void _increment(String index,Product product){
       setState((){
         bloc.addToCart(index,product);
-       });
+      });
     }
     void _decrement(String index,Product product){
       setState((){
         bloc.subToCart(index,product);
        });
     }
-    final user = Provider.of<User>(context).uid; 
-    if(user == null){
+    final user = Provider.of<User>(context); 
+    if(user.uid == null){
       Navigator.of(context).pop();
       return Authenticate();
     }else{  
       return StreamProvider<UserDetail>.value(
-      value: DatabaseService(uid:user).user,//getUserDetail(DatabaseService().user),
+      value: DatabaseService(uid:user.uid).user,//getUserDetail(DatabaseService().user),
       child:Scaffold(
       appBar: PreferredSize(
-          preferredSize: Size.fromHeight(55.0), // here the desired height
-          child: AppBarWidget(widget.cont),
+        preferredSize: Size.fromHeight(55.0), // here the desired height
+        /// we need to send StoreID to the appbar, because we need to check 
+        /// if we are already inside a store or still in the home page.
+        /// if we are already inside a store then we can open the shopping cart for the user,
+        /// if not then we need to make it disable. 
+        child: AppBarWidget(widget.cont,widget.storeDetail),
       ),
       body:Container(
         child: ListView(
           children: <Widget>[
-          storeCard(widget.storeDetail),
-          productsGridList(_increment,_decrement,widget.productsList,context,false),
-        ],
+          widget.productsList != null && widget.productsList.length > 0 ? productsGridList(_increment,_decrement,widget.productsList,context,false)
+          : Container(height: 600,width: 50,child: Center(child: Text('No Products exist in this Category',style: TextStyle(fontSize: 20,color: Colors.red),)),)
+         ],
         ),
       ), 
       drawer: DrawerWidget(widget.cont,widget.storeDetail,widget.categoryList),

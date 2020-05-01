@@ -75,7 +75,7 @@ class _EditStoreEmailState extends State<EditStoreEmail> {
                              
                              try{
                               widget.storeDetail.email = (newStoreEmail =='' ?widget.storeDetail.email:newStoreEmail);
-                               await StoreDatabaseService().updateStoreData(widget.storeDetail,userDetail.userID);
+                               await StoreDatabaseService().updateStoreData(widget.storeDetail);
                                 loading = false;
                                 // return TRUE to the previous page to show the SnackBar
                                 Navigator.of(context).pop(true);

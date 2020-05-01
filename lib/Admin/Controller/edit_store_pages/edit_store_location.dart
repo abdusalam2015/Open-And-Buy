@@ -75,7 +75,7 @@ class _EditStoreLocationState extends State<EditStoreLocation> {
                              
                              try{
                               widget.storeDetail.location = (newStoreLocation =='' ?widget.storeDetail.location:newStoreLocation);
-                              await StoreDatabaseService().updateStoreData(widget.storeDetail,userDetail.userID);
+                              await StoreDatabaseService().updateStoreData(widget.storeDetail);
                               loading = false;
                               // return TRUE to the previous page to show the SnackBar
                               Navigator.of(context).pop(true);

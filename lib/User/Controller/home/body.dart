@@ -27,29 +27,34 @@ class _BodyState extends State<Body> {
       itemCount: widget.storesList != null ? widget.storesList.length : 0 ,
       itemBuilder: (context, i){
         return InkWell(
-        child: _buildCard(widget.storesList[i].name, widget.storesList[i].email,
-        widget.storesList[i].backgroundImage,
-        widget.storesList[i].coveredArea, false, context),
-          onTap: () async{
-      StoreDatabaseService obj = new StoreDatabaseService(sid: userDetail.userID);   
-      List<Category> categoryList;
-      List<Product> productsList;
-      try{categoryList  =  await obj.getcategories(widget.storesList[i].sid);}catch(e){}
+        child: _buildCard(widget.storesList[i], false, context),
+        onTap: () async {
+          StoreDatabaseService obj = new StoreDatabaseService(sid: userDetail.userID);   
+          List<Category> categoryList;
+          List<Product> productsList;
+      try{
+        categoryList  =  await obj.getcategories(widget.storesList[i].sid);}catch(e){}
       try{ productsList=  await obj.getStoreProducts(widget.storesList[i].sid,
-      (categoryList.length >0 ) ?categoryList[0].categoryID:'') ;}catch(e){}
+      (categoryList.length > 0 ) ?categoryList[0].categoryID:'') ;}catch(e){}
+        //  print(userDetail.userID+"      dlfkjalaskjfd");
       Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => StorePage(
+          MaterialPageRoute(builder: (context) => StorePage( //OrderNotification(
             storeDetail:widget.storesList[i],
             cont: widget.cont,
             categoryList:categoryList,
             productsList:productsList,
       )));
-      }, );
-      },   
+      }
+       ); 
+       },   
   );
   }
-  Widget _buildCard(String name, String dis, String imgPath, String location,
+  Widget _buildCard( StoreDetail storeDetail,
       bool isFavorite, context) {
+        // String name, String dis, String imgPath, String location,
+        // widget.storesList[i].name, widget.storesList[i].email,
+        // widget.storesList[i].backgroundImage,
+        // widget.storesList[i].coveredArea
   return Padding(
   padding: EdgeInsets.all(5),
   child: InkWell(
@@ -102,17 +107,17 @@ class _BodyState extends State<Body> {
                   ),
                 ),
           Hero(
-              tag: imgPath+name,
+              tag: storeDetail.sid,
               child: Container(
                 height: 140.0,
                 width: 300.0,
                 decoration: BoxDecoration(
                       image: DecorationImage(
-                          image: imgPath != '' && imgPath != null  ?
-                        NetworkImage(imgPath)
-                        :AssetImage('assets/storesImages/netto.png'),
+                          image: storeDetail.backgroundImage != '' && storeDetail.backgroundImage != null  ?
+                        NetworkImage(storeDetail.backgroundImage)
+                        :AssetImage( 'assets/storesImages/netto.png' ),
                           fit: BoxFit.contain,
-                          )
+                      )
                     ), 
                 ),
           ),
@@ -124,7 +129,7 @@ class _BodyState extends State<Body> {
                   children: [
                       Column(children: <Widget>[
                         Text(
-                        name,
+                        storeDetail.name,
                         style: TextStyle(
                             fontFamily: 'Varela',
                             color: Colors.white,
@@ -136,17 +141,20 @@ class _BodyState extends State<Body> {
                       color: Colors.white,
                         size: 24.0),
                         Text(
-                        location,
+                        storeDetail.location,
                         style: TextStyle(
                             fontFamily: 'Varela',
                             color: Colors.white,
                             fontSize: 18.0)
                       ),
-                      ],)  
-                      ],),  
-                  ])
+                      ],
+                      ) , 
+                      ],
+                      ),  
+                  ] 
                   ),
-                  ])
+                  ),
+                  ]),
                 )
             )
           );

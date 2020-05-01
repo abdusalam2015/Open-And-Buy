@@ -5,6 +5,7 @@ import 'package:volc/SharedModels/store/store.dart';
 import 'package:volc/User/Controller/authenticate/authenticate.dart';
 import 'package:volc/User/Controller/home/home.dart';
 import 'package:volc/User/Model/user.dart';
+import 'package:volc/User/Service/user/database.dart';
 
 
 class Wrapper extends StatefulWidget {
@@ -25,6 +26,8 @@ class _WrapperState extends State<Wrapper> {
       // StoreDatabaseService obj = new StoreDatabaseService();
       // List<StoreDetail> storesList = obj.getAllStores 
       // //print(storesList.toString() + "Lengthi is here ");
+    // DatabaseService _obj = new DatabaseService(uid: user.uid);
+    // dynamic tokens = await _obj.registerTokens(user.uid);
       return Home();
     }
   }

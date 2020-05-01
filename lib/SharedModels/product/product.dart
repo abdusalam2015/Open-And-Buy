@@ -6,7 +6,8 @@ class Product {
   String imgPath;
   String price;
   String info;
-  Product({this.id,this.name,this.imgPath,this.price,this.info});
+  String numberOfItemsForAnOrder;
+  Product({this.id,this.name,this.imgPath,this.price,this.info,this.numberOfItemsForAnOrder});
 
 
   

@@ -99,16 +99,15 @@ class _AccountSettingsState extends State<AccountSettings> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 Text(
-               'Abdulsalam',
+               userDetail.first_name + userDetail.last_name,
                 style: TextStyle(fontSize: 14,color:Colors.black, ),
                ),
                Text(
-                 '+46735517944',
+                 userDetail.phone_number,
                  style: TextStyle(fontSize: 14,color:Colors.black, ),),
-
-                Text(
-                  'abdussalm9393@gmail.com',
-                 style: TextStyle(fontSize: 14,color:Colors.black, ),),
+                // Text(
+                //   userDetail.email,
+                //  style: TextStyle(fontSize: 14,color:Colors.black, ),),
             ],),
 
             ],),),

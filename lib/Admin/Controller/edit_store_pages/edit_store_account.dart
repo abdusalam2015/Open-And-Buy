@@ -333,23 +333,21 @@ Widget profilePicture(cont){
        } catch(e){
          print(e);
        }
-    if(_image == null){
+    if (_image == null) {
       setState(() =>loading = false);
      // print('jksldf');
-    }else {
+    } else {
       img = _image;
       setState(() =>loading = true);
       await sharedfun.uploadStorePic(_image, userDetail.userID, widget.storeDetail);
       isUploaded = true;
-     
       loading = false;
-      Scaffold.of(cont).showSnackBar(SnackBar(
-      content: Text('Photo Updated', style: TextStyle(color: Colors.white),),
-      backgroundColor: Colors.green));
-     
+      Scaffold.of(cont).showSnackBar(
+      SnackBar( content: Text('Photo Updated', style: TextStyle(color: Colors.white),),
+      backgroundColor: Colors.green) );
       setState(() => loading = false);
     }
-     },
+    },
    );
 }
 }

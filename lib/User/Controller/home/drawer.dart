@@ -11,8 +11,8 @@ import 'package:volc/User/Model/user.dart';
 import 'package:volc/User/Model/user_detail.dart';
 class DrawerWidget extends StatefulWidget {
   final BuildContext cont;
-  StoreDetail storeDetail;
-  List<Category> categoryList;
+  final StoreDetail storeDetail;
+  final List<Category> categoryList;
 
   DrawerWidget (this.cont,this.storeDetail,this.categoryList);
   @override
@@ -79,7 +79,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
          _setting(),
         //check if we have already a store or still in the homepage.
         //widget.storeDetail.sid != ''? _categories(userDetail) : Container(),
-        widget.categoryList != null ? _categories() : Container()
+        
+         widget.categoryList != null ? _categories() : Container()
       ],
     ),   
   );
@@ -91,10 +92,32 @@ Widget _categories(){
         itemCount: widget.categoryList.length,
         itemBuilder: (context, i) {
           return InkWell(
-            child:Container(
-              color: Colors.teal,
-              height: 40,
-              child: Text(widget.categoryList[i].name)),
+            child:Padding(
+              padding: const EdgeInsets.only(left:15.0),
+              child: Column(
+              //  mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Center(
+                    child: Container( 
+                      width: 270,
+                      height: 40, 
+                      decoration: BoxDecoration(
+                       color: Colors.white,
+                       boxShadow: [
+                        BoxShadow(color: Colors.green, spreadRadius: 3),
+                      ],
+                      ),
+                      
+                    child: Text(widget.categoryList[i].name,
+                    style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),)),
+                  ),
+                  
+                  SizedBox(height: 20)
+                ],
+              ),
+            ),
+
             onTap: () async{
             StoreDatabaseService obj = new StoreDatabaseService(sid: widget.storeDetail.sid);   
            // List<Category> categoryList =  await obj.getcategories(userDetail.userID) ;
@@ -127,6 +150,13 @@ Widget _categories(){
   Widget _setting(){
     return Column(
       children: <Widget>[
+        ListTile(
+          title: items('Home',Icon(Icons.home)),
+            onTap: () {
+              Navigator.pop(context);//lcose the drawer
+            },
+            
+          ),
           ListTile(
           title: items('Your Orders',Icon(Icons.history)),
             onTap: () {

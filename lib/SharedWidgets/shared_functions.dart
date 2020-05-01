@@ -38,7 +38,7 @@ Future uploadStorePic(File _image, String uid, StoreDetail storeDetail)async{
       /// update user details (PhotoURL)
       firebaseStorageRef.getDownloadURL().then((backgroundImage) async {  
         storeDetail.backgroundImage = backgroundImage;
-        await StoreDatabaseService().updateStoreData(storeDetail,uid);
+        await StoreDatabaseService().updateStoreData(storeDetail);
       });
     }
 

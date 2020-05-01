@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:volc/Admin/Controller/store_home_pages/store_home_page.dart';
@@ -69,14 +70,14 @@ class _AddProductState extends State<AddProduct> {
         builder: (context) => ListView(
           children: <Widget>[
             profilePicture(context),
-            categoriesListFun(),
+            categoriesListFun(context),
             _formToAddProduct(userDetail),
           ],
     ), 
   ),
   );
   }
-  Widget categoriesListFun(){
+  Widget categoriesListFun(context){
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -209,6 +210,10 @@ class _AddProductState extends State<AddProduct> {
                     Text('Product Price',style: TextStyle(fontWeight: FontWeight.bold)),SizedBox(height: 5,),
                     TextFormField(
                       decoration: textInputDecoration.copyWith(hintText:'Price'),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: <TextInputFormatter>[
+                        WhitelistingTextInputFormatter.digitsOnly
+                       ],
                       validator: (val) =>  val.isEmpty || val =='' ?'Enter the Product Price':null,
                       onChanged: (val){
                         setState(() {

@@ -46,7 +46,7 @@ class _Home2State extends State<Home2> {
       child: Scaffold(
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(55.0), // here the desired height
-          child: AppBarWidget(context),
+          child: AppBarWidget(context,storeDetail),
         ),
         body: FutureBuilder<List<StoreDetail>>(
           future: obj.getAllStores(),

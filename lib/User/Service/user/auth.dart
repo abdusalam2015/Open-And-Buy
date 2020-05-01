@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:volc/User/Model/user.dart';
 import 'package:volc/User/Service/user/database.dart';
 
@@ -30,6 +32,13 @@ class AuthService {
     try{
       AuthResult result = await _auth.signInWithEmailAndPassword(email: email, password: password);
       FirebaseUser user = result.user;
+      print('HEIII: '+ user.uid);
+
+      // register the device token!!
+    DatabaseService _obj = new DatabaseService(uid: user.uid);
+    await _obj.registerTokens(user.uid);
+
+    // return the userID
       return _userFromFirebaseUser(user);
     }catch(e){
       print(e.toString());
@@ -60,6 +69,9 @@ class AuthService {
        return null;
     }
   }
+
+
+  
 
 
 }

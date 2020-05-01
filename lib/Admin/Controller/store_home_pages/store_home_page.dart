@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:volc/Admin/Controller/product/add_product.dart';
+import 'package:volc/Admin/Controller/store_home_pages/appbar_store_page.dart';
 import 'package:volc/Admin/Service/storeDatabase.dart';
 import 'package:volc/SharedModels/product/product.dart';
 import 'package:volc/SharedModels/store/category.dart';
@@ -36,21 +37,10 @@ class _StoreHomePageState extends State<StoreHomePage> {
   Product product ;
   c_width = MediaQuery.of(context).size.width*0.8;
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: Text('Home Store Page'),
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(right:40.0),
-            child: Icon(Icons.message),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right:20.0),
-            child: Icon(Icons.notifications_active),
-          ),
-        ],
-      ),
-      
+      appBar: PreferredSize(
+          preferredSize: Size.fromHeight(55.0), // here the desired height
+          child:Center(),// StorePageAppBar(),
+        ),
       body:Container(
         child: ListView(
           children: <Widget>[
@@ -103,45 +93,45 @@ class _StoreHomePageState extends State<StoreHomePage> {
   }
 }
 
-class CategoryLists extends StatefulWidget {
-  String userID; 
-  CategoryLists(this.userID);
-  @override
-  _CategoryListsState createState() => _CategoryListsState();
-}
+// class CategoryLists extends StatefulWidget {
+//   String userID; 
+//   CategoryLists(this.userID);
+//   @override
+//   _CategoryListsState createState() => _CategoryListsState();
+// }
 
-class _CategoryListsState extends State<CategoryLists> {
+// class _CategoryListsState extends State<CategoryLists> {
 
-  Future getcategories() async {
-    var firestore = Firestore.instance;
-    QuerySnapshot qn = await  firestore.collection('stores').
-    document(widget.userID).collection('categories').getDocuments();//  .collection('products').getDocuments();
-    //print("YY:"+ qn.documents);
-    return qn.documents;
-  }
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Ex'),
+//   Future getcategories() async {
+//     var firestore = Firestore.instance;
+//     QuerySnapshot qn = await  firestore.collection('stores').
+//     document(widget.userID).collection('categories').getDocuments();//  .collection('products').getDocuments();
+//     //print("YY:"+ qn.documents);
+//     return qn.documents;
+//   }
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('Ex'),
 
-      ),
-      body: Container(
-        child: FutureBuilder(
-          future: getcategories(),
-          builder: (_, snapshot){
-            if(snapshot.connectionState == ConnectionState.waiting){
-              return Center( child:Text('Loading...') );
-            }else{
-              return ListView.builder(
-                itemCount: snapshot.data.length,
-                itemBuilder: (_, index){
-                  return  Text(snapshot.data[index].data["name"]);
-              });
-            }
-          },
-        ),
-      ),
-    );
-  }
- }
+//       ),
+//       body: Container(
+//         child: FutureBuilder(
+//           future: getcategories(),
+//           builder: (_, snapshot){
+//             if(snapshot.connectionState == ConnectionState.waiting){
+//               return Center( child:Text('Loading...') );
+//             }else{
+//               return ListView.builder(
+//                 itemCount: snapshot.data.length,
+//                 itemBuilder: (_, index){
+//                   return  Text(snapshot.data[index].data["name"]);
+//               });
+//             }
+//           },
+//         ),
+//       ),
+//     );
+//   }
+//  }

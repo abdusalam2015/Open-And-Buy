@@ -6,6 +6,7 @@ import 'package:volc/SharedWidgets/constant.dart';
 import 'dart:io';
 
 import 'package:volc/SharedWidgets/shared_functions.dart';
+import 'package:volc/User/Controller/home/app_bar.dart';
 import 'package:volc/User/Model/user_detail.dart';
 import 'package:volc/User/Service/user/auth.dart';
 
@@ -117,7 +118,7 @@ class _RegisterYourStoreState extends State<RegisterYourStore> {
                              storeDetail.sid = widget.userDetail.userID;
                              storeDetail.coveredArea = '2Kilo';
                              storeDetail.storeType = 'Normal';
-                             dynamic result  = await _store.updateStoreData(storeDetail,widget.userDetail.userID);
+                             dynamic result  = await _store.updateStoreData(storeDetail);
                               if (result != null){
                                 setState(() {
                                   error = 'Registration Problem!!';
@@ -125,8 +126,9 @@ class _RegisterYourStoreState extends State<RegisterYourStore> {
                                 });
                               }else {
                                 print('GOOOD TO GO');
-                                setState(() => loading = false);
+                              setState(() => loading = false);
                               Navigator.pop(context);
+                              
                                 final result = Navigator.of(context).push(
                                     MaterialPageRoute(
                                       builder: (context) => EditStoreAccount(

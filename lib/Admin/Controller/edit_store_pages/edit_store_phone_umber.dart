@@ -78,7 +78,7 @@ class _EditStorePhoneNumberState extends State<EditStorePhoneNumber> {
                              
                              try{
                               widget.storeDetail.phoneNumber = (newStorePhoneNumber =='' ?widget.storeDetail.location:newStorePhoneNumber);
-                              await StoreDatabaseService().updateStoreData(widget.storeDetail,userDetail.userID);
+                              await StoreDatabaseService().updateStoreData(widget.storeDetail);
                               loading = false;
                               // return TRUE to the previous page to show the SnackBar
                               Navigator.of(context).pop(true);

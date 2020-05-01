@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:volc/Admin/Controller/store_home_pages/store_home_page.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:volc/SharedModels/product/product.dart';
 import 'package:volc/SharedModels/store/category.dart';
 import 'package:volc/SharedModels/store/store.dart';
@@ -8,9 +8,9 @@ import 'package:volc/SharedWidgets/shared_functions.dart';
 class StoreDatabaseService{
  String sid;
 StoreDatabaseService({this.sid});
-  final CollectionReference storeCollection = Firestore.instance.collection('stores');
-Future updateStoreData(StoreDetail storeDetail,String uid) async{
-       return await storeCollection.document(uid).setData({
+final CollectionReference storeCollection = Firestore.instance.collection('stores');
+Future updateStoreData(StoreDetail storeDetail) async{
+        await storeCollection.document(storeDetail.sid).setData({
         'name':  storeDetail.name ,
         'email':  storeDetail.email ,
         'sid':  storeDetail.sid ,
@@ -21,6 +21,8 @@ Future updateStoreData(StoreDetail storeDetail,String uid) async{
        'storeType'  :  storeDetail.storeType ,
        'coveredArea'  :  storeDetail.coveredArea ,
      });
+// register  store token ! 
+  await registerStoreTokens(storeDetail.sid);
   }
 Future addProduct( img, Product product,String sid,Category selectedCategory,StoreDetail storeDetail)async{
     final SharedFunctions sharedfun = new SharedFunctions();
@@ -104,8 +106,6 @@ Future getStoreInfo(String userID) async {
 }
 
 Future getStoreProducts(String storeID,String categoryID ) async {
-  //Product product = new Product(id:'',name: '',imgPath: '', price:'',info: '') ;
-    print(storeID.toString()+'  MMMMMMM' + categoryID);
     try{
     var firestore = Firestore.instance;
   QuerySnapshot qn = await  firestore.collection('stores').
@@ -182,6 +182,26 @@ Future getStoreProducts(String storeID,String categoryID ) async {
    
   //  // return _categoriesList;
   // }
+
+
+  
+  Future registerStoreTokens(String storeID) async{
+    // create a token 
+ final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+ String token='';
+    await _firebaseMessaging.getToken().then((tkn) {
+      token = tkn;
+       print("THe token is here: "+token);
+    });
+
+  final CollectionReference userCollection = Firestore.instance.collection('stores').
+  document(storeID).collection('tokens');
+  await userCollection.document(storeID).setData({
+    'token':  token,
+  });
+ 
+
+  }
 
 }
 

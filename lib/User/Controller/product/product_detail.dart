@@ -9,7 +9,7 @@ ProductDetail({this.imgPath, this.price, this.productName,this.cont});
     return Scaffold(
       appBar: PreferredSize(
                 preferredSize: Size.fromHeight(55.0), // here the desired height
-                child: AppBarWidget(cont),
+                child: Center(),// AppBarWidget(cont),
             ),
       body: ListView(
         children: [

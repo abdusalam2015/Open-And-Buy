@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
+import 'package:volc/Admin/Controller/orders/order.dart';
 import 'package:volc/Admin/Controller/register_store/sign_up_store.dart';
+import 'package:volc/Admin/Controller/store_home_pages/appbar_store_page.dart';
+import 'package:volc/Admin/Service/order_service.dart';
+import 'package:volc/Admin/Service/storeDatabase.dart';
+import 'package:volc/SharedModels/product/product.dart';
+import 'package:volc/SharedModels/store/category.dart';
+import 'package:volc/SharedModels/store/store.dart';
 import 'package:volc/User/Controller/home/cart_page.dart';
 import 'package:volc/User/Model/cart_bloc.dart';
 import 'package:volc/User/Model/setting.dart';
@@ -10,7 +17,8 @@ import 'package:volc/examples/sign_up%20un.dart';
 
 class AppBarWidget extends StatefulWidget {
   final BuildContext cont;
-  AppBarWidget(this.cont);
+  final StoreDetail storeDetail;
+  AppBarWidget(this.cont,this.storeDetail);
   @override
   _AppBarWidgetState createState() => _AppBarWidgetState();
 }
@@ -43,9 +51,10 @@ class _AppBarWidgetState extends State<AppBarWidget> {
                 fontSize: 18.0,
                 color: Colors.white,
               )
-              ),
+        ),
         actions: <Widget>[
-         
+          widget.storeDetail.sid !=''
+          && widget.storeDetail.sid != null ?
             Padding(
             padding: const EdgeInsets.all(10.0),
             child: new Container(
@@ -53,12 +62,18 @@ class _AppBarWidgetState extends State<AppBarWidget> {
                 width: 30.0,
                 child: new GestureDetector(
                   onTap: () {
+                     widget.storeDetail.sid !=''
+                      && widget.storeDetail.sid != null ?
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => CartPage(),
+                        builder: (context) => CartPage(
+                          widget.cont,
+                          widget.storeDetail,
+                          userInfo,
+                        ),
                       ),
-                    );
+                    ): Text('No Store Registered');
                   },
                   child: new Stack(
                     children: <Widget>[
@@ -71,7 +86,7 @@ class _AppBarWidgetState extends State<AppBarWidget> {
                       ),
                       new Positioned(
                           child: new Stack(
-                        children: <Widget>[
+                          children: <Widget>[
                           new Icon(Icons.brightness_1,
                               size: 20.0, color: Colors.red[700]),
                           new Positioned(
@@ -85,13 +100,14 @@ class _AppBarWidgetState extends State<AppBarWidget> {
                                       fontSize: 12.0,
                                       fontWeight: FontWeight.w500),
                                 ),
-                              )),
+                            )
+                         ),
                         ],
                       )),
                     ],
                   ),
                 )),
-          ),
+          ):Container(),
            IconButton(
             icon: Icon(Icons.search, color: Colors.white),
             onPressed: () {},
@@ -113,18 +129,33 @@ class _AppBarWidgetState extends State<AppBarWidget> {
       );
   }
 
-  void actionChoice(String choice){
+  void actionChoice(String choice)async{
     
-    if(choice == 'Register Store'){
-       Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => RegisterYourStore(  userInfo,widget.cont)));
+    if(choice == 'My Store'){
+      StoreDatabaseService obj = new StoreDatabaseService(sid:userInfo.userID);  
+      StoreDetail storeDetail = await obj.getStoreInfo(userInfo.userID); 
+      List<Category> categoriesList = await obj.getcategories(userInfo.userID);
+      List<Product> productsList =  await obj.getStoreProducts(userInfo.userID,(categoriesList.length >0)?categoriesList[0].categoryID:'') ;
+      OrderService orderService = new OrderService();
+      List<Order>orders = await orderService.getAllStoreOrders(widget.storeDetail.sid);
+   
+      Navigator.of(context).push(
+      MaterialPageRoute( builder: (context) => TabBarStorePage(//StoreHomePage(
+        widget.cont,
+        storeDetail,
+        categoriesList,
+        productsList,
+        orders,
+        )
+      ));
     }else if(choice == 'Feedback'){
          Navigator.of(context).push(
           MaterialPageRoute(builder: (context) => SignUp(  
         )));
-    }else if(choice == 'signIn'){
-        // Navigator.of(context).push(
-        //   MaterialPageRoute(builder: (context) => SignIn(  )));
+    }else if(choice == 'Register a Store'){
+         Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => RegisterYourStore(  userInfo,widget.cont)));
+
     }else{
         print('object');
         

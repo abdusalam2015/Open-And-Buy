@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:volc/User/Model/user_detail.dart';
 class DatabaseService{
   final String uid;
@@ -44,4 +45,21 @@ class DatabaseService{
   }
 
  
+  Future registerTokens(String userID) async{
+    // create a token 
+ final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+ String token='';
+    await _firebaseMessaging.getToken().then((tkn) {
+      token = tkn;
+       print("THe token is here: "+token);
+    });
+
+  final CollectionReference userCollection = Firestore.instance.collection('users').
+  document(userID).collection('tokens');
+  await userCollection.document(userID).setData({
+    'token':  token,
+  });
+ 
+
+  }
 }

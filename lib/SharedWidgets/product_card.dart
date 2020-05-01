@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
+import 'package:transparent_image/transparent_image.dart';
 import 'package:volc/SharedModels/product/product.dart';
 import 'package:volc/User/Model/cart_bloc.dart';
 
@@ -66,21 +68,54 @@ BuildContext context,bool isAdmin){
                   ),
                   Hero(
                     tag: product.imgPath + product.name,
-                    child: Container(
-                      height: 90.0,
-                      width: 90.0,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                        image: product.imgPath !='' && product.imgPath != null  ?
-                        // profile pic is updated 
-                        NetworkImage(product.imgPath)
-                        //Image.memory(imageFile)
-                        // profile picture is not updated , so we will go with the default one 
-                        :AssetImage('assets/chocolate/3.png'),
-                        fit: BoxFit.contain
-                        )
+                    child: product.imgPath !='' && product.imgPath != null ? Stack(
+                      children:[
+                      Padding(
+                        padding: const EdgeInsets.only(top:30.0),
+                        child: Center(
+                          child: Container(
+                            height: 40,
+                            width: 40,
+                            child: SpinKitFadingCircle(
+                              color: Colors.red,
+                              size: 30.0,
+                             // controller: AnimationController(  duration: const Duration(milliseconds: 1200)),
+                                )
+                                   // CircularProgressIndicator()
+                          ),
+                        ),
                       ),
-                    ),
+                       Container(
+                        height: 90.0,
+                        width: 90.0,
+                        child: FadeInImage.memoryNetwork(
+                          height: 100,
+                         // fadeOutCurve: Curves.bounceIn,
+                          fadeInDuration: const Duration(seconds:1),
+                          placeholder: kTransparentImage,
+                          image: product.imgPath,
+                        ),
+                      ),
+                      //  Container(
+                      //   height: 90.0,
+                      //   width: 90.0,
+                      //   decoration: BoxDecoration(
+                      //     image: DecorationImage(
+                      //     image: product.imgPath !='' && product.imgPath != null  ?
+                      //     // profile pic is updated 
+                      //     NetworkImage(product.imgPath)
+                      //     //Image.memory(imageFile)
+                      //     // profile picture is not updated , so we will go with the default one 
+                      //     :AssetImage('assets/chocolate/3.png'),
+                      //     fit: BoxFit.contain
+                      //     )
+                      //   ),
+                      // ),
+                      ]
+                    ):Container(
+                      height: 90,width: 90,
+                      child:Center(child: Text('No image!'))
+                      ),
                   ),
                   SizedBox(height: 7.0),
                   Text(
@@ -91,23 +126,25 @@ BuildContext context,bool isAdmin){
                       fontSize: 14.0
                     ),
                   ),
-                   Text(
-                    product.name,
-                    style: TextStyle(
-                      color: Color(0xFF575E67),
-                      fontFamily: 'Varela',
-                      fontSize: 14.0
-                    ),
+                   Container(
+                     height: 50,
+                     width: 100,
+                     child: Text(
+                      product.name,
+                      style: TextStyle(
+                        color: Color(0xFF575E67),
+                        fontFamily: 'Varela',
+                        fontSize: 14.0
+                      ),
                   ),
+                ),
               ],
-            ),
-            ),
-           
+          ),
+      ),      
       Padding(
         padding: EdgeInsets.all(0.0),
         child: Container(color: Color(0xFFEBEBEB),height: 1.0,),
         ),
-        
         InkWell(
           onTap: (){
             // Navigator.of(context).push(
@@ -142,7 +179,6 @@ BuildContext context,bool isAdmin){
         ),  
       );
   }
-
   Widget buttonToEdit(){
     return Center(
       child: Row(
@@ -161,7 +197,7 @@ BuildContext context,bool isAdmin){
       ),
     );
   }
- Widget buttonToAdd(count,product,id,increment,decrement){
+ Widget buttonToAdd(int count,product,id,increment,decrement){
    return   (count != 0 && count != null )?  Container(
                 height: 30,
                 width: 100,
@@ -181,6 +217,7 @@ BuildContext context,bool isAdmin){
                      children: <Widget>[
                        GestureDetector(
                          onTap: () {
+                            product.numberOfItemsForAnOrder = count.toString();
                          decrement(id,product);
                           },
                          child:Icon(Icons.remove_circle_outline, color: Colors.pink[400], size: 24.0),
@@ -197,6 +234,8 @@ BuildContext context,bool isAdmin){
                          GestureDetector(
                          onTap: () {
                        //  Product product2 = new Product(id,product.name,product.ima,price,detail);
+                        product.numberOfItemsForAnOrder = count.toString();
+ // update the number of items
                          increment(id,product);
                       // print('id = $id');
                        },
@@ -208,6 +247,8 @@ BuildContext context,bool isAdmin){
             InkWell(
               onTap: (){
                // Product product = new Product(id,name,imagePath,price,detail);
+              product.numberOfItemsForAnOrder = count.toString();
+                    // update the number of items
                 increment(id,product);
               },
               child: Container(

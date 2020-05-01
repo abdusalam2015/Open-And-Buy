@@ -75,7 +75,7 @@ class _EditStoreNameState extends State<EditStoreName> {
                              
                              try{
                               widget.storeDetail.name = (newStoreName =='' ?widget.storeDetail.name:newStoreName);
-                               await StoreDatabaseService().updateStoreData(widget.storeDetail,userDetail.userID);
+                               await StoreDatabaseService().updateStoreData(widget.storeDetail);
                                 loading = false;
                                 // return TRUE to the previous page to show the SnackBar
                                 Navigator.of(context).pop(true);

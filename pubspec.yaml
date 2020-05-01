@@ -32,6 +32,9 @@ dependencies:
   firebase_storage: ^3.1.5
   image_picker: ^0.6.4
   image_cropper: ^1.2.1
+  transparent_image: ^1.0.0
+  firebase_messaging: ^6.0.13
+  intl: ^0.16.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
