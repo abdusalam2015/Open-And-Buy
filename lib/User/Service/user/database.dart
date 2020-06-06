@@ -6,35 +6,46 @@ class DatabaseService{
   DatabaseService({this.uid});
   // collection refrence 
   final CollectionReference userCollection = Firestore.instance.collection('users');
-  Future updateUserData(String email,String first_name,
-        String last_name, String phone_number,
-        String address,String photoURL) async{
+  Future updateUserData({String email,String firstName,
+        String lastName, String phoneNumber,
+        String address,String photoURL, String latitude, String longitude}) async{
+          //latitude: 12.960632, longitude: 77.641603
       return await userCollection.document(uid).setData({
-        'email': email,
+       'email': email,
        'userID':uid,
-       'first_name': first_name,
-       'last_name': last_name,
-       'phone_number': phone_number,
+       'first_name': firstName,
+       'last_name': lastName,
+       'phone_number': phoneNumber,
        'address': address,
-       'photoURL':photoURL  
+       'photoURL':photoURL,
+       'latitude':latitude,
+      'longitude': longitude,
+
      });
   }
-
+Future updateUserLocation({String lat, String long}) async{
+      return await userCollection.document(uid).setData({
+       'userID':uid,
+       'address': '',
+       'photoURL':'photoURL' ,
+     });
+  }
 
   UserDetail userDetail;
   UserDetail _userDetailFromSnapshot(QuerySnapshot snapshot){
     //UserDetail userDetail;
-      snapshot.documents.map((doc) {
+    snapshot.documents.map((doc) {
       if(uid == doc.data['userID']){
       userDetail =  UserDetail(
        email: doc.data['email'],
         userID: doc.data['userID'],
-        first_name:doc.data['first_name'] ?? '',
-        last_name: doc.data['last_name'] ?? '',
+        firstName:doc.data['first_name'] ?? '',
+        lastName: doc.data['last_name'] ?? '',
         photoURL: doc.data['photoURL'] ?? '',
         address: doc.data['address'] ?? '',
-        phone_number: doc.data['phone_number'] ?? '', 
-      );
+        phoneNumber: doc.data['phone_number'] ?? '',          
+        latitude: doc.data['latitude'] ?? '', 
+        longitude: doc.data['longitude'] ?? '', );
       return userDetail;
       }
     }).toList();
@@ -59,7 +70,5 @@ class DatabaseService{
   await userCollection.document(userID).setData({
     'token':  token,
   });
- 
-
   }
 }

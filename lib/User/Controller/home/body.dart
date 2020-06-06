@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:volc/Admin/Controller/store_home_pages/store_page.dart';
 import 'package:volc/Admin/Service/storeDatabase.dart';
@@ -8,6 +9,7 @@ import 'package:volc/SharedModels/product/product.dart';
 import 'package:volc/SharedModels/store/category.dart';
 import 'package:volc/SharedModels/store/store.dart';
 import 'package:volc/User/Model/user_detail.dart';
+import 'package:volc/location/location.dart';
 
 class Body extends StatefulWidget {
   final BuildContext cont;
@@ -18,34 +20,41 @@ class Body extends StatefulWidget {
 }
 UserDetail userDetail;
 class _BodyState extends State<Body> {
-  @override
+   @override
   Widget build(BuildContext context) {
-     userDetail = Provider.of<UserDetail>(widget.cont);
-    //print('UserDeal in body: $userDetail');
-    return ListView.builder(
+    userDetail = Provider.of<UserDetail>(widget.cont);
+    return  ListView.builder(
       padding: EdgeInsets.all(8),
       itemCount: widget.storesList != null ? widget.storesList.length : 0 ,
       itemBuilder: (context, i){
         return InkWell(
         child: _buildCard(widget.storesList[i], false, context),
         onTap: () async {
+          ProgressDialog dialog = new ProgressDialog(context);
+          dialog.style(
+            message: 'Please wait...'
+          );
+          await dialog.show();
           StoreDatabaseService obj = new StoreDatabaseService(sid: userDetail.userID);   
           List<Category> categoryList;
           List<Product> productsList;
       try{
-        categoryList  =  await obj.getcategories(widget.storesList[i].sid);}catch(e){}
-      try{ productsList=  await obj.getStoreProducts(widget.storesList[i].sid,
-      (categoryList.length > 0 ) ?categoryList[0].categoryID:'') ;}catch(e){}
-        //  print(userDetail.userID+"      dlfkjalaskjfd");
+        categoryList  =  await obj.getcategories(widget.storesList[i].sid);
+        }catch(e){}
+      try{ 
+      productsList =  await obj.getStoreProducts(widget.storesList[i].sid,
+      (categoryList.length > 0 ) ?categoryList[0].categoryID:'') ;
+      }catch(e){}
+      await dialog.hide();
       Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => StorePage( //OrderNotification(
+          MaterialPageRoute(builder: (context) => StorePage(  
             storeDetail:widget.storesList[i],
             cont: widget.cont,
             categoryList:categoryList,
             productsList:productsList,
       )));
       }
-       ); 
+      ); 
        },   
   );
   }
@@ -55,6 +64,7 @@ class _BodyState extends State<Body> {
         // widget.storesList[i].name, widget.storesList[i].email,
         // widget.storesList[i].backgroundImage,
         // widget.storesList[i].coveredArea
+
   return Padding(
   padding: EdgeInsets.all(5),
   child: InkWell(
@@ -95,7 +105,8 @@ class _BodyState extends State<Body> {
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    isFavorite ? Icon(Icons.star_half, color: Colors.yellow): Icon(Icons.star,color: Colors.yellow),
+                    isFavorite ? Icon(Icons.star_half, color: Colors.yellow)
+                               : Icon(Icons.star,color: Colors.yellow),
                         Text(
                           '5.0',
                           style: TextStyle(
@@ -141,7 +152,12 @@ class _BodyState extends State<Body> {
                       color: Colors.white,
                         size: 24.0),
                         Text(
-                        storeDetail.location,
+                    Location.calculateDistance(
+                        double.parse(storeDetail.latitude).toDouble(), double.parse(storeDetail.longitude).toDouble(),
+                        double.parse(userDetail.latitude).toDouble(),  double.parse(userDetail.longitude).toDouble()).toString(),
+                    // storeDetail.longitude,
+                        
+
                         style: TextStyle(
                             fontFamily: 'Varela',
                             color: Colors.white,

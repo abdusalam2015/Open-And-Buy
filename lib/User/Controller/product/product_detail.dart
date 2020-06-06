@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:volc/User/Controller/home/app_bar.dart';
 class ProductDetail extends StatelessWidget {
   final imgPath, price, productName;
   final BuildContext cont;

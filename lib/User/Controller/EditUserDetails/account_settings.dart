@@ -99,11 +99,11 @@ class _AccountSettingsState extends State<AccountSettings> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 Text(
-               userDetail.first_name + userDetail.last_name,
+               userDetail.firstName + userDetail.lastName,
                 style: TextStyle(fontSize: 14,color:Colors.black, ),
                ),
                Text(
-                 userDetail.phone_number,
+                 userDetail.phoneNumber,
                  style: TextStyle(fontSize: 14,color:Colors.black, ),),
                 // Text(
                 //   userDetail.email,

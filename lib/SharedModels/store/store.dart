@@ -9,8 +9,13 @@ class StoreDetail{
   String coveredArea;
   String storeType;
   String phoneNumber;
-StoreDetail(this.sid,this.name,this.email,this.password,
-this.location,this.backgroundImage,this.coveredArea,this.storeType,this.phoneNumber);
+  String storeStatus;
+  String latitude;
+  String longitude;
+
+StoreDetail({this.sid,this.name,this.email,this.password,
+this.location,this.backgroundImage,this.coveredArea,this.storeType,
+this.phoneNumber,this.storeStatus,this.latitude,this.longitude});
 
 
 }

@@ -5,6 +5,8 @@ class UserDetail2{
   final String photoUrl;
   final String email;
   final List<ProviderDetail> providerData;
+  // final String latitude,
+  // final String  longitude,
   UserDetail2(this.providerDetails, this.userName, this.photoUrl, this.email, this.providerData);
 }
 class ProviderDetail{

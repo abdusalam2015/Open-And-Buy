@@ -43,7 +43,7 @@ class _EditPhoneNumberState extends State<EditPhoneNumber> {
                 style: TextStyle(color: Colors.grey, fontSize: 17.0),),
                 SizedBox(height: 10.0,),
                 TextFormField(
-                  initialValue:userDetail.phone_number,
+                  initialValue:userDetail.phoneNumber,
                   decoration: textInputDecoration.copyWith(hintText:'Phone Number'),
                   keyboardType: TextInputType.number,
                     inputFormatters: <TextInputFormatter>[
@@ -73,29 +73,28 @@ class _EditPhoneNumberState extends State<EditPhoneNumber> {
                       ),
                       onPressed: () async{
                       if(_formKey.currentState.validate()){
-                             setState(() {
-                               loading = true;
-                             });
-                             
-                             try{
-                               await DatabaseService(uid: userDetail.userID).updateUserData(
-                                userDetail.email,
-                                userDetail.first_name,
-                                userDetail.last_name,
-                                // make sure if the value is empty, save with the previous value
-                                (newPhoneNumber =='' ? userDetail.phone_number:newPhoneNumber),
-                                userDetail.address, 
-                                userDetail.photoURL);
-                                loading = false;
-                                // return TRUE to the previous page to show the SnackBar
-                                Navigator.of(context).pop(true);
-                             }catch (e){
-                               print(e);
-                               setState(() {
-                                  error = 'Please supply a valid phone Number';
-                                  loading = false;
-                                });
-                             }     
+                          setState((){loading = true;});
+                          try{
+                            await DatabaseService(uid: userDetail.userID).updateUserData(
+                            email:userDetail.email,
+                            firstName:userDetail.firstName,
+                            lastName:userDetail.lastName,
+                            // make sure if the value is empty, save with the previous value
+                            phoneNumber: (newPhoneNumber =='' ? userDetail.phoneNumber:newPhoneNumber),
+                            address:userDetail.address, 
+                            photoURL:userDetail.photoURL,                   
+                            latitude: userDetail.latitude,
+                            longitude:userDetail.longitude,);
+                            loading = false;
+                            // return TRUE to the previous page to show the SnackBar
+                            Navigator.of(context).pop(true);
+                          }catch (e){
+                            print(e);
+                            setState(() {
+                              error = 'Please supply a valid phone Number';
+                              loading = false;
+                            });
+                          }     
                           }       
                         },
                     ),

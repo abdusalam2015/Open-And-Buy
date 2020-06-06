@@ -7,7 +7,6 @@ import 'package:volc/SharedModels/store/store.dart';
 import 'package:volc/User/Controller/orders_pages/order_confirmation.dart';
 import 'package:volc/User/Model/cart_bloc.dart';
 import 'package:volc/User/Model/user_detail.dart';
-import 'package:volc/User/Service/order_service_user_side.dart';
 class CartPage extends StatelessWidget {
   final BuildContext cont;
  final  StoreDetail storeDetail;
@@ -109,13 +108,13 @@ class CartPage extends StatelessWidget {
                    child: Center(child: Text('Check out',style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold),)),
                  ),
                  onTap: (){
-                  String orderName = userDetail.first_name + ' ' + userDetail.last_name;
+                  String orderName = userDetail.firstName + ' ' + userDetail.lastName;
                   Order order = new Order(
                   clientID: userDetail.userID,items: theOrderedProducts,
-                  storeID: storeDetail.sid, totalAmount: 130.4, appFee: 20,
-                  deleveryFee: 50,discount: 0, time: DateTime.now().toString(),
+                  storeID: storeDetail.sid, totalAmount: 130.4, appFee: 20.9,
+                  deleveryFee: 50.8,discount: 0.0, time: DateTime.now().toString(),
                   orderName:orderName,orderImage: userDetail.photoURL,
-                  clientPhoneNumber: userDetail.phone_number,
+                  clientPhoneNumber: userDetail.phoneNumber,
                   storePhoneNumber: storeDetail.phoneNumber ,
                   status: "waiting for response...",
                   storeName: storeDetail.name,
@@ -126,7 +125,7 @@ class CartPage extends StatelessWidget {
                     // register the order in the user side 
                   
                   Navigator.pop(context);
-                    final result = Navigator.of(context).push(
+                     Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => OrderConfirmation(
                             cont:cont,

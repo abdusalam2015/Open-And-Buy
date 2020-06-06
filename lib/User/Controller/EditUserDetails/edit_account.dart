@@ -20,10 +20,10 @@ class _EditAccountState extends State<EditAccount> {
   bool isUploaded = false;
   UserDetail userDetail ;
   File img;
-  double c_width ;
+  //double c_width ;
   @override
   Widget build(BuildContext context) {
-   c_width = MediaQuery.of(context).size.width*0.8;
+ //  c_width = MediaQuery.of(context).size.width*0.8;
   userDetail  = Provider.of<UserDetail>(widget.cont);
     return Scaffold(
       body: Builder(
@@ -42,9 +42,9 @@ class _EditAccountState extends State<EditAccount> {
                 delegate: SliverChildBuilderDelegate(
                   (context, index){
                     if(index == 0)return profilePicture(context);
-                    else if(index == 1)return firstName('First Name', userDetail.first_name,context);
-                    else if(index == 2)return lastName('Last Name',  userDetail.last_name,context);
-                    else if(index == 3)return phoneNumber('Phone Number', userDetail.phone_number,true,context);
+                    else if(index == 1)return firstName('First Name', userDetail.firstName,context);
+                    else if(index == 2)return lastName('Last Name',  userDetail.lastName,context);
+                    else if(index == 3)return phoneNumber('Phone Number', userDetail.phoneNumber,true,context);
                     else if(index == 4)return email('Email', userDetail.email.toString(), false);
                     else return password('Password', '.......');  
                   }, //=>items(index), 

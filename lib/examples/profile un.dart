@@ -22,7 +22,7 @@ Future uploadPic(BuildContext context) async{
       String fileName = basename(_image.path);
       StorageReference firebaseStorageRef = FirebaseStorage.instance.ref().child(fileName);
       StorageUploadTask  uploadTask = firebaseStorageRef.putFile(_image);
-      StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+      await uploadTask.onComplete;
       setState((){
         print('Profile Picture Uploaded');
        // Scaffold.of(context).showSnackBar(SnackBar(content: Text('Profile Picture Uploaded'),));

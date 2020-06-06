@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:volc/SharedModels/store/category.dart';
 import 'package:volc/SharedModels/store/store.dart';
 import 'package:volc/SharedWidgets/product_card.dart';
-import 'package:volc/SharedWidgets/store_card.dart';
 import 'package:volc/User/Controller/authenticate/authenticate.dart';
 import 'package:volc/User/Controller/home/app_bar.dart';
 import 'package:volc/User/Controller/home/drawer.dart';
@@ -33,8 +32,10 @@ class _StorePageState extends State<StorePage> with SingleTickerProviderStateMix
     int totalCount = 0;
     if (bloc.cart.length > 0) {
       totalCount = bloc.cart.values.reduce((a, b) => a + b);
+    }else {
+      totalCount = totalCount;
     }
-    Product product ;
+   // Product product ;
     void _increment(String index,Product product){
       setState((){
         bloc.addToCart(index,product);
@@ -61,13 +62,11 @@ class _StorePageState extends State<StorePage> with SingleTickerProviderStateMix
         /// if not then we need to make it disable. 
         child: AppBarWidget(widget.cont,widget.storeDetail),
       ),
-      body:Container(
-        child: ListView(
-          children: <Widget>[
-          widget.productsList != null && widget.productsList.length > 0 ? productsGridList(_increment,_decrement,widget.productsList,context,false)
-          : Container(height: 600,width: 50,child: Center(child: Text('No Products exist in this Category',style: TextStyle(fontSize: 20,color: Colors.red),)),)
-         ],
-        ),
+      body:ListView(
+        children: <Widget>[
+        widget.productsList != null && widget.productsList.length > 0 ? productsGridList(_increment,_decrement,widget.productsList,context,false)
+        : Container(height: 600,width: 50,child: Center(child: Text('No Products exist in this Category',style: TextStyle(fontSize: 20,color: Colors.red),)),)
+       ],
       ), 
       drawer: DrawerWidget(widget.cont,widget.storeDetail,widget.categoryList),
     )

@@ -10,24 +10,21 @@ import 'package:volc/User/Model/cart_bloc.dart';
 Widget productsGridList(_increment,_decrement,productList,context,isAdmin) {
     //  product = new Product(id:'4', name:'Morabou',
     // imgPath:'assets/chocolate/3.png',price:'\$1.99',info: 'info');
-    return  Container(
+    return productList != null ? Container(
       padding: EdgeInsets.only(right: 10.0),
       width: MediaQuery.of(context).size.width - 30.0,
-      height: MediaQuery.of(context).size.height - 50.0,
+      height:  MediaQuery.of(context).size.height - 250.0,
         child:  GridView.builder(
           itemCount: productList != null ? productList.length : 0,
           gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3,
             childAspectRatio: MediaQuery.of(context).size.width /
               (MediaQuery.of(context).size.height),
-            ),
-          itemBuilder: (BuildContext context, int index){
-            
+          ),
+          itemBuilder: (BuildContext context, int index){ 
             return productCard(productList[index],_increment,_decrement,context,isAdmin);
-
-          }),
-          
-      );
+          }),  
+      ): Center(child:Text('No Products'));
   }
 Widget productCard(Product product, Function increment, Function decrement,
 BuildContext context,bool isAdmin){
@@ -67,7 +64,7 @@ BuildContext context,bool isAdmin){
                     ),
                   ),
                   Hero(
-                    tag: product.imgPath + product.name,
+                    tag: product.imgPath + product.id,
                     child: product.imgPath !='' && product.imgPath != null ? Stack(
                       children:[
                       Padding(

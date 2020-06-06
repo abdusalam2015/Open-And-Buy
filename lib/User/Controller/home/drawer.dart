@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:volc/Admin/Controller/orders/order.dart';
 import 'package:volc/Admin/Controller/store_home_pages/store_page.dart';
+import 'package:volc/Admin/Service/order_service.dart';
 import 'package:volc/Admin/Service/storeDatabase.dart';
 import 'package:volc/SharedModels/product/product.dart';
 import 'package:volc/SharedModels/store/category.dart';
 import 'package:volc/SharedModels/store/store.dart';
 import 'package:volc/User/Controller/EditUserDetails/account_settings.dart';
 import 'package:volc/User/Controller/EditUserDetails/edit_account.dart';
+import 'package:volc/User/Controller/home/home.dart';
+import 'package:volc/User/Controller/orders_pages/my_orders.dart';
 import 'package:volc/User/Model/user.dart';
 import 'package:volc/User/Model/user_detail.dart';
+import 'package:volc/location/find_my_location.dart';
+import 'package:volc/payment/pages/home_payment.dart';
 class DrawerWidget extends StatefulWidget {
   final BuildContext cont;
   final StoreDetail storeDetail;
@@ -18,15 +24,15 @@ class DrawerWidget extends StatefulWidget {
   @override
   _DrawerWidgetState createState() => _DrawerWidgetState();
 }
-
+ String userID;
 class _DrawerWidgetState extends State<DrawerWidget> {
   @override
   Widget build(BuildContext context) {
     // get the all the users details  ==> look at it in the future
-    final userDetail = Provider.of<UserDetail>(context);
+    final userDetail = Provider.of<UserDetail>(widget.cont);
     
     //get the current user details
-    final userID = Provider.of<User>(context).uid;
+     userID = Provider.of<User>(context).uid;
 
     //double c_width = MediaQuery.of(context).size.width*0.8;
     return  Drawer(
@@ -37,8 +43,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                child: Column(
                  mainAxisAlignment: MainAxisAlignment.start,
                  children: <Widget>[
-                 Hero(
-                   tag: userDetail.photoURL.toString(),
+                 Container(
+                  // tag: userDetail.userID,
                    child: Material(
                      color: Colors.transparent,
                      child: InkWell(
@@ -67,7 +73,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                  SizedBox(width: 10),
                    Container(
                      width: 150,
-                     child: Text(userDetail.first_name + ' '+userDetail.last_name ,
+                     child: Text(userDetail.firstName + ' '+userDetail.lastName ,
                      style: TextStyle(color: Colors.white,fontSize: 18),),
                    ),
                  ],
@@ -152,31 +158,61 @@ Widget _categories(){
       children: <Widget>[
         ListTile(
           title: items('Home',Icon(Icons.home)),
-            onTap: () {
-              Navigator.pop(context);//lcose the drawer
-            },
+             onTap: () async{
+              //Navigator.pop(context);//lcose the drawer
+            //  StoreDatabaseService obj = new StoreDatabaseService();
+            //  List<StoreDetail> storesList= await  obj.getAllStores() ;
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => Home(
+                  //  widget.cont,
+                  //  storesList
+                )));
+          },
             
           ),
           ListTile(
           title: items('Your Orders',Icon(Icons.history)),
-            onTap: () {
-              Navigator.pop(context);//lcose the drawer
-            },
+             onTap: ()async{
+          OrderService orderService = new OrderService();
+           List<Order>orders = await orderService.getUserOrders(userID);
+           // print(orders.length.toString() + 'this is the size');
+            Navigator.pop(context);
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => MyOrders(
+                  //widget.cont,
+                  orders
+                )
+              )
+            );        
+          },
             
           ),
           ListTile(
           title: items('Payment',Icon(Icons.payment)),
             onTap: () {
-              //update
-              Navigator.pop(context);//lcose the drawer
+            Navigator.pop(context);
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => HomePayment(
+                  widget.cont,
+                )
+              )
+            ); 
             },
           ),
           ListTile(
           title: items('Favorites',Icon(Icons.favorite)),
             onTap: () {
-              //update
-              Navigator.pop(context);//lcose the drawer
-            },
+            Navigator.pop(context);
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => FindMyLocation(
+                  widget.cont,
+                )
+              )
+            ); 
+            }
           ),
           ListTile(
             title: items('Settings',Icon(Icons.settings)),

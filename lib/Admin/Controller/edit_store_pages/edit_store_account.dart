@@ -1,16 +1,21 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:volc/Admin/Controller/edit_store_pages/edit_store_email.dart';
 import 'package:volc/Admin/Controller/edit_store_pages/edit_store_location.dart';
 import 'package:volc/Admin/Controller/edit_store_pages/edit_store_name.dart';
 import 'package:volc/Admin/Controller/edit_store_pages/edit_store_phone_umber.dart';
+import 'package:volc/Admin/Controller/orders/order.dart';
+import 'package:volc/Admin/Controller/store_home_pages/appbar_store_page.dart';
 import 'package:volc/Admin/Controller/store_home_pages/store_home_page.dart';
+import 'package:volc/Admin/Service/order_service.dart';
 import 'package:volc/Admin/Service/storeDatabase.dart';
 import 'package:volc/SharedModels/product/product.dart';
 import 'package:volc/SharedModels/store/category.dart';
 import 'package:volc/SharedModels/store/store.dart';
+import 'package:volc/SharedWidgets/alert_message.dart';
 import 'package:volc/SharedWidgets/shared_functions.dart';
 import 'package:volc/User/Model/user_detail.dart';
 
@@ -28,11 +33,11 @@ class _EditStoreAccountState extends State<EditStoreAccount> {
   bool isUploaded = false;
   UserDetail userDetail ;
   File img;
-  double c_width;
+  //double c_width;
   @override
   Widget build(BuildContext context){
   userDetail = Provider.of<UserDetail>(widget.cont);
-  c_width = MediaQuery.of(context).size.width*0.8;
+ // c_width = MediaQuery.of(context).size.width*0.8;
     return Scaffold(
       body: Builder(
         builder: (context) => CustomScrollView(
@@ -84,19 +89,54 @@ class _EditStoreAccountState extends State<EditStoreAccount> {
             ],
           ),
             onPressed: () async{
-              StoreDatabaseService obj = new StoreDatabaseService(sid: widget.storeDetail.sid);   
-              List<Category> categoriesList = await obj.getcategories(userDetail.userID);
-               List<Product> productsList =  await obj.getStoreProducts(userDetail.userID,(categoriesList.length >0)?categoriesList[0].categoryID:'') ;
-                  Navigator.pop(context);
-                    final result = Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => StoreHomePage(
-                           widget.cont,
-                            widget.storeDetail,
-                            categoriesList,
-                            productsList
-                          )
-                        )); 
+              ProgressDialog dialog = new ProgressDialog(context);
+              dialog.style(message: 'Please wait...');
+              await dialog.show();
+              try{
+              StoreDatabaseService obj = new StoreDatabaseService(sid:widget.storeDetail.sid);  
+              StoreDetail myStoreDetail = await obj.getStoreInfo(widget.storeDetail.sid); 
+              List<Category> categoriesList =  myStoreDetail != null? await obj.getcategories(widget.storeDetail.sid) :null;
+              List<Product> productsList =  myStoreDetail != null? await obj.getStoreProducts(widget.storeDetail.sid,(categoriesList.length >0)?categoriesList[0].categoryID:'') :null;
+              OrderService orderService = new OrderService();
+              List<Order>orders = myStoreDetail != null? await orderService.getAllStoreOrders(myStoreDetail.sid):null;
+              await dialog.hide();
+              print(myStoreDetail);
+              if(myStoreDetail != null){
+                  print('sign!!');
+
+                Navigator.of(context).push(
+                MaterialPageRoute( builder: (context) => TabBarStorePage(//StoreHomePage(
+                  widget.cont,
+                  myStoreDetail,
+                  categoriesList,
+                  productsList,
+                  orders,
+                  )
+                ));
+              }else {
+                showAlertDialog(widget.cont,'Not Found','No store registered!');
+
+              }    
+              }catch(e){
+              // return null;
+              }
+              
+
+
+
+              // StoreDatabaseService obj = new StoreDatabaseService(sid: widget.storeDetail.sid);   
+              // List<Category> categoriesList = await obj.getcategories(userDetail.userID);
+              //  List<Product> productsList =  await obj.getStoreProducts(userDetail.userID,(categoriesList.length >0)?categoriesList[0].categoryID:'') ;
+              //     Navigator.pop(context);
+              //       Navigator.of(context).push(
+              //           MaterialPageRoute(
+              //             builder: (context) =>TabBarStorePage(// StoreHomePage(
+              //               widget.cont,
+              //               widget.storeDetail,
+              //               categoriesList,
+              //               productsList
+              //             )
+              //           )); 
               // make sure that if it is already updated or not
                 // result != null ? Scaffold.of(context).showSnackBar(SnackBar(
                 // content: Text('Saved!', style: TextStyle(color: Colors.white),),

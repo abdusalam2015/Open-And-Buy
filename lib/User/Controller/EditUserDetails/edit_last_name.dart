@@ -42,7 +42,7 @@ class _EditLastNameState extends State<EditLastName> {
                 style: TextStyle(color: Colors.grey, fontSize: 17.0),),
                 SizedBox(height: 10.0,),
                 TextFormField(
-                  initialValue:userDetail.last_name,
+                  initialValue:userDetail.lastName,
                   decoration: textInputDecoration.copyWith(hintText:'Last Name'),
                   // countrol the max chars in the first name 
                   maxLength: 15,
@@ -74,13 +74,16 @@ class _EditLastNameState extends State<EditLastName> {
                              
                              try{
                                await DatabaseService(uid: userDetail.userID).updateUserData(
-                                userDetail.email,
+                                email:userDetail.email,
                                 // make sure if the value is empty, save with the previous value
-                                userDetail.first_name,
-                                (newLastName =='' ? userDetail.last_name:newLastName),
-                                userDetail.phone_number,
-                                userDetail.address, 
-                                userDetail.photoURL);
+                                firstName:userDetail.firstName,
+                                lastName:(newLastName =='' ? userDetail.lastName:newLastName),
+                               phoneNumber: userDetail.phoneNumber,
+                                address:userDetail.address, 
+                                photoURL:userDetail.photoURL,                 
+                                latitude: userDetail.latitude,
+                                longitude:userDetail.longitude,
+                                );
                                 loading = false;
                                 // return TRUE to the previous page to show the SnackBar
                                 Navigator.of(context).pop(true);

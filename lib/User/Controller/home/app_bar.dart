@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:volc/Admin/Controller/orders/order.dart';
 import 'package:volc/Admin/Controller/register_store/sign_up_store.dart';
@@ -9,12 +10,11 @@ import 'package:volc/Admin/Service/storeDatabase.dart';
 import 'package:volc/SharedModels/product/product.dart';
 import 'package:volc/SharedModels/store/category.dart';
 import 'package:volc/SharedModels/store/store.dart';
+import 'package:volc/SharedWidgets/alert_message.dart';
 import 'package:volc/User/Controller/home/cart_page.dart';
 import 'package:volc/User/Model/cart_bloc.dart';
 import 'package:volc/User/Model/setting.dart';
 import 'package:volc/User/Model/user_detail.dart';
-import 'package:volc/examples/sign_up%20un.dart';
-
 class AppBarWidget extends StatefulWidget {
   final BuildContext cont;
   final StoreDetail storeDetail;
@@ -132,29 +132,47 @@ class _AppBarWidgetState extends State<AppBarWidget> {
   void actionChoice(String choice)async{
     
     if(choice == 'My Store'){
+      ProgressDialog dialog = new ProgressDialog(context);
+      dialog.style(message: 'Please wait...');
+      await dialog.show();
+      try{
       StoreDatabaseService obj = new StoreDatabaseService(sid:userInfo.userID);  
-      StoreDetail storeDetail = await obj.getStoreInfo(userInfo.userID); 
-      List<Category> categoriesList = await obj.getcategories(userInfo.userID);
-      List<Product> productsList =  await obj.getStoreProducts(userInfo.userID,(categoriesList.length >0)?categoriesList[0].categoryID:'') ;
+      StoreDetail myStoreDetail = await obj.getStoreInfo(userInfo.userID); 
+      List<Category> categoriesList =  myStoreDetail != null? await obj.getcategories(userInfo.userID) :null;
+      List<Product> productsList =  myStoreDetail != null? await obj.getStoreProducts(userInfo.userID,(categoriesList.length >0)?categoriesList[0].categoryID:'') :null;
       OrderService orderService = new OrderService();
-      List<Order>orders = await orderService.getAllStoreOrders(widget.storeDetail.sid);
-   
-      Navigator.of(context).push(
-      MaterialPageRoute( builder: (context) => TabBarStorePage(//StoreHomePage(
-        widget.cont,
-        storeDetail,
-        categoriesList,
-        productsList,
-        orders,
-        )
-      ));
+      List<Order>orders = myStoreDetail != null? await orderService.getAllStoreOrders(myStoreDetail.sid):null;
+      await dialog.hide();
+      print(myStoreDetail);
+      if(myStoreDetail != null){
+          print('sign!!');
+
+        Navigator.of(context).push(
+        MaterialPageRoute( builder: (context) => TabBarStorePage(//StoreHomePage(
+          widget.cont,
+          myStoreDetail,
+          categoriesList,
+          productsList,
+          orders,
+          )
+        ));
+      }else {
+        showAlertDialog(widget.cont,'Not Found','No store registered!');
+
+      }    
+      }catch(e){
+       // return null;
+      }
+      
     }else if(choice == 'Feedback'){
-         Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => SignUp(  
-        )));
+      
+        //  Navigator.of(context).push(
+        //   MaterialPageRoute(builder: (context) => SignUp(  
+        // )));
+
     }else if(choice == 'Register a Store'){
-         Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => RegisterYourStore(  userInfo,widget.cont)));
+        Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => RegisterYourStore(  userInfo,widget.cont)));
 
     }else{
         print('object');

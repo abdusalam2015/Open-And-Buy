@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:volc/Admin/Controller/edit_store_pages/edit_store_account.dart';
 import 'package:volc/Admin/Service/storeDatabase.dart';
 import 'package:volc/SharedModels/store/store.dart';
@@ -6,9 +7,7 @@ import 'package:volc/SharedWidgets/constant.dart';
 import 'dart:io';
 
 import 'package:volc/SharedWidgets/shared_functions.dart';
-import 'package:volc/User/Controller/home/app_bar.dart';
 import 'package:volc/User/Model/user_detail.dart';
-import 'package:volc/User/Service/user/auth.dart';
 
 class RegisterYourStore extends StatefulWidget {
   final UserDetail userDetail;
@@ -19,11 +18,13 @@ class RegisterYourStore extends StatefulWidget {
 }
 
 class _RegisterYourStoreState extends State<RegisterYourStore> {
-  final AuthService _auth = new AuthService();
+ // final AuthService _auth = new AuthService();
   final StoreDatabaseService _store = new StoreDatabaseService();
   final _formKey2 = GlobalKey<FormState>();
   bool loading = false;
-  StoreDetail storeDetail = new StoreDetail('','','','','','','','','',) ;
+  StoreDetail storeDetail = new StoreDetail(sid:'',email:'',name:'',location:'',
+  backgroundImage:'',coveredArea:'',storeType:'',phoneNumber:'',
+  storeStatus:'',latitude:'',longitude:'') ;
   String email;
   String password;
   String error = '';
@@ -115,9 +116,22 @@ class _RegisterYourStoreState extends State<RegisterYourStore> {
                          // print("dkfasjl");
                            if(_formKey2.currentState.validate()){//_formKey2.currentState.validate()
                              setState(() => loading = true);
-                             storeDetail.sid = widget.userDetail.userID;
-                             storeDetail.coveredArea = '2Kilo';
-                             storeDetail.storeType = 'Normal';
+                              
+                            //   StoreDetail storeDetail = new StoreDetail( sid: '','','','','','','','','',) ;
+                              LocationResult storeLocation = await showLocationPicker(
+                                widget.cont,
+                                'AIzaSyBwq6jURpuskUG8UoYj7IOJf_B3o0oRims',
+                                automaticallyAnimateToCurrentLocation: true,
+                                //initialCenter: LatLng(31.1975844, 29.9598339)
+                                myLocationButtonEnabled: true,
+                                layersButtonEnabled: true, );
+                                storeDetail.sid = widget.userDetail.userID;
+                                storeDetail.coveredArea = '';
+                                storeDetail.storeType = '';
+                                storeDetail.email = widget.userDetail.email;
+                                storeDetail.latitude = storeLocation.latLng.latitude.toString();
+                                storeDetail.longitude = storeLocation.latLng.longitude.toString();
+                                storeDetail.location = storeLocation.address.toString();
                              dynamic result  = await _store.updateStoreData(storeDetail);
                               if (result != null){
                                 setState(() {

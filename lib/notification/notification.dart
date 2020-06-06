@@ -17,7 +17,6 @@ class _OrderNotificationState extends State<OrderNotification> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getMessage();
   }

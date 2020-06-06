@@ -134,6 +134,7 @@ Future getAllStoreOrders(String storeID) async{
     time:doc.data['timestamp'].toString(),
     orderName: doc.data['OrderName'],
     orderImage: doc.data['OrderImage'],
+    storeName: doc.data['storeName'],
     clientPhoneNumber:doc.data['clientPhoneNumber'],
     storePhoneNumber:doc.data['storePhoneNumber'] );
     }).toList();
@@ -142,8 +143,72 @@ Future getAllStoreOrders(String storeID) async{
     return myOrders;
     }catch(e){
       print(e.toString()+ 'Iam inside getAllStoreOrders function');
-      return ;
+      return null;
     }
 
   }
+Future getUserOrders(String userID) async{
+
+   try{
+    var firestore = Firestore.instance;
+    QuerySnapshot qn = await  firestore.collection('users').
+    document(userID).collection('Orders').getDocuments();
+    var myOrders = qn.documents.map((doc) {
+    List<Product> items ;//await getTheOrderItems(doc.data['storeID'],doc.data['orderID']);  
+    DateTime now = DateTime.now();
+    String formattedTime = DateFormat.jm().format(now);
+    print(formattedTime);
+    return Order(
+    orderID: doc.data['orderID'], //storeCollection.documentID,
+    clientID: doc.data['clientID'],
+    items:items ,  
+    storeID: doc.data['storeID'] ,
+    totalAmount: doc.data['totalAmount'],
+    appFee: doc.data['appFee'],
+    deleveryFee: doc.data['deleveryFee'],
+    discount: doc.data['discount'],
+    time:doc.data['timestamp'].toString(),
+    orderName: doc.data['OrderName'],
+    orderImage: doc.data['OrderImage'],
+    clientPhoneNumber:doc.data['clientPhoneNumber'],
+    storeName: doc.data['storeName'],
+    storePhoneNumber:doc.data['storePhoneNumber'] );
+    
+    }).toList();
+   //return myOrders;
+    myOrders= await getItemsToAllOrders(myOrders); 
+    return myOrders;
+    }catch(e){
+      print(e.toString()+ 'Iam inside getUserOrders function');
+      return null ;
+    }
+
+  }
+  Future getItemsToAllOrders(List<Order> myOrders)async{
+   //String storeID, String orderID
+  try{
+    for(int i = 0 ; i <myOrders.length;i++ ){
+    var firestore = Firestore.instance;
+     String userID = myOrders[i].clientID;
+     String orderID = myOrders[i].orderID;
+    QuerySnapshot qn = await  firestore.collection('users').
+    document(userID).collection('Orders').document(orderID).collection('products').getDocuments();
+      myOrders[i].items =  qn.documents.map((doc){
+        return Product(
+        name:  doc.data['name'],
+        price: doc.data['price'],
+        info:  doc.data['ProductInfo'],
+        id:  doc.data['productID'],
+       imgPath:  doc.data['image'],
+       numberOfItemsForAnOrder :doc.data['NumberOfItems'],);
+      }).toList();
+      return myOrders;
+    }
+    }catch(e){
+      print(e.toString()+ 'Iam inside getItemsToAllOrders function');
+      return ;
+    }
+  }
+
+  
 }

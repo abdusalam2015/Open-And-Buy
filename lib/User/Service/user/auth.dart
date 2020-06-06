@@ -1,6 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:volc/User/Model/user.dart';
 import 'package:volc/User/Service/user/database.dart';
 
@@ -46,13 +45,24 @@ class AuthService {
     }
   }
   // register with email and password
-  Future registerWithEmailAndPassword(String email, String password)async{
+  Future registerWithEmailAndPassword(String email, String password, LocationResult myLocation)async{
     try{
       AuthResult result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       FirebaseUser user = result.user;
+
+      // Get the location/address
+        
+        String latitude = myLocation.latLng.latitude.toString();
+        String longitude = myLocation.latLng.longitude.toString();
+        String address = myLocation.address;
+        
+        
       // Create a new document for the user with the uid 
-      await DatabaseService (uid: user.uid).updateUserData(email,'', '',
-       '', '', '');
+      await DatabaseService (uid: user.uid).updateUserData(
+        email:email,firstName:'',lastName: '',
+       phoneNumber:'', address:address, photoURL:'', 
+       latitude:latitude,longitude:longitude,
+       );
       return _userFromFirebaseUser(user);
     }catch(e){
       print(e.toString());

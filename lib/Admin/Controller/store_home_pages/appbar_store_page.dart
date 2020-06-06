@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:volc/Admin/Controller/orders/order.dart';
 import 'package:volc/Admin/Controller/orders/order_page.dart';
 import 'package:volc/Admin/Controller/product/add_product.dart';
-import 'package:volc/Admin/Service/order_service.dart';
 import 'package:volc/Admin/Service/storeDatabase.dart';
 import 'package:volc/SharedModels/product/product.dart';
 import 'package:volc/SharedModels/store/category.dart';
@@ -48,14 +47,12 @@ class _TabBarStorePageState extends State<TabBarStorePage> {
           body: TabBarView(
             children: [
               ////////////////////////////
-              Container(
-                child: ListView(
-                  children: <Widget>[
-                 // storeCard(widget.storeDetail),
-                  button(),
-                  productsGridList(null,null,widget.productsList,context,true),
-                ],
-                ),
+              ListView(
+                children: <Widget>[
+               // storeCard(widget.storeDetail),
+                button(),
+                productsGridList(null,null,widget.productsList,context,true),
+              ],
               ),
               ///////////////////////////
               messagesList(),
@@ -70,7 +67,7 @@ class _TabBarStorePageState extends State<TabBarStorePage> {
     );
   }
   Widget notification(){
-    return GestureDetector(
+    return  GestureDetector(
           // onTap: () {
           //   Navigator.push(
           //     context,
@@ -175,7 +172,7 @@ class _TabBarStorePageState extends State<TabBarStorePage> {
               StoreDatabaseService obj = new StoreDatabaseService(sid: widget.storeDetail.sid);   
               List<Category> categoriesList = await obj.getcategories(userDetail.userID);
                   Navigator.pop(context);
-                    final result = Navigator.of(context).push(
+                   Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => AddProduct(
                             widget.cont,
@@ -194,7 +191,7 @@ class _TabBarStorePageState extends State<TabBarStorePage> {
     );
   }
 Widget ordersList(){
-   return ListView.builder(
+   return widget.orders != null ? ListView.builder(
         itemCount: widget.orders!=null?widget.orders.length:0,
         itemBuilder: (context,i){
           String img = widget.orders[i].orderImage;
@@ -203,7 +200,7 @@ Widget ordersList(){
           selected: false,
           onTap: (){
            // Navigator.pop(context);
-            final result = Navigator.of(context).push(
+            Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => OrderPage(
                     order:widget.orders[i],
@@ -228,7 +225,7 @@ Widget ordersList(){
           ),
           );
         },
-      );
+      ): Text('No orders!');
 }
 Widget messagesList(){
   return ListView.builder(

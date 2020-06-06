@@ -4,9 +4,9 @@ import 'package:volc/SharedModels/store/store.dart';
 import 'package:volc/User/Model/user_detail.dart';
 
  class ProductsTapBar extends StatefulWidget{
-   UserDetail userDetail;
-   StoreDetail storeDetail;
-   List<Category> categoriesList;
+   final UserDetail userDetail;
+   final StoreDetail storeDetail;
+   final List<Category> categoriesList;
    ProductsTapBar(this.userDetail,this.storeDetail,this.categoriesList);
   @override
   _ProductsTapBarState createState() => _ProductsTapBarState();
@@ -58,9 +58,6 @@ class _ProductsTapBarState extends State<ProductsTapBar> with SingleTickerProvid
         ],
       );
 
-
-
-              ;
   }
   Widget categoryText(String text, double fsize){
     return Text(

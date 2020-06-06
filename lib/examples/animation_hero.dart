@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:volc/SharedWidgets/loading.dart';
-import 'package:volc/User/Service/user/auth.dart';
 
 class PhotoHero extends StatelessWidget {
   const PhotoHero({ Key key, this.photo, this.onTap, this.width }) : super(key: key);
@@ -31,7 +30,7 @@ class PhotoHero extends StatelessWidget {
 
 class HeroAnimation extends StatelessWidget {
   Widget build(BuildContext context) {
-    var timeDilation = 10.0; // 1.0 means normal animation speed.
+   // var timeDilation = 10.0; // 1.0 means normal animation speed.
 
     return Scaffold(
       appBar: AppBar(
@@ -102,7 +101,7 @@ class EditAccount extends StatefulWidget {
 }
 
 class _EditAccountState extends State<EditAccount> {
-  final AuthService _auth = new AuthService();
+  //final AuthService _auth = new AuthService();
   bool loading = false;
   @override
   Widget build(BuildContext context) {
@@ -131,12 +130,6 @@ class _EditAccountState extends State<EditAccount> {
     );
   }
   Widget items(index){
-      //  print('Index: $index');
-      //  if(index == 0)return item1();//ProfilePage();
-      //  else if(index == 1)return item2();
-      //  else if(index == 2)return item3();
-      //  else if(index == 3)return item4();
-      //  else if(index == 4)return item5();
-      //  else return signOut();
+      return Container();
      }
 }

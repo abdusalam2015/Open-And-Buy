@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:volc/SharedWidgets/constant.dart';
 import 'package:volc/SharedWidgets/loading.dart';
 import 'package:volc/User/Service/user/auth.dart';
@@ -62,6 +63,7 @@ class _RegisterState extends State<Register> {
                     password = val;
                   });
                 } ),
+
               SizedBox(height: 20.0,),
               RaisedButton(
                 color:Colors.pink[400],
@@ -74,7 +76,15 @@ class _RegisterState extends State<Register> {
                        setState(() {
                          loading = true;
                        });
-                       dynamic result  = await _auth.registerWithEmailAndPassword(email, password);
+                       LocationResult mylocation = await showLocationPicker(
+                      context,
+                      'AIzaSyBwq6jURpuskUG8UoYj7IOJf_B3o0oRims',
+                      automaticallyAnimateToCurrentLocation: true,
+                       //initialCenter: LatLng(31.1975844, 29.9598339)
+                      myLocationButtonEnabled: true,
+                      layersButtonEnabled: true, );
+
+                       dynamic result  = await _auth.registerWithEmailAndPassword(email, password, mylocation);
                         if (result == null){
                           setState(() {
                             error = 'Please supply a valid email';

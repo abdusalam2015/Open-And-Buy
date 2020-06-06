@@ -7,7 +7,7 @@ import 'package:volc/User/Model/user_detail.dart';
 class CategoriesList extends StatefulWidget {
   final UserDetail userDetail;
   final StoreDetail storeDetail;
-   List<Category> categoriesList;
+  final List<Category> categoriesList;
   CategoriesList(this.storeDetail,this.userDetail,this.categoriesList);
   
   @override

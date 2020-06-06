@@ -1,9 +1,7 @@
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:volc/Admin/Controller/product/add_product.dart';
-import 'package:volc/Admin/Controller/store_home_pages/appbar_store_page.dart';
 import 'package:volc/Admin/Service/storeDatabase.dart';
 import 'package:volc/SharedModels/product/product.dart';
 import 'package:volc/SharedModels/store/category.dart';
@@ -11,7 +9,6 @@ import 'package:volc/SharedModels/store/store.dart';
 import 'package:volc/SharedWidgets/product_card.dart';
 import 'package:volc/SharedWidgets/shared_functions.dart';
 import 'package:volc/User/Model/user_detail.dart';
-import 'package:volc/SharedWidgets/store_card.dart';
 
 
 class StoreHomePage extends StatefulWidget {
@@ -30,12 +27,12 @@ class _StoreHomePageState extends State<StoreHomePage> {
   bool isUploaded = false;
   UserDetail userDetail ;
   File img;
-  double c_width;
+  //double c_width;
   @override
   Widget build(BuildContext context){
   userDetail = Provider.of<UserDetail>(widget.cont);
-  Product product ;
-  c_width = MediaQuery.of(context).size.width*0.8;
+ // Product product ;
+ // c_width = MediaQuery.of(context).size.width*0.8;
     return Scaffold(
       appBar: PreferredSize(
           preferredSize: Size.fromHeight(55.0), // here the desired height
@@ -44,8 +41,8 @@ class _StoreHomePageState extends State<StoreHomePage> {
       body:Container(
         child: ListView(
           children: <Widget>[
-          storeCard(widget.storeDetail),
-          button(),
+        //  storeCard(widget.storeDetail),
+      //    button(),
           productsGridList(null,null,widget.productsList,context,true),
         ],),
       ),
@@ -73,7 +70,7 @@ class _StoreHomePageState extends State<StoreHomePage> {
               StoreDatabaseService obj = new StoreDatabaseService(sid: widget.storeDetail.sid);   
               List<Category> categoriesList = await obj.getcategories(userDetail.userID);
                   Navigator.pop(context);
-                    final result = Navigator.of(context).push(
+                    Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => AddProduct(
                             widget.cont,

@@ -8,13 +8,13 @@ import 'package:volc/Admin/Service/storeDatabase.dart';
 import 'package:volc/SharedModels/product/product.dart';
 import 'package:volc/SharedModels/store/category.dart';
 import 'package:volc/SharedModels/store/store.dart';
+import 'package:volc/SharedWidgets/alert_message.dart';
 import 'package:volc/SharedWidgets/constant.dart';
 import 'package:volc/SharedWidgets/shared_functions.dart';
 import 'package:volc/User/Model/user_detail.dart';
-import 'package:volc/User/Service/user/auth.dart';
 
 class AddProduct extends StatefulWidget {
-  final List<Category> categoriesList;
+   List<Category> categoriesList;
   final BuildContext cont;
   final StoreDetail storeDetail;
   final List<Product> productsList;
@@ -41,7 +41,7 @@ class _AddProductState extends State<AddProduct> {
   void initState() {
     _dropdownMenuItems = buildDropdownMenuItems(widget.categoriesList);
     _selectedCategory = _dropdownMenuItems.length != 0 ?  _dropdownMenuItems[0].value 
-    : Category(categoryID: '',name: 'No Categories!!',productNumbers: '3' );
+    : Category(categoryID: '',name: 'No Categories!!',productNumbers: '0' );
     super.initState();
   }
 
@@ -49,9 +49,9 @@ class _AddProductState extends State<AddProduct> {
   bool loading = false;
   UserDetail userDetail ;
   File img;
-  double c_width;
+ // double c_width;
   String error='';
-  final AuthService _auth = new AuthService();
+  //final AuthService _auth = new AuthService();
   final StoreDatabaseService _store = new StoreDatabaseService();
   final _formKey2 = GlobalKey<FormState>();
   //StoreDetail storeDetail = new StoreDetail('','','','','','','','','',) ;
@@ -60,7 +60,7 @@ class _AddProductState extends State<AddProduct> {
   @override
   Widget build(BuildContext context){
   userDetail = Provider.of<UserDetail>(widget.cont);
-  c_width = MediaQuery.of(context).size.width*0.8;
+  //c_width = MediaQuery.of(context).size.width*0.8;
     return Scaffold(
       appBar: AppBar(
         title: Text('Shopping Now',style: TextStyle(color: Colors.white),),
@@ -90,13 +90,13 @@ class _AddProductState extends State<AddProduct> {
                   Text('Select A Category',style: TextStyle(fontSize: 20.0),),
                   FlatButton(
                     child: Text('Add A Category',style: TextStyle(fontSize: 14.0,color: Colors.blue)),
-                    onPressed: (){
+                    onPressed: () async {
+                      
+                      
                       createAlertDialog(context).then((onValue){
-                        if(onValue != '' && onValue != null){
+                        if(onValue != '' && onValue != null) {
                           SnackBar mySnackBar = SnackBar(content: Text('$onValue Added Scuccessfully!'),backgroundColor: Colors.green,);
-                          Scaffold.of(context).showSnackBar(mySnackBar);
-                        }
-                      });
+                          Scaffold.of(context).showSnackBar(mySnackBar); }});
                     },
                   ),
                 ],
@@ -121,7 +121,7 @@ class _AddProductState extends State<AddProduct> {
                 color: Colors.grey[200],
                 width: 400,
                 height: 60,
-                child: Center(child: Text(_selectedCategory.name,style: TextStyle(color: Colors.green,fontSize: 25,fontWeight: FontWeight.bold),))
+                child: Center(child: Text(_selectedCategory.name.toString(),style: TextStyle(color: Colors.green,fontSize: 25,fontWeight: FontWeight.bold),))
               )
             ) 
           ],
@@ -169,13 +169,21 @@ class _AddProductState extends State<AddProduct> {
                 elevation: 0.0,
                 color: Colors.blue,
                 child: Text('Submit'),
-                onPressed: (){
+                onPressed: ()async{
                   Category category = new Category(categoryID: '',name: '',productNumbers: '');
                   category.name = _mycontroller.text.toString();
                   dynamic result;
                   result =  StoreDatabaseService().addCategory(widget.storeDetail, category, userDetail.userID);
-                  result != null ? Navigator.of(context).pop(_mycontroller.text.toString())
-                  :Navigator.of(context).pop('');
+
+                  if(result != null)  { 
+                    // StoreDatabaseService obj = new StoreDatabaseService(sid: widget.storeDetail.sid);   
+                    //   widget.categoriesList = await obj.getcategories(userDetail.userID);
+                    //   setState(() {
+                    //     widget.categoriesList = widget.categoriesList;
+                    //   });
+                    Navigator.of(context).pop(_mycontroller.text.toString());
+                  }else {
+                    Navigator.of(context).pop('');}
                 },
               ), 
             
@@ -243,30 +251,26 @@ class _AddProductState extends State<AddProduct> {
                           style: TextStyle(color: Colors.white),
                           ),
                           onPressed: () async{
-                             if(_formKey2.currentState.validate()){//_formKey2.currentState.validate()
-                               product.imgPath = img.toString();
-                               print(product.imgPath + "  IMagePatheProduct");
-                               dynamic result  =
-                               await _store.addProduct(img,product,userDetail.userID,_selectedCategory,widget.storeDetail);
-                               //////////////////////////////
-                                                          
+                             if(_formKey2.currentState.validate()){
+                                product.imgPath = img.toString(); 
+                               dynamic result = null ;
+                               if(_selectedCategory.categoryID != '' ){ 
+                                 result  = await _store.addProduct(img,product,userDetail.userID,_selectedCategory,widget.storeDetail);
+                                 result = 'added';
+                               }else {
+                                error = 'No categoy selected!';
+                                print('sss');
+                                showAlertDialog(widget.cont,'No Category','Please select/add a category!');
+                               }                      
                                 if(img == null){
                                   setState(() =>loading = false);
-                                // print('jksldf');
                                 }else {
-                                 print(product.name+'  Po name');
-                               //  await sharedfun.uploadProductImage( img, _selectedCategory,  product, widget.storeDetail);
                                   setState(() =>loading = true);
-                                // await sharedfun.uploadStorePic(_image, userDetail.userID, widget.storeDetail);
                                   isUploaded = true;
                                   loading = false;
-                                  // Scaffold.of(cont).showSnackBar(SnackBar(
-                                  // content: Text('Photo Updated', style: TextStyle(color: Colors.white),),
-                                  // backgroundColor: Colors.green));
                                   setState(() => loading = false);
                                 } 
-                                
-                                if (result != null){
+                                if (result == null){
                                   setState(() {
                                     error = 'Error!!';
                                     loading = false;
@@ -284,9 +288,9 @@ class _AddProductState extends State<AddProduct> {
                                 //       )
                                 // ); 
                                 // make sure that if it is already updated or not
-                                  // result != null ? Scaffold.of(context).showSnackBar(SnackBar(
-                                  // content: Text('Last Name Updated', style: TextStyle(color: Colors.white),),
-                                  // backgroundColor: Colors.green)):Container();
+                                //   result != null ? Scaffold.of(context).showSnackBar(SnackBar(
+                                //   content: Text('Last Name Updated', style: TextStyle(color: Colors.white),),
+                                //   backgroundColor: Colors.green)):Container();
 
                                 }
                                }
@@ -318,7 +322,7 @@ class _AddProductState extends State<AddProduct> {
           ),
             onPressed: () async{
                   Navigator.pop(context);
-                    final result = Navigator.of(context).push(
+                     Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => StoreHomePage(
                            widget.cont,

@@ -10,17 +10,21 @@ class StoreDatabaseService{
 StoreDatabaseService({this.sid});
 final CollectionReference storeCollection = Firestore.instance.collection('stores');
 Future updateStoreData(StoreDetail storeDetail) async{
-        await storeCollection.document(storeDetail.sid).setData({
-        'name':  storeDetail.name ,
-        'email':  storeDetail.email ,
-        'sid':  storeDetail.sid ,
-       'phoneNumber':  storeDetail.phoneNumber,
-       'location':  storeDetail.location,
-       'backgroundImage':  storeDetail.backgroundImage,
-       'password':  storeDetail.password ,
-       'storeType'  :  storeDetail.storeType ,
-       'coveredArea'  :  storeDetail.coveredArea ,
-     });
+    print("Here is the email: "+storeDetail.email);
+      await storeCollection.document(storeDetail.sid).setData({
+      'name':  storeDetail.name ,
+      'email':  storeDetail.email ,
+      'sid':  storeDetail.sid ,
+      'phoneNumber':  storeDetail.phoneNumber,
+      'location':  storeDetail.location,
+      'backgroundImage':  storeDetail.backgroundImage,
+      'password':  storeDetail.password ,
+      'storeType'  :  storeDetail.storeType ,
+      'coveredArea'  :  storeDetail.coveredArea ,
+      'storeStatus'  :  storeDetail.storeStatus ,
+      'latitude'  :  storeDetail.latitude ,
+      'longitude'  :  storeDetail.longitude ,
+    });
 // register  store token ! 
   await registerStoreTokens(storeDetail.sid);
   }
@@ -36,15 +40,19 @@ document(sid).collection('categories').document(selectedCategory.categoryID).col
         'productID':  addProductCollection.documentID,
        'image':  product.imgPath,
      });
-     print(')))'+ product.name);
+     //print(')))'+ product.name);
 
 }
 
 
 StoreDetail initStore(StoreDetail storeDetail) => StoreDetail(
-  storeDetail.sid??'',storeDetail.name??'',storeDetail.email??''
-  ,storeDetail.password??'',storeDetail.location??'',storeDetail.backgroundImage??'',
-  storeDetail.coveredArea??'',storeDetail.storeType??'',storeDetail.phoneNumber??'');
+  sid:storeDetail.sid??'',name:storeDetail.name??'',email:storeDetail.email??''
+  ,password:storeDetail.password??'',location:storeDetail.location??'',
+  backgroundImage:storeDetail.backgroundImage??'',
+  coveredArea:storeDetail.coveredArea??'',storeType:storeDetail.storeType??'',
+  phoneNumber:storeDetail.phoneNumber??'',storeStatus: storeDetail.storeStatus??'',
+  latitude: storeDetail.latitude??'',longitude: storeDetail.longitude??''
+  );
 
 
   // add new category
@@ -67,8 +75,11 @@ Future<List<StoreDetail>> getAllStores() async {
   try{
    QuerySnapshot qn =  await  Firestore.instance.collection('stores').getDocuments();
    return  qn.documents.map((doc){
-      return StoreDetail(doc.data['sid'],doc.data['name'],doc.data['email'],doc.data['password'],doc.data['location'],
-      doc.data['backgroundImage'],doc.data['coveredArea'],doc.data['storeType'],doc.data['phoneNumber']
+      return StoreDetail(sid: doc.data['sid'],name:doc.data['name'],
+      email:doc.data['email'],password:doc.data['password'],location:doc.data['location'],
+      backgroundImage:doc.data['backgroundImage'],coveredArea:doc.data['coveredArea'],storeType:doc.data['storeType'],
+      phoneNumber:doc.data['phoneNumber'],storeStatus: doc.data['storeStatus'],
+      latitude: doc.data['latitude'],longitude: doc.data['longitude']
      );
     }).toList();
   }catch(e){
@@ -81,8 +92,12 @@ Future<List<StoreDetail>> getAllStores() async {
 
 Future getStoreInfo(String userID) async {
   //  var firestore = Firestore.instance;
+  bool check = true;
   try{
-    StoreDetail storeDetail = new StoreDetail('', '', '', '', '', '', '', '', '') ;
+    
+  StoreDetail storeDetail = new StoreDetail(sid:'',name:'',location:'',
+  backgroundImage:'',coveredArea:'',storeType:'',phoneNumber:'',
+  storeStatus:'',latitude:'',longitude:'') ;
     await  Firestore.instance.collection('stores').
     document(userID).get().then((onValue){
       storeDetail.name =  onValue['name'] ?? '';
@@ -94,14 +109,24 @@ Future getStoreInfo(String userID) async {
       storeDetail.password = onValue['password'];
       storeDetail.storeType = onValue['storeType'];
       storeDetail.coveredArea = onValue['coveredArea'];
+      storeDetail.storeStatus = onValue['storeStatus'];
+      storeDetail.latitude = onValue['latitude'];
+      storeDetail.longitude = onValue['longitude'];
+
     }).catchError((error) {
       print('Iam in StoreDatabasefile ,in a function called  getStoreInfo ');
-      throw error;
+      //return null;
+      //throw error;
+      check = false;
     });
-    return storeDetail;
+    if(check){
+      return storeDetail;
+    }else{
+       return null;
+      } 
   }catch(e){
     print('Iam inside getStoreInfo funciton ' + e.toString());
-    return '';
+    return null;
   }
 }
 
@@ -122,7 +147,7 @@ Future getStoreProducts(String storeID,String categoryID ) async {
       }).toList(); 
     }catch(e){
       print(e.toString()+ 'Iam inside getStoreProducts function');
-      return ;
+      return null ;
     }
 }
 
@@ -172,6 +197,7 @@ Future getStoreProducts(String storeID,String categoryID ) async {
       }).toList();
       } catch(e){
         print(e + 'Iam here inside getcategories funciton ');
+        return null;
       }
 
   }
@@ -191,7 +217,7 @@ Future getStoreProducts(String storeID,String categoryID ) async {
  String token='';
     await _firebaseMessaging.getToken().then((tkn) {
       token = tkn;
-       print("THe token is here: "+token);
+     //  print("THe token is here: "+token);
     });
 
   final CollectionReference userCollection = Firestore.instance.collection('stores').

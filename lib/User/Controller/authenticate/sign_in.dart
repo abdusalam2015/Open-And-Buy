@@ -14,7 +14,6 @@ class _SignInState extends State<SignIn> {
   final _formKey = GlobalKey<FormState>();
   bool loading =false;
 
-  @override
   String email = '';
   String password = '';
   String error = '';

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:volc/SharedWidgets/product_card.dart';
 
  class ProductsList extends StatefulWidget {
   @override

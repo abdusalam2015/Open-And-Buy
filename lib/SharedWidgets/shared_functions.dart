@@ -16,16 +16,16 @@ Future uploadPic(File _image, String uid, UserDetail userDetail)async{
       String fileName =uid;
       StorageReference firebaseStorageRef = FirebaseStorage.instance.ref().child(fileName);
       StorageUploadTask  uploadTask = firebaseStorageRef.putFile(_image);
-      StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+      await uploadTask.onComplete;
       /// update user details (PhotoURL)
       firebaseStorageRef.getDownloadURL().then((fileURL) async {  
         await DatabaseService(uid: uid).updateUserData(
-          userDetail.email,
-          userDetail.first_name,
-          userDetail.last_name,
-          userDetail.phone_number,
-          userDetail.address,
-          fileURL);
+          email:userDetail.email,
+          firstName:userDetail.firstName,
+          lastName:userDetail.lastName,
+          phoneNumber:userDetail.phoneNumber,
+          address:userDetail.address,
+          photoURL:fileURL);
       });
 
 
@@ -34,7 +34,7 @@ Future uploadStorePic(File _image, String uid, StoreDetail storeDetail)async{
       String fileName =uid;
       StorageReference firebaseStorageRef = FirebaseStorage.instance.ref().child('stores').child(fileName);
       StorageUploadTask  uploadTask = firebaseStorageRef.putFile(_image);
-      StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+      await uploadTask.onComplete;
       /// update user details (PhotoURL)
       firebaseStorageRef.getDownloadURL().then((backgroundImage) async {  
         storeDetail.backgroundImage = backgroundImage;
@@ -47,7 +47,7 @@ Future uploadProductImage(File _image, Product product,Category category,StoreDe
       StorageReference firebaseStorageRef =  FirebaseStorage.instance.ref().child('stores').child(storeDetail.name).
       child('Categories').child(category.name).child(product.name).child(fileName);
       StorageUploadTask  uploadTask =  firebaseStorageRef.putFile( _image);
-      StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+      await uploadTask.onComplete;
 
       /// update user details (PhotoURL)
     return  await firebaseStorageRef.getDownloadURL().then((backgroundImage)

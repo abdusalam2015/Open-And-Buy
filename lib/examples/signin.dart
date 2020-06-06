@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 class SignIn extends StatefulWidget {
   
@@ -10,21 +9,21 @@ class SignIn extends StatefulWidget {
 
 class _SignInState extends State<SignIn> {
   
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = new GoogleSignIn();
+  //final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+ // final GoogleSignIn _googleSignIn = new GoogleSignIn();
   Future<FirebaseUser> _signIn(BuildContext context) async{
   
   Scaffold.of(context).showSnackBar(new SnackBar(
     content: new Text('Sign in'),
   ));
 
-  final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-  final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+ // final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+  //final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
-  final AuthCredential credential = GoogleAuthProvider.getCredential(
-    accessToken: googleAuth.accessToken,
-    idToken: googleAuth.idToken,
-);
+//   final AuthCredential credential = GoogleAuthProvider.getCredential(
+//     accessToken: googleAuth.accessToken,
+//     idToken: googleAuth.idToken,
+// );
     // FirebaseUser userDetail = (await _firebaseAuth.signInWithCredential(credential)).user ;
     // ProviderDetail providerInfo = new  ProviderDetail(userDetail.providerId);
     // List<ProviderDetail> providerData = new List<ProviderDetail>();
