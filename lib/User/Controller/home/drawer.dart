@@ -15,6 +15,8 @@ import 'package:volc/User/Model/user.dart';
 import 'package:volc/User/Model/user_detail.dart';
 import 'package:volc/location/find_my_location.dart';
 import 'package:volc/payment/pages/home_payment.dart';
+import 'package:volc/User/Service/user_notifier.dart';
+
 class DrawerWidget extends StatefulWidget {
   final BuildContext cont;
   final StoreDetail storeDetail;
@@ -29,7 +31,11 @@ class _DrawerWidgetState extends State<DrawerWidget> {
   @override
   Widget build(BuildContext context) {
     // get the all the users details  ==> look at it in the future
-    final userDetail = Provider.of<UserDetail>(widget.cont);
+    //final userDetail = Provider.of<UserDetail>(widget.cont);
+     UserNotifier userNotifier = Provider.of<UserNotifier>(context);
+    userNotifier.getUserInfo();
+    final userDetail = userNotifier.storeDetail;
+    
     
     //get the current user details
      userID = Provider.of<User>(context).uid;
@@ -130,6 +136,7 @@ Widget _categories(){
             StoreDetail storeDetail = await obj.getStoreInfo(widget.storeDetail.sid.toString());
             //print('categoryList[0].categoryID: ' + widget.categoryList[0].categoryID);
             List<Product> productsList =  await obj.getStoreProducts(widget.storeDetail.sid,widget.categoryList[i].categoryID) ;
+            Navigator.of(context).pop();
             Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => StorePage(
                   storeDetail:storeDetail,

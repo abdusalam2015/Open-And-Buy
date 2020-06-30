@@ -54,6 +54,28 @@ Future updateUserLocation({String lat, String long}) async{
   Stream<UserDetail> get user  {
     return userCollection.snapshots().map(_userDetailFromSnapshot);
   }
+  static Future getUserInfo(String userID) async{
+    UserDetail userInfo;
+      await Firestore.instance.collection('users').
+      document(userID).get()
+          .then((doc) {
+      userInfo = new  UserDetail(
+       email: doc.data['email'],
+        userID: doc.data['userID'],
+        firstName:doc.data['first_name'] ?? '',
+        lastName: doc.data['last_name'] ?? '',
+        photoURL: doc.data['photoURL'] ?? '',
+        address: doc.data['address'] ?? '',
+        phoneNumber: doc.data['phone_number'] ?? '',          
+        latitude: doc.data['latitude'] ?? '', 
+        longitude: doc.data['longitude'] ?? '', );
+      }).catchError((error) {
+        print('Iam in getUserInfo ,in a function called  getUserInfo ');
+        //check = false;
+      });
+      return userInfo;
+
+  }
 
  
   Future registerTokens(String userID) async{

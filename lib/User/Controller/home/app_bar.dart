@@ -15,6 +15,8 @@ import 'package:volc/User/Controller/home/cart_page.dart';
 import 'package:volc/User/Model/cart_bloc.dart';
 import 'package:volc/User/Model/setting.dart';
 import 'package:volc/User/Model/user_detail.dart';
+import 'package:volc/User/Service/user_notifier.dart';
+
 class AppBarWidget extends StatefulWidget {
   final BuildContext cont;
   final StoreDetail storeDetail;
@@ -26,7 +28,9 @@ UserDetail  userInfo;
 class _AppBarWidgetState extends State<AppBarWidget> {
   @override
   Widget build(BuildContext context) {
-    userInfo = Provider.of<UserDetail>(widget.cont);
+    UserNotifier userNotifier = Provider.of<UserNotifier>(context);
+    userNotifier.getUserInfo();
+    userInfo = userNotifier.storeDetail;
     var bloc = Provider.of<CartBloc>(context);
     int totalCount = 0 ;
     if (bloc.cart.length > 0) {
