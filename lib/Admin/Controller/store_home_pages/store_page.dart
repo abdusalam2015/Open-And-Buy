@@ -51,14 +51,16 @@ class _StorePageState extends State<StorePage> with SingleTickerProviderStateMix
       Navigator.of(context).pop();
       return Authenticate();
     }else{  
-      return Scaffold(
+      return StreamProvider<UserDetail>.value(
+      value: DatabaseService(uid:user.uid).user,//getUserDetail(DatabaseService().user),
+      child:Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(55.0), // here the desired height
         /// we need to send StoreID to the appbar, because we need to check 
         /// if we are already inside a store or still in the home page.
         /// if we are already inside a store then we can open the shopping cart for the user,
         /// if not then we need to make it disable. 
-        child:  AppBarWidget(widget.cont,widget.storeDetail),
+        child: AppBarWidget(widget.cont,widget.storeDetail),
       ),
       body:ListView(
         children: <Widget>[
@@ -67,7 +69,7 @@ class _StorePageState extends State<StorePage> with SingleTickerProviderStateMix
        ],
       ), 
       drawer: DrawerWidget(widget.cont,widget.storeDetail,widget.categoryList),
-    
+    )
     );
     }
   }

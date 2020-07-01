@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-const ACCEPTED = 'Accepted';
-const REJECTED = 'Rejected';
-const CANCEL = 'Cancel';
-
 const textInputDecoration = InputDecoration(
       fillColor: Colors.white,
       filled: true,
