@@ -12,7 +12,6 @@ import 'package:OpenAndBuy/Model/user_detail.dart';
 import 'package:OpenAndBuy/Model/location.dart';
 import 'package:OpenAndBuy/Service/user_notifier.dart';
 
-
 class Body extends StatefulWidget {
   final BuildContext cont;
   final List<StoreDetail> storesList;
@@ -28,44 +27,44 @@ class _BodyState extends State<Body> {
   Widget build(BuildContext context) {
     UserNotifier userNotifier = Provider.of<UserNotifier>(context);
     userNotifier.getUserInfo();
-    userDetail = userNotifier.storeDetail;
-    //print(userDetail.email + "  UUUUUUUUUUU");
-    //userDetail = Provider.of<UserDetail>(context);
-    return ListView.builder(
-      padding: EdgeInsets.all(8),
-      itemCount: widget.storesList != null ? widget.storesList.length : 0,
-      itemBuilder: (context, i) {
-        return InkWell(
-            child: _buildCard(widget.storesList[i], false, context),
-            onTap: () async {
-              ProgressDialog dialog = new ProgressDialog(context);
-              dialog.style(message: 'Please wait...');
-              await dialog.show();
-              StoreDatabaseService obj =
-                  new StoreDatabaseService(sid: userDetail.userID);
-              List<Category> categoryList;
-              List<Product> productsList;
-              try {
-                categoryList =
-                    await obj.getcategories(widget.storesList[i].sid);
-              } catch (e) {}
-              try {
-                productsList = await obj.getStoreProducts(
-                    widget.storesList[i].sid,
-                    (categoryList.length > 0)
-                        ? categoryList[0].categoryID
-                        : '');
-              } catch (e) {}
-              await dialog.hide();
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => StorePage(
-                        storeDetail: widget.storesList[i],
-                        cont: widget.cont,
-                        categoryList: categoryList,
-                        productsList: productsList,
-                      )));
-            });
-      },
+
+    userDetail = userNotifier.userDetail;
+    return  ListView.builder(
+        padding: EdgeInsets.all(8),
+        itemCount: widget.storesList != null ? widget.storesList.length : 0,
+        itemBuilder: (context, i) {
+          return InkWell(
+              child: _buildCard(widget.storesList[i], false, context),
+              onTap: () async {
+                ProgressDialog dialog = new ProgressDialog(context);
+                dialog.style(message: 'Please wait...');
+                await dialog.show();
+                StoreDatabaseService obj =
+                    new StoreDatabaseService(sid: userDetail.userID);
+                List<Category> categoryList;
+                List<Product> productsList;
+                try {
+                  categoryList =
+                      await obj.getcategories(widget.storesList[i].sid);
+                } catch (e) {}
+                try {
+                  productsList = await obj.getStoreProducts(
+                      widget.storesList[i].sid,
+                      (categoryList.length > 0)
+                          ? categoryList[0].categoryID
+                          : '');
+                } catch (e) {}
+                await dialog.hide();
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => StorePage(
+                          storeDetail: widget.storesList[i],
+                          cont: widget.cont,
+                          categoryList: categoryList,
+                          productsList: productsList,
+                        )));
+              });
+        },
+      
     );
   }
 

@@ -6,6 +6,7 @@ import 'package:OpenAndBuy/Controller/home/body.dart';
 import 'package:OpenAndBuy/Controller/home/drawer.dart';
 import 'package:OpenAndBuy/Model/user.dart';
 import 'package:OpenAndBuy/Model/cart_bloc.dart';
+import 'package:OpenAndBuy/Controller/home/new_drawer.dart';
 
 import 'package:OpenAndBuy/model/localization/localizationConstants.dart';
 
@@ -42,7 +43,7 @@ class _HomeState extends State<Home> {
               preferredSize: Size.fromHeight(55.0), // here the desired height
               //child: AppBarWidget(context,storeDetail),
               child: AppBar(
-                title: Text(value('title')),
+                title: Text("value('title')"),
               ),
             ),
             body: FutureBuilder<List<StoreDetail>>(
@@ -65,7 +66,7 @@ class _HomeState extends State<Home> {
                 }),
             // set categoryList =  null,
             // because we do not want to show any category in the drawer inside the homepage.
-            drawer: DrawerWidget(context, storeDetail, null),
+            //drawer: NewDrawer(), //DrawerWidget(context, storeDetail, null),
           ),
         ));
   }

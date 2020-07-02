@@ -30,7 +30,7 @@ class _AppBarWidgetState extends State<AppBarWidget> {
   Widget build(BuildContext context) {
     UserNotifier userNotifier = Provider.of<UserNotifier>(context);
     userNotifier.getUserInfo();
-    userInfo = userNotifier.storeDetail;
+    userInfo = userNotifier.userDetail;
     var bloc = Provider.of<CartBloc>(context);
     int totalCount = 0;
     if (bloc.cart.length > 0) {

@@ -1,3 +1,4 @@
+import 'package:OpenAndBuy/Service/user_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:OpenAndBuy/Controller/loading.dart';
@@ -18,8 +19,11 @@ class _AccountSettingsState extends State<AccountSettings> {
   UserDetail userDetail;
   @override
   Widget build(BuildContext context)  {
-    userDetail = Provider.of<UserDetail>(widget.cont);
-   
+    //userDetail = Provider.of<UserDetail>(context);
+   UserNotifier userNotifier = Provider.of<UserNotifier>(context);
+    userNotifier.getUserInfo();
+    
+    userDetail = userNotifier.userDetail;
     return loading? Loading() :Scaffold(
       body:CustomScrollView(
         slivers: <Widget>[

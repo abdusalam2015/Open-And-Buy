@@ -5,7 +5,7 @@ import 'package:OpenAndBuy/Model/store.dart';
 import 'package:OpenAndBuy/Controller/product_card.dart';
 import 'package:OpenAndBuy/Controller/authenticate/authenticate.dart';
 import 'package:OpenAndBuy/Controller/home/app_bar.dart';
-import 'package:OpenAndBuy/Controller/home/drawer.dart';
+import 'package:OpenAndBuy/Controller/home/new_drawer.dart';
 import 'package:OpenAndBuy/Model/cart_bloc.dart';
 import 'package:OpenAndBuy/Model/user.dart';
 import 'package:OpenAndBuy/Model/product.dart';
@@ -64,7 +64,7 @@ class _StorePageState extends State<StorePage> with SingleTickerProviderStateMix
         : Container(height: 600,width: 50,child: Center(child: Text('No Products exist in this Category',style: TextStyle(fontSize: 20,color: Colors.red),)),)
        ],
       ), 
-      drawer: DrawerWidget(widget.cont,widget.storeDetail,widget.categoryList),
+      drawer: NewDrawer()// DrawerWidget(widget.cont,widget.storeDetail,widget.categoryList),
     
     );
     }

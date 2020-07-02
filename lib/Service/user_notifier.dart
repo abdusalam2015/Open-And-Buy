@@ -6,14 +6,16 @@ import 'package:OpenAndBuy/Service/database.dart';
 
  class UserNotifier extends  ChangeNotifier{
 
-   String sid;
-   UserNotifier({this.sid});
+   String uid;
+   UserNotifier({this.uid});
 
-  UserDetail _storeDetail ;
+  UserDetail _userDetail ;
 
-  UserDetail get storeDetail => _storeDetail;
-  void  getUserInfo() async {
-    _storeDetail =  await DatabaseService.getUserInfo(sid);
+  UserDetail get userDetail => _userDetail;
+  
+
+   void  getUserInfo() async {
+    _userDetail =  await DatabaseService.getUserInfo(uid);
     notifyListeners();
    }
 

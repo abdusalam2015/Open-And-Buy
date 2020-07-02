@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:OpenAndBuy/Service/user_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
@@ -24,7 +25,11 @@ class _EditAccountState extends State<EditAccount> {
   @override
   Widget build(BuildContext context) {
  //  c_width = MediaQuery.of(context).size.width*0.8;
-  userDetail  = Provider.of<UserDetail>(widget.cont);
+  //userDetail  = Provider.of<UserDetail>(widget.cont);
+  UserNotifier userNotifier = Provider.of<UserNotifier>(context);
+    userNotifier.getUserInfo();
+    
+    userDetail = userNotifier.userDetail;
     return Scaffold(
       body: Builder(
         builder: (context) => CustomScrollView(
