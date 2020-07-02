@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:151069681429:android:301314c8aae89884b4eb1c",
         "android_client_info": {
-          "package_name": "com.abdussalam.shopping_now"
+          "package_name": "com.abdussalam.OpenAndBuy"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "151069681429-ltaeuhqc418eae2itd9p3rsb13r6p9ng.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.abdussalam.shopping_now",
+            "package_name": "com.abdussalam.OpenAndBuy",
             "certificate_hash": "dcf9ab3fa8a546dda8db24ff919573381b4ee800"
           }
         },

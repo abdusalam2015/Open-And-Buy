@@ -1,4 +1,4 @@
-package com.abdussalam.shopping_now
+package com.abdussalam.OpenAndBuy
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

@@ -23,7 +23,7 @@ void main() {
         StreamProvider<User>.value(value: AuthService().user),
         ChangeNotifierProvider<UserNotifier>(
             create: (context) => new UserNotifier(
-                uid: Provider.of<User>(context).uid.toString())),
+                uid: Provider.of<User>(context,listen: false).uid.toString())),
 
        // StreamProvider<UserDetail>.value(value: DatabaseService(uid:Provider.of<User>(context).uid).user),
       ],

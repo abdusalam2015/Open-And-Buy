@@ -1,4 +1,4 @@
-# shopping_now
+# OpenAndBuy
 
 A new Flutter project.
 
