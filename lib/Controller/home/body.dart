@@ -45,10 +45,10 @@ class _BodyState extends State<Body> {
                 List<Product> productsList;
                 try {
                   categoryList =
-                      await obj.getcategories(widget.storesList[i].sid);
+                      await StoreDatabaseService.getcategories(widget.storesList[i].sid);
                 } catch (e) {}
                 try {
-                  productsList = await obj.getStoreProducts(
+                  productsList = await StoreDatabaseService.getStoreProducts(
                       widget.storesList[i].sid,
                       (categoryList.length > 0)
                           ? categoryList[0].categoryID
@@ -57,10 +57,10 @@ class _BodyState extends State<Body> {
                 await dialog.hide();
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => StorePage(
-                          storeDetail: widget.storesList[i],
-                          cont: widget.cont,
-                          categoryList: categoryList,
-                          productsList: productsList,
+                           storeID: widget.storesList[i].sid,
+                          // cont: widget.cont,
+                          // categoryList: categoryList,
+                          // productsList: productsList,
                         )));
               });
         },

@@ -90,47 +90,61 @@ Future<List<StoreDetail>> getAllStores() async {
   }
 }
 
-Future getStoreInfo(String userID) async {
-  //  var firestore = Firestore.instance;
-  bool check = true;
-  try{
-    
-  StoreDetail storeDetail = new StoreDetail(sid:'',name:'',location:'',
-  backgroundImage:'',coveredArea:'',storeType:'',phoneNumber:'',
-  storeStatus:'',latitude:'',longitude:'') ;
-    await  Firestore.instance.collection('stores').
-    document(userID).get().then((onValue){
-      storeDetail.name =  onValue['name'] ?? '';
-      storeDetail.email = onValue['email'];
-      storeDetail.sid= onValue['sid'];
-      storeDetail.phoneNumber = onValue['phoneNumber'];
-      storeDetail.location = onValue['location'];
-      storeDetail.backgroundImage = onValue['backgroundImage'] ?? '';
-      storeDetail.password = onValue['password'];
-      storeDetail.storeType = onValue['storeType'];
-      storeDetail.coveredArea = onValue['coveredArea'];
-      storeDetail.storeStatus = onValue['storeStatus'];
-      storeDetail.latitude = onValue['latitude'];
-      storeDetail.longitude = onValue['longitude'];
 
-    }).catchError((error) {
-      print('Iam in StoreDatabasefile ,in a function called  getStoreInfo ');
-      //return null;
-      //throw error;
-      check = false;
-    });
-    if(check){
-      return storeDetail;
-    }else{
-       return null;
-      } 
-  }catch(e){
-    print('Iam inside getStoreInfo funciton ' + e.toString());
-    return null;
+  static Future getStoreInfo(String userID) async {
+    bool check = true;
+    Map<String, String> phone_number = {};
+    try {
+      StoreDetail storeDetail = new StoreDetail(
+          sid: '',
+          name: '',
+          location: '',
+          backgroundImage: '',
+          coveredArea: '',
+          storeType: '',
+          phoneNumber: '',
+          storeStatus: '',
+          latitude: '',
+          longitude: '',
+          phone: phone_number);
+      await Firestore.instance
+          .collection('stores')
+          .document(userID)
+          .get()
+          .then((onValue) {
+        storeDetail.name = onValue['name'] ?? '';
+        storeDetail.email = onValue['email'];
+        storeDetail.sid = onValue['sid'];
+        storeDetail.phoneNumber = onValue['phoneNumber'];
+        storeDetail.location = onValue['location'];
+        storeDetail.backgroundImage = onValue['backgroundImage'] ?? '';
+        storeDetail.password = onValue['password'];
+        storeDetail.storeType = onValue['storeType'];
+        storeDetail.coveredArea = onValue['coveredArea'];
+        storeDetail.storeStatus = onValue['storeStatus'];
+        storeDetail.latitude = onValue['latitude'];
+        storeDetail.longitude = onValue['longitude'];
+        storeDetail.budget = onValue['budget'];
+        storeDetail.deliveryFees = onValue['deliveryFees'];
+        storeDetail.services = onValue['services'];
+        storeDetail.phone = Map.from(onValue['phone']);
+      }).catchError((error) {
+        print('Iam in StoreDatabasefile ,in a function called  getStoreInfo ');
+        check = false;
+      });
+      if (check) {
+        return storeDetail;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print('Iam inside getStoreInfo funciton ' + e.toString());
+      return null;
+    }
   }
-}
 
-Future getStoreProducts(String storeID,String categoryID ) async {
+
+static Future getStoreProducts(String storeID,String categoryID ) async {
     try{
     var firestore = Firestore.instance;
   QuerySnapshot qn = await  firestore.collection('stores').
@@ -183,10 +197,10 @@ Future getStoreProducts(String storeID,String categoryID ) async {
 //      });
 
 //   }
-  Future getcategories(String userID) async {
+  static Future getcategories(String storeID) async {
     var firestore = Firestore.instance;
     QuerySnapshot qn = await  firestore.collection('stores').
-    document(userID).collection('categories').getDocuments();
+    document(storeID).collection('categories').getDocuments();
       //Mapping ....
       try{
         return qn.documents.map((doc) {

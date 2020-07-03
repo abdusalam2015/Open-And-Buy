@@ -137,12 +137,12 @@ class _AppBarWidgetState extends State<AppBarWidget> {
       try {
         StoreDatabaseService obj =
             new StoreDatabaseService(sid: userInfo.userID);
-        StoreDetail myStoreDetail = await obj.getStoreInfo(userInfo.userID);
+        StoreDetail myStoreDetail = await StoreDatabaseService.getStoreInfo(userInfo.userID);
         List<Category> categoriesList = myStoreDetail != null
-            ? await obj.getcategories(userInfo.userID)
+            ? await StoreDatabaseService.getcategories(userInfo.userID)
             : null;
         List<Product> productsList = myStoreDetail != null
-            ? await obj.getStoreProducts(userInfo.userID,
+            ? await StoreDatabaseService.getStoreProducts(userInfo.userID,
                 (categoriesList.length > 0) ? categoriesList[0].categoryID : '')
             : null;
         OrderService orderService = new OrderService();

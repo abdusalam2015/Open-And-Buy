@@ -1,3 +1,4 @@
+import 'package:OpenAndBuy/Service/store_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:OpenAndBuy/Model/category.dart';
@@ -10,22 +11,56 @@ import 'package:OpenAndBuy/Model/cart_bloc.dart';
 import 'package:OpenAndBuy/Model/user.dart';
 import 'package:OpenAndBuy/Model/product.dart';
 
- class StorePage extends StatefulWidget{
-  final StoreDetail storeDetail;
-  final BuildContext cont;
-  final List<Category> categoryList;
-  final List<Product> productsList;
-  StorePage({this.storeDetail,this.cont,this.categoryList,this.productsList});
+class StorePage extends StatefulWidget {
+  final String storeID;
+   StorePage({this.storeID});
   @override
   _StorePageState createState() => _StorePageState();
-  }
+}
 
-class _StorePageState extends State<StorePage> with SingleTickerProviderStateMixin {
+class _StorePageState extends State<StorePage> {
   @override
   Widget build(BuildContext context) {
-   // print(widget.productsList.length.toString() + 'HHHHHHH');
-  //final userDetail = Provider.of<UserDetail>(context);
-  //print('UserDeal in body: $userDetail');
+    return ChangeNotifierProvider<StoreNotifier>(
+        create: (context) => StoreNotifier(sid: widget.storeID),
+        child: StorePage2()
+    );
+  }
+}
+
+ class StorePage2 extends StatefulWidget{
+   
+  // final StoreDetail storeDetail;
+  // final BuildContext cont;
+  // final List<Category> categoryList;
+  // final List<Product> productsList;
+  // StorePage({this.storeDetail,this.cont,this.categoryList,this.productsList});
+  @override
+  _StorePage2State createState() => _StorePage2State();
+  }
+
+class _StorePage2State extends State<StorePage2> with SingleTickerProviderStateMixin {
+  StoreDetail storeDetail;
+  List<Category> categories;
+  List<Product> productsList;
+  int categoryIndex = 0 ;
+   void _categoryIndexFunction(int index){
+      setState((){
+        categoryIndex = index;
+       });
+    }
+  @override
+  Widget build(BuildContext context) { 
+
+    StoreNotifier storeNotifier = Provider.of<StoreNotifier>(context);
+    storeNotifier.getStoreInfo();
+    storeNotifier.getStoreCategories();
+    storeDetail = storeNotifier.storeDetail;
+    categories = storeNotifier.categories;
+    storeNotifier.getCategoryProduct(categories[categoryIndex].categoryID);
+    productsList = storeNotifier.categoryProducts;
+
+
     var bloc = Provider.of<CartBloc>(context); 
     int totalCount = 0;
     if (bloc.cart.length > 0) {
@@ -44,6 +79,7 @@ class _StorePageState extends State<StorePage> with SingleTickerProviderStateMix
         bloc.subToCart(index,product);
        });
     }
+   
     final user = Provider.of<User>(context); 
     if(user.uid == null){
       Navigator.of(context).pop();
@@ -51,20 +87,21 @@ class _StorePageState extends State<StorePage> with SingleTickerProviderStateMix
     }else{  
       return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(55.0), // here the desired height
+        preferredSize: Size.fromHeight(55.0),
+        // here the desired height
         /// we need to send StoreID to the appbar, because we need to check 
         /// if we are already inside a store or still in the home page.
         /// if we are already inside a store then we can open the shopping cart for the user,
         /// if not then we need to make it disable. 
-        child:  AppBarWidget(widget.cont,widget.storeDetail),
+        child:  AppBarWidget(context,storeDetail),
       ),
       body:ListView(
         children: <Widget>[
-        widget.productsList != null && widget.productsList.length > 0 ? productsGridList(_increment,_decrement,widget.productsList,context,false)
+         productsList != null && productsList.length > 0 ? productsGridList(_increment,_decrement,productsList,context,false)
         : Container(height: 600,width: 50,child: Center(child: Text('No Products exist in this Category',style: TextStyle(fontSize: 20,color: Colors.red),)),)
        ],
       ), 
-      drawer: NewDrawer()// DrawerWidget(widget.cont,widget.storeDetail,widget.categoryList),
+      drawer: getDrawer(categories,_categoryIndexFunction,context)// DrawerWidget(widget.cont,widget.storeDetail,widget.categoryList),
     
     );
     }

@@ -12,10 +12,17 @@ class StoreDetail{
   String storeStatus;
   String latitude;
   String longitude;
+  double budget;
+  double deliveryFees;
+  double services;
+  Map<String, String> phone;
+
+
 
 StoreDetail({this.sid,this.name,this.email,this.password,
 this.location,this.backgroundImage,this.coveredArea,this.storeType,
-this.phoneNumber,this.storeStatus,this.latitude,this.longitude});
+this.phoneNumber,this.storeStatus,this.latitude,this.longitude,this.budget,
+this.deliveryFees,this.services,this.phone});
 
 
 }
