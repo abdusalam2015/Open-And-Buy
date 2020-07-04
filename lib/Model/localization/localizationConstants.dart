@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:OpenAndBuy/Controller/constants.dart';
+import 'package:OpenAndBuy/Controller/constant.dart';
 import 'package:OpenAndBuy/model/localization/localization.dart';
 
 const String LANGUAGE_CODE = 'languageCode';

@@ -242,6 +242,18 @@ static Future getStoreProducts(String storeID,String categoryID ) async {
  
 
   }
+  
+  static Future sendFeedback(String userID, String subject , String feedback) async {
+ 
+  final DocumentReference addFeedback = Firestore.instance
+        .collection('feedback').document();
+    await addFeedback.setData({
+      'userID': userID,
+      'subject': subject,
+      'feedback': feedback,
+    });
+    
+  }
 
 }
 

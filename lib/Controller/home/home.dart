@@ -1,12 +1,14 @@
+import 'package:OpenAndBuy/Controller/EditUserDetails/account_settings.dart';
+
+import 'package:OpenAndBuy/Model/setting.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:OpenAndBuy/Service/storeDatabase.dart';
 import 'package:OpenAndBuy/Model/store.dart';
 import 'package:OpenAndBuy/Controller/home/body.dart';
-import 'package:OpenAndBuy/Controller/home/drawer.dart';
 import 'package:OpenAndBuy/Model/user.dart';
 import 'package:OpenAndBuy/Model/cart_bloc.dart';
-import 'package:OpenAndBuy/Controller/home/new_drawer.dart';
+import 'package:OpenAndBuy/Controller/settings/feedback.dart';
 
 import 'package:OpenAndBuy/model/localization/localizationConstants.dart';
 
@@ -44,6 +46,19 @@ class _HomeState extends State<Home> {
               //child: AppBarWidget(context,storeDetail),
               child: AppBar(
                 title: Text("value('title')"),
+                actions: <Widget>[
+                  PopupMenuButton<String>(
+          onSelected: actionChoice,
+          itemBuilder: (BuildContext context) {
+            return SettingClass.choices.map((String choice) {
+              return PopupMenuItem<String>(
+                value: choice,
+                child: Text(choice),
+              );
+            }).toList();
+          },
+        ),
+                ],
               ),
             ),
             body: FutureBuilder<List<StoreDetail>>(
@@ -70,4 +85,12 @@ class _HomeState extends State<Home> {
           ),
         ));
   }
-}
+  void actionChoice(String choice) async {
+    if (choice == 'Feedback') {
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => FeedBack()));
+    } else if (choice == 'Setting') {
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => AccountSettings()));
+    }
+  }}

@@ -3,9 +3,7 @@ import 'package:OpenAndBuy/Model/category.dart';
 import 'package:OpenAndBuy/Model/product.dart';
 import 'package:OpenAndBuy/Model/store.dart';
 import 'package:OpenAndBuy/Service/storeDatabase.dart';
-import 'package:flutter/material.dart';
-import 'package:OpenAndBuy/Model/user_detail.dart';
-import 'package:OpenAndBuy/Service/database.dart';
+import 'package:flutter/material.dart'; 
 
 
  class StoreNotifier extends  ChangeNotifier{

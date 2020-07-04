@@ -9,9 +9,7 @@ import 'package:OpenAndBuy/Controller/EditUserDetails/edit_last_name.dart';
 import 'package:OpenAndBuy/Controller/EditUserDetails/edit_phone_number.dart';
 import 'package:OpenAndBuy/Model/user_detail.dart';
 class EditAccount extends StatefulWidget {
-
-  final BuildContext cont;
-  EditAccount(this.cont);
+ 
   @override
   _EditAccountState createState() => _EditAccountState();
 }
@@ -132,7 +130,7 @@ class _EditAccountState extends State<EditAccount> {
       final result = await  Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => EditPhoneNumber(
-                widget.cont,
+                context
             ),
       ));
         result != null ? Scaffold.of(context).showSnackBar(SnackBar(
@@ -164,7 +162,7 @@ class _EditAccountState extends State<EditAccount> {
               final result = await  Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => EditFirstName(
-                       widget.cont,
+                      context
                     )
                   )
             ); 
@@ -197,7 +195,7 @@ class _EditAccountState extends State<EditAccount> {
                final result = Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => EditLastName(
-                       widget.cont,
+                       context
                     )
                   )
             ); 

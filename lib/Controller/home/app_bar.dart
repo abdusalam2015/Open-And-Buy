@@ -114,74 +114,11 @@ class _AppBarWidgetState extends State<AppBarWidget> {
           icon: Icon(Icons.search, color: Colors.white),
           onPressed: () {},
         ),
-        PopupMenuButton<String>(
-          onSelected: actionChoice,
-          itemBuilder: (BuildContext context) {
-            return SettingClass.choices.map((String choice) {
-              return PopupMenuItem<String>(
-                value: choice,
-                child: Text(choice),
-              );
-            }).toList();
-          },
-        ),
+        
       ],
     );
   }
 
-  void actionChoice(String choice) async {
-    if (choice == 'My Store') {
-      ProgressDialog dialog = new ProgressDialog(context);
-      dialog.style(message: 'Please wait...');
-      await dialog.show();
-      try {
-        StoreDatabaseService obj =
-            new StoreDatabaseService(sid: userInfo.userID);
-        StoreDetail myStoreDetail = await StoreDatabaseService.getStoreInfo(userInfo.userID);
-        List<Category> categoriesList = myStoreDetail != null
-            ? await StoreDatabaseService.getcategories(userInfo.userID)
-            : null;
-        List<Product> productsList = myStoreDetail != null
-            ? await StoreDatabaseService.getStoreProducts(userInfo.userID,
-                (categoriesList.length > 0) ? categoriesList[0].categoryID : '')
-            : null;
-        OrderService orderService = new OrderService();
-        List<Order> orders = myStoreDetail != null
-            ? await orderService.getAllStoreOrders(myStoreDetail.sid)
-            : null;
-        await dialog.hide();
-        print(myStoreDetail);
-        if (myStoreDetail != null) {
-          // print('sign!!');
-
-          // Navigator.of(context).push(MaterialPageRoute(
-          //     builder: (context) => TabBarStorePage(
-          //           //StoreHomePage(
-          //           widget.cont,
-          //           myStoreDetail,
-          //           categoriesList,
-          //           productsList,
-          //           orders,
-          //         )));
-        } else {
-          showAlertDialog(widget.cont, 'Not Found', 'No store registered!');
-        }
-      } catch (e) {
-        // return null;
-      }
-    } else if (choice == 'Feedback') {
-      //  Navigator.of(context).push(
-      //   MaterialPageRoute(builder: (context) => SignUp(
-      // )));
-
-    } else if (choice == 'Register a Store') {
-      // Navigator.of(context).push(
-      // MaterialPageRoute(builder: (context) => RegisterYourStore(  userInfo,widget.cont)));
-
-    } else {
-      print('object');
-    }
-  }
 // void actionChoice(String choice){
 //     if(choice == 'signUp'){
 //        Navigator.of(context).push(
