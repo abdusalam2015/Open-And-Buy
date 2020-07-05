@@ -1,4 +1,6 @@
 
+import 'package:OpenAndBuy/Model/order.dart';
+import 'package:OpenAndBuy/Service/order_service.dart';
 import 'package:flutter/material.dart';
 import 'package:OpenAndBuy/Model/user_detail.dart';
 import 'package:OpenAndBuy/Service/database.dart';
@@ -10,14 +12,23 @@ import 'package:OpenAndBuy/Service/database.dart';
    UserNotifier({this.uid});
 
   UserDetail _userDetail ;
+  List<Order> _orders;
 
   UserDetail get userDetail => _userDetail;
-  
+  List<Order> get orders => _orders;
 
    void  getUserInfo() async {
     _userDetail =  await DatabaseService.getUserInfo(uid);
     notifyListeners();
    }
 
+
+ Future<bool> getOrders() async {
+
+    _orders =   await OrderService.getOrders(uid) ;
+    notifyListeners();
+    return true;
+
+   }
 
  }

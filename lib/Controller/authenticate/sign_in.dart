@@ -42,7 +42,7 @@ class _SignInState extends State<SignIn> {
             children: <Widget>[
               SizedBox(height: 20.0,),
               TextFormField(
-                decoration: textInputDecoration.copyWith(hintText:'Email'),
+                decoration: textInputDecoration('Email').copyWith(hintText:'Email'),
                 validator: (val) =>  val.isEmpty || val =='' ?'Enter an email':null,
                 onChanged: (val){
                   setState(() {
@@ -52,7 +52,7 @@ class _SignInState extends State<SignIn> {
               ),
               SizedBox(height: 20.0,),
               TextFormField(
-                decoration: textInputDecoration.copyWith(hintText:'Password'),
+                decoration: textInputDecoration('Email').copyWith(hintText:'Password'),
                 validator: (val) =>  val.length< 6 ? 'Enter a password 6+ chars long': null,
                 obscureText: true,
                 onChanged: (val){
@@ -60,7 +60,6 @@ class _SignInState extends State<SignIn> {
                     password = val;
                   });
                 }
-                
               ),
               SizedBox(height: 20.0,),
               RaisedButton(

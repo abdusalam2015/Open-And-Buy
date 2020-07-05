@@ -1,3 +1,4 @@
+import 'package:OpenAndBuy/Controller/loading.dart';
 import 'package:OpenAndBuy/Service/store_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -49,15 +50,24 @@ class _StorePage2State extends State<StorePage2>
     });
   }
 
+  bool finished = false;
   @override
   Widget build(BuildContext context) {
-    StoreNotifier storeNotifier = Provider.of<StoreNotifier>(context);
-    storeNotifier.getStoreInfo();
-    storeNotifier.getStoreCategories();
-    storeDetail = storeNotifier.storeDetail;
-    categories = storeNotifier.categories;
-    storeNotifier.getCategoryProduct(categories[categoryIndex].categoryID);
-    productsList = storeNotifier.categoryProducts;
+    void getTheData() async {
+      StoreNotifier storeNotifier = Provider.of<StoreNotifier>(context);
+      await storeNotifier.getStoreInfo();
+      await storeNotifier.getStoreCategories();
+      storeDetail = storeNotifier.storeDetail;
+      categories = storeNotifier.categories;
+      categories != null
+          ? storeNotifier
+              .getCategoryProduct(categories[categoryIndex].categoryID)
+          : null;
+      productsList = storeNotifier.categoryProducts;
+      finished = true;
+    }
+
+    getTheData();
 
     var bloc = Provider.of<CartBloc>(context);
     int totalCount = 0;
@@ -79,41 +89,37 @@ class _StorePage2State extends State<StorePage2>
       });
     }
 
-    final user = Provider.of<User>(context);
-    if (user.uid == null) {
-      Navigator.of(context).pop();
-      return Authenticate();
-    } else {
-      return Scaffold(
-          appBar: PreferredSize(
-            preferredSize: Size.fromHeight(55.0),
-            // here the desired height
-            /// we need to send StoreID to the appbar, because we need to check
-            /// if we are already inside a store or still in the home page.
-            /// if we are already inside a store then we can open the shopping cart for the user,
-            /// if not then we need to make it disable.
-            child: AppBarWidget(context, storeDetail),
-          ),
-          body: ListView(
-            children: <Widget>[
-              productsList != null && productsList.length > 0
-                  ? productsGridList(
-                      _increment, _decrement, productsList, context, false)
-                  : Container(
-                      height: 600,
-                      width: 50,
-                      child: Center(
-                          child: Text(
-                        'No Products exist in this Category',
-                        style: TextStyle(fontSize: 20, color: Colors.red),
-                      )),
-                    )
-            ],
-          ),
-          drawer: getDrawer(categories, _categoryIndexFunction,
-              context) // DrawerWidget(widget.cont,widget.storeDetail,widget.categoryList),
+    return !finished
+        ? Loading()
+        : Scaffold(
+            appBar: PreferredSize(
+              preferredSize: Size.fromHeight(55.0),
+              // here the desired height
+              /// we need to send StoreID to the appbar, because we need to check
+              /// if we are already inside a store or still in the home page.
+              /// if we are already inside a store then we can open the shopping cart for the user,
+              /// if not then we need to make it disable.
+              child: AppBarWidget(context, storeDetail),
+            ),
+            body: ListView(
+              children: <Widget>[
+                productsList != null && productsList.length > 0
+                    ? productsGridList(
+                        _increment, _decrement, productsList, context, false)
+                    : Container(
+                        height: 600,
+                        width: 50,
+                        child: Center(
+                            child: Text(
+                          'No Products exist in this Category',
+                          style: TextStyle(fontSize: 20, color: Colors.red),
+                        )),
+                      )
+              ],
+            ),
+            drawer: getDrawer(categories, _categoryIndexFunction,
+                context) // DrawerWidget(widget.cont,widget.storeDetail,widget.categoryList),
 
-          );
-    }
+            );
   }
 }

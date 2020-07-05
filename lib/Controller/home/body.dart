@@ -21,50 +21,56 @@ class Body extends StatefulWidget {
 }
 
 UserDetail userDetail;
+String userLat = '0.0', userLong = '0.0';
 
 class _BodyState extends State<Body> {
   @override
   Widget build(BuildContext context) {
+    //print(widget.storesList[2].latitude.toString() + "  dfdfd");
     UserNotifier userNotifier = Provider.of<UserNotifier>(context);
     userNotifier.getUserInfo();
-
     userDetail = userNotifier.userDetail;
-    return  ListView.builder(
-        padding: EdgeInsets.all(8),
-        itemCount: widget.storesList != null ? widget.storesList.length : 0,
-        itemBuilder: (context, i) {
-          return InkWell(
-              child: _buildCard(widget.storesList[i], false, context),
-              onTap: () async {
-                ProgressDialog dialog = new ProgressDialog(context);
-                dialog.style(message: 'Please wait...');
-                await dialog.show();
-                StoreDatabaseService obj =
-                    new StoreDatabaseService(sid: userDetail.userID);
-                List<Category> categoryList;
-                List<Product> productsList;
-                try {
-                  categoryList =
-                      await StoreDatabaseService.getcategories(widget.storesList[i].sid);
-                } catch (e) {}
-                try {
-                  productsList = await StoreDatabaseService.getStoreProducts(
-                      widget.storesList[i].sid,
-                      (categoryList.length > 0)
-                          ? categoryList[0].categoryID
-                          : '');
-                } catch (e) {}
-                await dialog.hide();
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => StorePage(
-                           storeID: widget.storesList[i].sid,
-                          // cont: widget.cont,
-                          // categoryList: categoryList,
-                          // productsList: productsList,
-                        )));
-              });
-        },
-      
+    try {
+      userLat = userNotifier.userDetail.latitude;
+      userLong = userNotifier.userDetail.longitude;
+    } catch (e) {
+      print('ERROR');
+    }
+    return ListView.builder(
+      padding: EdgeInsets.all(8),
+      itemCount: widget.storesList != null ? widget.storesList.length : 0,
+      itemBuilder: (context, i) {
+        return InkWell(
+            child: _buildCard(widget.storesList[i], false, context),
+            onTap: () async {
+              ProgressDialog dialog = new ProgressDialog(context);
+              dialog.style(message: 'Please wait...');
+              await dialog.show();
+              StoreDatabaseService obj =
+                  new StoreDatabaseService(sid: userDetail.userID);
+              List<Category> categoryList;
+              List<Product> productsList;
+              try {
+                categoryList = await StoreDatabaseService.getcategories(
+                    widget.storesList[i].sid);
+              } catch (e) {}
+              try {
+                productsList = await StoreDatabaseService.getStoreProducts(
+                    widget.storesList[i].sid,
+                    (categoryList.length > 0)
+                        ? categoryList[0].categoryID
+                        : '');
+              } catch (e) {}
+              await dialog.hide();
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => StorePage(
+                        storeID: widget.storesList[i].sid,
+                        // cont: widget.cont,
+                        // categoryList: categoryList,
+                        // productsList: productsList,
+                      )));
+            });
+      },
     );
   }
 
@@ -154,15 +160,16 @@ class _BodyState extends State<Body> {
                             color: Colors.white, size: 24.0),
                         Text(
                             Location.calculateDistance(
-                                    double.parse(storeDetail.latitude)
+                                    double.parse(
+                                            storeDetail.latitude.toString())
                                         .toDouble(),
-                                    double.parse(storeDetail.longitude)
+                                    double.parse(
+                                            storeDetail.longitude.toString())
                                         .toDouble(),
-                                    double.parse(userDetail.latitude)
-                                        .toDouble(),
-                                    double.parse(userDetail.longitude)
-                                        .toDouble())
+                                    double.parse(userLat).toDouble(),
+                                    double.parse(userLong).toDouble())
                                 .toString(),
+
                             // storeDetail.longitude,
 
                             style: TextStyle(

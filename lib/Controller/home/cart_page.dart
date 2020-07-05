@@ -112,7 +112,7 @@ class CartPage extends StatelessWidget {
                   Order order = new Order(
                   clientID: userDetail.userID,items: theOrderedProducts,
                   storeID: storeDetail.sid, totalAmount: 130.4, appFee: 20.9,
-                  deleveryFee: 50.8,discount: 0.0, time: DateTime.now().toString(),
+                  deleveryFee: 50.8,discount: 0.1, time: DateTime.now().toString(),
                   orderName:orderName,orderImage: userDetail.photoURL,
                   clientPhoneNumber: userDetail.phoneNumber,
                   storePhoneNumber: storeDetail.phoneNumber ,

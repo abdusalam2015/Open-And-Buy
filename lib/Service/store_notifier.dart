@@ -23,19 +23,22 @@ import 'package:flutter/material.dart';
   List<Product> get categoryProducts => _categoryProducts;
 
 
-  void  getStoreInfo() async {
+  Future<bool>  getStoreInfo() async {
     _storeDetail =  await StoreDatabaseService.getStoreInfo(sid);
     notifyListeners();
+    return true;
 
    }
-    void getStoreCategories() async{
+    Future<bool> getStoreCategories() async{
     _categories =  await StoreDatabaseService.getcategories(sid);
     notifyListeners();
+    return true;
     }
     
-    void getCategoryProduct(String cid) async{
+    Future<bool> getCategoryProduct(String cid) async{
     _categoryProducts =  await StoreDatabaseService.getStoreProducts(sid,cid);
     notifyListeners();
+    return true;
     }
 
     

@@ -20,6 +20,7 @@ class _RegisterState extends State<Register> {
   String email;
   String password;
   String error = '';
+  Map<String, String> phone = {'name': '', 'code': '', 'number': ''};
   @override
   Widget build(BuildContext context) {
     return loading? Loading() : Scaffold(
@@ -45,7 +46,7 @@ class _RegisterState extends State<Register> {
             children: <Widget>[
               SizedBox(height: 20.0,),
               TextFormField(
-                decoration: textInputDecoration.copyWith(hintText:'Email'),
+                decoration: textInputDecoration('Email').copyWith(hintText:'Email'),
                 validator: (val) =>  val.isEmpty || val =='' ?'Enter an email':null,
                 onChanged: (val){
                   setState(() {
@@ -55,7 +56,7 @@ class _RegisterState extends State<Register> {
               ),
               SizedBox(height: 20.0,),
               TextFormField(
-                decoration: textInputDecoration.copyWith(hintText:'Password'),
+                decoration: textInputDecoration('Password').copyWith(hintText:'Password'),
                 obscureText: true,
                 validator: (val) =>  val.length< 6 ? 'Enter a password 6+ chars long': null,
                 onChanged: (val){
@@ -84,7 +85,7 @@ class _RegisterState extends State<Register> {
                       myLocationButtonEnabled: true,
                       layersButtonEnabled: true, );
 
-                       dynamic result  = await _auth.registerWithEmailAndPassword(email, password, mylocation);
+                       dynamic result  = await _auth.registerWithEmailAndPassword(email, password, mylocation,phone);
                         if (result == null){
                           setState(() {
                             error = 'Please supply a valid email';

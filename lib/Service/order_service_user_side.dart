@@ -11,23 +11,23 @@ Future registerAnOrderInTheUserDB() async{
   final DocumentReference orderCollection =   Firestore.instance.collection('users').
   document(orderDetail.clientID).collection('Orders').document(orderDetail.orderID);
   await orderCollection.setData({
-    'orderID':   orderDetail.orderID,
-    'clientID':  orderDetail.clientID ,
-    'storeID':  orderDetail.storeID,
-    'totalAmount':  orderDetail.totalAmount,
-    'deleveryFee':  orderDetail.deleveryFee,
-    'appFee':  orderDetail.appFee,
-    'discount':  orderDetail.discount,
-    'timestamp': DateTime.now(),//toUtc().millisecondsSinceEpoch,
-    'OrderName': orderDetail.orderName,
-    'OrderImage': orderDetail.orderImage,
-    'clientPhoneNumber': orderDetail.clientPhoneNumber  ,
-    'storePhoneNumber': orderDetail.storePhoneNumber,
-    'storeName' : orderDetail.storeName,
-    'status': orderDetail.status,
-
-
-  });
+      'orderID': orderCollection.documentID,
+      'clientID': orderDetail.clientID,
+      'storeID': orderDetail.storeID,
+      'totalAmount': orderDetail.totalAmount,
+      'deleveryFee': orderDetail.deleveryFee,
+      'appFee': orderDetail.appFee,
+      'discount': orderDetail.discount,
+      'timestamp': DateTime.now(), //toUtc().millisecondsSinceEpoch,
+      'OrderName': orderDetail.orderName,
+      'OrderImage': orderDetail.orderImage,
+      'clientPhoneNumber': orderDetail.clientPhoneNumber,
+      'storePhoneNumber': orderDetail.storePhoneNumber,
+      'storeName': orderDetail.storeName,
+      'status': orderDetail.status,
+      'note': orderDetail.note,
+      'clientAddress': orderDetail.clientAddress,
+    });
     //   FieldValue serverTimestamp() =>FieldValue._(_factory.serverTimestamp());
 
      await registerOrderProducts(orderCollection.documentID);

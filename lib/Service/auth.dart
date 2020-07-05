@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:OpenAndBuy/Model/user.dart';
 import 'package:OpenAndBuy/Service/database.dart';
@@ -45,7 +46,8 @@ class AuthService {
     }
   }
   // register with email and password
-  Future registerWithEmailAndPassword(String email, String password, LocationResult myLocation)async{
+
+  Future registerWithEmailAndPassword(String email, String password, LocationResult myLocation,Map<String, String> phone)async{
     try{
       AuthResult result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       FirebaseUser user = result.user;
@@ -61,7 +63,7 @@ class AuthService {
       await DatabaseService (uid: user.uid).updateUserData(
         email:email,firstName:'',lastName: '',
        phoneNumber:'', address:address, photoURL:'', 
-       latitude:latitude,longitude:longitude,
+       latitude:latitude,longitude:longitude,phone:phone
        );
       return _userFromFirebaseUser(user);
     }catch(e){
@@ -69,6 +71,37 @@ class AuthService {
       return null;
     }
   }
+  static Future changePassword(
+      String _newPassword, String _currentPassword, String email) async {
+    //Create an instance of the current user.
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    AuthCredential credential = EmailAuthProvider.getCredential(
+      email: email,
+      password: _currentPassword,
+    );
+    try {
+      await user.reauthenticateWithCredential(credential).then((v) async {
+        if (v.user == null) {
+          print("NULL");
+          return false;
+        } else {
+          try {
+            await user.updatePassword(_newPassword).then((value) {
+              print("Succesfull changed password");
+              return true;
+            });
+          } catch(e) {
+            print("not changed password");
+          }
+        }
+      });
+    } on PlatformException  catch (e) {
+      print('Catched');
+    }
+ 
+    return false;
+  }
+
 
   //sign out
   Future signOut() async{

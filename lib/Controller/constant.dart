@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 
-
-const textInputDecoration = InputDecoration(
+ textInputDecoration(String name) {
+    return   InputDecoration(
+      labelText: name,
       fillColor: Colors.white,
       filled: true,
+      border:OutlineInputBorder(),
       enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: Colors.white,width: 2.0),
+        borderSide: BorderSide(color: Colors.pink[300],width: 2.0),
       ),
       focusedBorder: OutlineInputBorder(
         borderSide: BorderSide(color: Colors.deepPurple,width: 2.0),
       ),
     );
+}
 
     
 

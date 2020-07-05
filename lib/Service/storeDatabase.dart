@@ -124,7 +124,6 @@ Future<List<StoreDetail>> getAllStores() async {
         storeDetail.storeStatus = onValue['storeStatus'];
         storeDetail.latitude = onValue['latitude'];
         storeDetail.longitude = onValue['longitude'];
-        storeDetail.budget = onValue['budget'];
         storeDetail.deliveryFees = onValue['deliveryFees'];
         storeDetail.services = onValue['services'];
         storeDetail.phone = Map.from(onValue['phone']);

@@ -12,20 +12,14 @@ import 'package:OpenAndBuy/Service/database.dart';
 
 class SharedFunctions{
 
-Future uploadPic(File _image, String uid, UserDetail userDetail)async{
+Future uploadPic(File _image, String uid)async{
       String fileName =uid;
       StorageReference firebaseStorageRef = FirebaseStorage.instance.ref().child(fileName);
       StorageUploadTask  uploadTask = firebaseStorageRef.putFile(_image);
       await uploadTask.onComplete;
       /// update user details (PhotoURL)
       firebaseStorageRef.getDownloadURL().then((fileURL) async {  
-        await DatabaseService(uid: uid).updateUserData(
-          email:userDetail.email,
-          firstName:userDetail.firstName,
-          lastName:userDetail.lastName,
-          phoneNumber:userDetail.phoneNumber,
-          address:userDetail.address,
-          photoURL:fileURL);
+        await DatabaseService.updateProfilePic(fileURL,uid);
       });
 
 

@@ -1,6 +1,8 @@
 import 'package:OpenAndBuy/Model/localization/localizationConstants.dart';
 import 'package:OpenAndBuy/Model/store.dart';
+import 'package:OpenAndBuy/Model/user_detail.dart';
 import 'package:OpenAndBuy/Service/store_notifier.dart';
+import 'package:OpenAndBuy/Service/user_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:OpenAndBuy/Controller/constants/colors.dart';
 
@@ -17,11 +19,11 @@ class _WalletState extends State<Wallet> {
     return getTranslated(context, key);
   }
 
-  StoreDetail storeDetail;
+  UserDetail userDetail;
   @override
   Widget build(BuildContext context) {
-    StoreNotifier storeNotifier = Provider.of<StoreNotifier>(context);
-    storeDetail = storeNotifier.storeDetail;
+    UserNotifier userNotifier = Provider.of<UserNotifier>(context);
+    userDetail = userNotifier.userDetail;
 
     return Scaffold(
       appBar: AppBar(
@@ -40,7 +42,7 @@ class _WalletState extends State<Wallet> {
                     style: TextStyle(fontSize: 20, color: Colors.black),
                   ),
                   Text(
-                    storeDetail.budget.toString(),
+                    userDetail.budget.toString(),
                     style: TextStyle(fontSize: 20, color: Colors.black),
                   ),
                 ],

@@ -40,24 +40,25 @@ class _HomeState extends State<Home> {
     return ChangeNotifierProvider<CartBloc>(
         create: (context) => CartBloc(),
         child: MaterialApp(
-                  home: Scaffold(
+          home: Scaffold(
             appBar: PreferredSize(
               preferredSize: Size.fromHeight(55.0), // here the desired height
               //child: AppBarWidget(context,storeDetail),
               child: AppBar(
-                title: Text("value('title')"),
+                backgroundColor: Colors.pink[400],
+                title: Text(value('title')),
                 actions: <Widget>[
                   PopupMenuButton<String>(
-          onSelected: actionChoice,
-          itemBuilder: (BuildContext context) {
-            return SettingClass.choices.map((String choice) {
-              return PopupMenuItem<String>(
-                value: choice,
-                child: Text(choice),
-              );
-            }).toList();
-          },
-        ),
+                    onSelected: actionChoice,
+                    itemBuilder: (BuildContext context) {
+                      return SettingClass.choices.map((String choice) {
+                        return PopupMenuItem<String>(
+                          value: choice,
+                          child: Text(choice),
+                        );
+                      }).toList();
+                    },
+                  ),
                 ],
               ),
             ),
@@ -85,6 +86,7 @@ class _HomeState extends State<Home> {
           ),
         ));
   }
+
   void actionChoice(String choice) async {
     if (choice == 'Feedback') {
       Navigator.of(context)
@@ -93,4 +95,5 @@ class _HomeState extends State<Home> {
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => AccountSettings()));
     }
-  }}
+  }
+}
