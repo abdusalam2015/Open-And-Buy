@@ -30,7 +30,7 @@ class _AccountSettingsState extends State<AccountSettings> {
   UserNotifier userNotifier;
   @override
   Widget build(BuildContext context) {
-   userNotifier = Provider.of<UserNotifier>(context);
+    userNotifier = Provider.of<UserNotifier>(context);
     userNotifier.getUserInfo();
     userDetail = userNotifier.userDetail;
     return loading
@@ -72,7 +72,7 @@ class _AccountSettingsState extends State<AccountSettings> {
                       return temp(index, context, value('settings'),
                           value('changeSettings'), Icon(Icons.settings));
                     else if (index == 5)
-                      temp(index, context, value('feedback'),
+                      return temp(index, context, value('feedback'),
                           value('feedbackNote'), Icon(Icons.feedback));
                     else if (index == 6)
                       return temp(
@@ -87,7 +87,7 @@ class _AccountSettingsState extends State<AccountSettings> {
                     else
                       return signOut();
                   },
-                  childCount: 6,
+                  childCount: 9,
                 ),
               ),
             ],
@@ -137,14 +137,15 @@ class _AccountSettingsState extends State<AccountSettings> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      userDetail.firstName + userDetail.lastName,
+                      userDetail.firstName + " " + userDetail.lastName,
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.black,
                       ),
                     ),
                     Text(
-                      userDetail.phoneNumber,
+                      '',
+                      //userDetail.phone['number'],
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.black,
@@ -162,49 +163,9 @@ class _AccountSettingsState extends State<AccountSettings> {
         ],
       ),
       onTap: () async {
-        await Navigator.of(context).push(MaterialPageRoute(builder: (context) => EditAccount()));
+        await Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => EditAccount()));
       },
-    );
-  }
-
-  Widget signOut() {
-    return Column(
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.only(left: 20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              SizedBox(
-                height: 15,
-              ),
-              InkWell(
-                child: Row(
-                  children: <Widget>[
-                    Text('Sign Out'),
-                  ],
-                ),
-                onTap: () async {
-                  Navigator.of(context).pop();
-                  setState(() {
-                    loading = true;
-                  });
-                  _auth.signOut();
-                },
-              ),
-              Column(
-                children: <Widget>[
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  Text('', style: TextStyle(color: Colors.white)),
-                  Text('', style: TextStyle(color: Colors.white)),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ],
     );
   }
 
@@ -251,18 +212,17 @@ class _AccountSettingsState extends State<AccountSettings> {
           ),
         ],
       ),
-      onTap: () async{
+      onTap: () async {
         var result;
-          finished = await userNotifier.getOrders();
-          
+        finished = await userNotifier.getOrders();
+
         if (index == 1) {
           result = Navigator.of(context)
               .push(MaterialPageRoute(builder: (context) => Wallet()));
         } else if (index == 2) {
-
-          if(finished){
-            result = Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => MyOrders(userNotifier.orders)));
+          if (finished) {
+            result = Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => MyOrders(userNotifier.orders)));
           }
         } else if (index == 3) {
           result = Navigator.of(context).push(
@@ -285,6 +245,63 @@ class _AccountSettingsState extends State<AccountSettings> {
         // content: Text('Location Updated', style: TextStyle(color: Colors.white),),
         // backgroundColor: Colors.green)):Container();
       },
+    );
+  }
+
+  Widget signOut() {
+    return Column(
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.only(left: 20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              InkWell(
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Icon(
+                          Icons.exit_to_app,
+                          size: 20,
+                          color: Colors.black,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 15.0),
+                          child: Text(value('signOut')),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 5.0,
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(left: 38.0),
+                          child: Text(
+                            value('signOut'),
+                            style: TextStyle(color: Colors.grey, fontSize: 14),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                onTap: () async {
+                  _auth.signOut();
+                  Navigator.of(context).pop();
+                  setState(() {});
+                },
+              ),
+            ],
+          ),
+        ),
+        Divider(
+          color: Colors.grey,
+          thickness: 1,
+        ),
+      ],
     );
   }
 }

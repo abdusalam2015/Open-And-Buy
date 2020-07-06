@@ -24,8 +24,8 @@ class _ChangeLanguageState extends State<ChangeLanguage> {
   StoreDetail storeDetail ;
   @override
   Widget build(BuildContext context) {
-    StoreNotifier storeNotifier = Provider.of<StoreNotifier>(context);
-    storeDetail = storeNotifier.storeDetail;
+      // UserNotifier userNotifier = Provider.of<UserNotifier>(context);
+    // userNotifier.getUserInfo();
 
     return Scaffold(
       appBar: AppBar(

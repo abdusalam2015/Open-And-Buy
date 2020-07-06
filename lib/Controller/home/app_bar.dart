@@ -16,9 +16,8 @@ import 'package:OpenAndBuy/Model/user_detail.dart';
 import 'package:OpenAndBuy/Service/user_notifier.dart';
 
 class AppBarWidget extends StatefulWidget {
-  final BuildContext cont;
-  final StoreDetail storeDetail;
-  AppBarWidget(this.cont, this.storeDetail);
+   final StoreDetail storeDetail;
+  AppBarWidget( this.storeDetail);
   @override
   _AppBarWidgetState createState() => _AppBarWidgetState();
 }
@@ -69,7 +68,7 @@ class _AppBarWidgetState extends State<AppBarWidget> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => CartPage(
-                                    widget.cont,
+                                     
                                     widget.storeDetail,
                                     userInfo,
                                   ),

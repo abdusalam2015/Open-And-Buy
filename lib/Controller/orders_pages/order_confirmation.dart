@@ -3,11 +3,10 @@ import 'package:OpenAndBuy/Model/product.dart';
 import 'package:OpenAndBuy/Model/store.dart';
 import 'package:OpenAndBuy/Model/user_detail.dart';
 class OrderConfirmation extends StatefulWidget {
-  final BuildContext cont;
   final StoreDetail storeDetail;
   final List<Product> theOrderedProducts;
   final UserDetail userDetail;
- OrderConfirmation({this.cont,this.storeDetail,this.theOrderedProducts,this.userDetail});
+ OrderConfirmation({this.storeDetail,this.theOrderedProducts,this.userDetail});
 
   @override
   _OrderConfirmationState createState() => _OrderConfirmationState();

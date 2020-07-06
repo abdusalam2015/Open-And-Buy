@@ -10,8 +10,6 @@ import 'package:OpenAndBuy/Model/user.dart';
 import 'package:OpenAndBuy/Service/auth.dart';
 import 'package:OpenAndBuy/model/localization/localization.dart';
 import 'package:OpenAndBuy/model/localization/localizationConstants.dart';
-import 'package:OpenAndBuy/Model/user_detail.dart';
-import 'package:OpenAndBuy/Service/database.dart';
 import 'package:OpenAndBuy/Service/user_notifier.dart';
 
 
@@ -89,9 +87,8 @@ class _OpenAndBuyState extends State<OpenAndBuy> {
         routes: {
           '/home': (context) => Home(),
         },
-        home: _locale == null
-            ? Loading()
-            : Scaffold(body: (user == null) ? Authenticate() : Home()));
+        // _locale == null? Loading():
+        home:  (user == null) ? Authenticate() : Home());
   }
 }
  

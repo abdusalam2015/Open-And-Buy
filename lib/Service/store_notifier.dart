@@ -25,13 +25,13 @@ import 'package:flutter/material.dart';
 
   Future<bool>  getStoreInfo() async {
     _storeDetail =  await StoreDatabaseService.getStoreInfo(sid);
-    notifyListeners();
+    //notifyListeners();
     return true;
 
    }
     Future<bool> getStoreCategories() async{
     _categories =  await StoreDatabaseService.getcategories(sid);
-    notifyListeners();
+    //notifyListeners();
     return true;
     }
     

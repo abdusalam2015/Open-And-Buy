@@ -1,3 +1,4 @@
+import 'package:OpenAndBuy/Controller/loading.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -24,54 +25,55 @@ UserDetail userDetail;
 String userLat = '0.0', userLong = '0.0';
 
 class _BodyState extends State<Body> {
+  bool finished = false;
+  Future getUserData() async {
+    UserNotifier userNotifier = Provider.of<UserNotifier>(context);
+    await userNotifier.getUserInfo();
+    userDetail = userNotifier.userDetail;
+    if(this.mounted){
+    setState(() {
+      finished = true;
+    });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     //print(widget.storesList[2].latitude.toString() + "  dfdfd");
-    UserNotifier userNotifier = Provider.of<UserNotifier>(context);
-    userNotifier.getUserInfo();
-    userDetail = userNotifier.userDetail;
+    // Provider.of<UserNotifier>(context,listen: false) ;
+    getUserData();
     try {
-      userLat = userNotifier.userDetail.latitude;
-      userLong = userNotifier.userDetail.longitude;
+      userLat = userDetail.latitude;
+      userLong = userDetail.longitude;
     } catch (e) {
       print('ERROR');
     }
-    return ListView.builder(
-      padding: EdgeInsets.all(8),
-      itemCount: widget.storesList != null ? widget.storesList.length : 0,
-      itemBuilder: (context, i) {
-        return InkWell(
-            child: _buildCard(widget.storesList[i], false, context),
-            onTap: () async {
-              ProgressDialog dialog = new ProgressDialog(context);
-              dialog.style(message: 'Please wait...');
-              await dialog.show();
-              StoreDatabaseService obj =
-                  new StoreDatabaseService(sid: userDetail.userID);
-              List<Category> categoryList;
-              List<Product> productsList;
-              try {
-                categoryList = await StoreDatabaseService.getcategories(
-                    widget.storesList[i].sid);
-              } catch (e) {}
-              try {
-                productsList = await StoreDatabaseService.getStoreProducts(
-                    widget.storesList[i].sid,
-                    (categoryList.length > 0)
-                        ? categoryList[0].categoryID
-                        : '');
-              } catch (e) {}
-              await dialog.hide();
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => StorePage(
-                        storeID: widget.storesList[i].sid,
-                        // cont: widget.cont,
-                        // categoryList: categoryList,
-                        // productsList: productsList,
-                      )));
-            });
-      },
-    );
+    return !finished
+        ? Loading()
+        : ListView.builder(
+            padding: EdgeInsets.all(8),
+            itemCount: widget.storesList != null ? widget.storesList.length : 0,
+            itemBuilder: (context, i) {
+              return InkWell(
+                  child: _buildCard(widget.storesList[i], false, context),
+                  onTap: () async {
+                    ProgressDialog dialog = new ProgressDialog(context);
+                    dialog.style(message: 'Please wait...');
+                    await dialog.show();
+                    List<Category> categoryList;
+                    try {
+                      categoryList = await StoreDatabaseService.getcategories(
+                          widget.storesList[i].sid);
+                    } catch (e) {}
+                    await dialog.hide();
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => StorePage(
+                              storeDetail: widget.storesList[i],
+                              categories: categoryList,
+                            )));
+                  });
+            },
+          );
   }
 
   Widget _buildCard(StoreDetail storeDetail, bool isFavorite, context) {
@@ -169,9 +171,6 @@ class _BodyState extends State<Body> {
                                     double.parse(userLat).toDouble(),
                                     double.parse(userLong).toDouble())
                                 .toString(),
-
-                            // storeDetail.longitude,
-
                             style: TextStyle(
                                 fontFamily: 'Varela',
                                 color: Colors.white,

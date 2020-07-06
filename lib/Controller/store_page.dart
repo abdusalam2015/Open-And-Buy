@@ -1,20 +1,20 @@
 import 'package:OpenAndBuy/Controller/loading.dart';
+import 'package:OpenAndBuy/Service/storeDatabase.dart';
 import 'package:OpenAndBuy/Service/store_notifier.dart';
+import 'package:OpenAndBuy/Service/user_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:OpenAndBuy/Model/category.dart';
 import 'package:OpenAndBuy/Model/store.dart';
-import 'package:OpenAndBuy/Controller/product_card.dart';
-import 'package:OpenAndBuy/Controller/authenticate/authenticate.dart';
+import 'package:OpenAndBuy/Controller/home/product_list.dart';
 import 'package:OpenAndBuy/Controller/home/app_bar.dart';
 import 'package:OpenAndBuy/Controller/home/new_drawer.dart';
-import 'package:OpenAndBuy/Model/cart_bloc.dart';
-import 'package:OpenAndBuy/Model/user.dart';
 import 'package:OpenAndBuy/Model/product.dart';
 
 class StorePage extends StatefulWidget {
-  final String storeID;
-  StorePage({this.storeID});
+  final StoreDetail storeDetail;
+   final List<Category> categories;
+  StorePage({this.storeDetail,this.categories});
   @override
   _StorePageState createState() => _StorePageState();
 }
@@ -22,76 +22,38 @@ class StorePage extends StatefulWidget {
 class _StorePageState extends State<StorePage> {
   @override
   Widget build(BuildContext context) {
+
     return ChangeNotifierProvider.value(
-        value: StoreNotifier(sid: widget.storeID),
-        child: MaterialApp(home: StorePage2()));
+        value: StoreNotifier(sid: widget.storeDetail.sid),
+        child: MaterialApp(home: StorePage2(storeDetail:widget.storeDetail,categories:widget.categories)));
   }
 }
 
 class StorePage2 extends StatefulWidget {
-  // final StoreDetail storeDetail;
-  // final BuildContext cont;
-  // final List<Category> categoryList;
-  // final List<Product> productsList;
-  // StorePage({this.storeDetail,this.cont,this.categoryList,this.productsList});
+  final StoreDetail storeDetail;
+  final List<Category> categories;
+  StorePage2({this.storeDetail,this.categories});
   @override
   _StorePage2State createState() => _StorePage2State();
 }
 
 class _StorePage2State extends State<StorePage2>
     with SingleTickerProviderStateMixin {
-  StoreDetail storeDetail;
-  List<Category> categories;
-  List<Product> productsList;
+ 
   int categoryIndex = 0;
-  void _categoryIndexFunction(int index) {
+  void _categoryIndexFunction(int index){    
     setState(() {
       categoryIndex = index;
     });
   }
-
+  List<Product> productsList;
   bool finished = false;
   @override
   Widget build(BuildContext context) {
-    void getTheData() async {
-      StoreNotifier storeNotifier = Provider.of<StoreNotifier>(context);
-      await storeNotifier.getStoreInfo();
-      await storeNotifier.getStoreCategories();
-      storeDetail = storeNotifier.storeDetail;
-      categories = storeNotifier.categories;
-      categories != null
-          ? storeNotifier
-              .getCategoryProduct(categories[categoryIndex].categoryID)
-          : null;
-      productsList = storeNotifier.categoryProducts;
-      finished = true;
-    }
-
-    getTheData();
-
-    var bloc = Provider.of<CartBloc>(context);
-    int totalCount = 0;
-    if (bloc.cart.length > 0) {
-      totalCount = bloc.cart.values.reduce((a, b) => a + b);
-    } else {
-      totalCount = totalCount;
-    }
-    // Product product ;
-    void _increment(String index, Product product) {
-      setState(() {
-        bloc.addToCart(index, product);
-      });
-    }
-
-    void _decrement(String index, Product product) {
-      setState(() {
-        bloc.subToCart(index, product);
-      });
-    }
-
-    return !finished
-        ? Loading()
-        : Scaffold(
+    StoreNotifier storeNotifier = Provider.of<StoreNotifier>(context) ;
+    storeNotifier.getCategoryProduct(widget.categories[categoryIndex].categoryID);
+    productsList =storeNotifier.categoryProducts;
+    return Scaffold(
             appBar: PreferredSize(
               preferredSize: Size.fromHeight(55.0),
               // here the desired height
@@ -99,13 +61,13 @@ class _StorePage2State extends State<StorePage2>
               /// if we are already inside a store or still in the home page.
               /// if we are already inside a store then we can open the shopping cart for the user,
               /// if not then we need to make it disable.
-              child: AppBarWidget(context, storeDetail),
+              child: AppBarWidget( widget.storeDetail),
             ),
             body: ListView(
               children: <Widget>[
                 productsList != null && productsList.length > 0
-                    ? productsGridList(
-                        _increment, _decrement, productsList, context, false)
+                    ? 
+                    ProductList(productsList)
                     : Container(
                         height: 600,
                         width: 50,
@@ -117,8 +79,7 @@ class _StorePage2State extends State<StorePage2>
                       )
               ],
             ),
-            drawer: getDrawer(categories, _categoryIndexFunction,
-                context) // DrawerWidget(widget.cont,widget.storeDetail,widget.categoryList),
+            drawer: getDrawer(widget.categories, _categoryIndexFunction)  
 
             );
   }

@@ -13,7 +13,7 @@ class FeedBack extends StatefulWidget {
 
 class _FeedBackState extends State<FeedBack> {
   String value(String key) {
-    return "Thank you"; //getTranslated(context, key);
+    return getTranslated(context, key);
   }
 
   final _formKey = GlobalKey<FormState>();

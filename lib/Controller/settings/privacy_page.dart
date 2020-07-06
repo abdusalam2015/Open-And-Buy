@@ -4,6 +4,7 @@ import 'package:OpenAndBuy/Model/localization/localizationConstants.dart';
 import 'package:OpenAndBuy/Model/store.dart';
 import 'package:OpenAndBuy/Service/storeDatabase.dart';
 import 'package:OpenAndBuy/Service/store_notifier.dart';
+import 'package:OpenAndBuy/Service/user_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:OpenAndBuy/Controller/constants/colors.dart';
 
@@ -23,8 +24,8 @@ class _PrivacyPageState extends State<PrivacyPage> {
   StoreDetail storeDetail;
   @override
   Widget build(BuildContext context) {
-    StoreNotifier storeNotifier = Provider.of<StoreNotifier>(context);
-    storeDetail = storeNotifier.storeDetail;
+    // UserNotifier userNotifier = Provider.of<UserNotifier>(context);
+    // userNotifier.getUserInfo();
 
     return Scaffold(
       appBar: AppBar(

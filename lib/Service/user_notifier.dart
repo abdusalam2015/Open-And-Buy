@@ -17,9 +17,10 @@ import 'package:OpenAndBuy/Service/database.dart';
   UserDetail get userDetail => _userDetail;
   List<Order> get orders => _orders;
 
-   void  getUserInfo() async {
+   Future<UserDetail>  getUserInfo() async {
     _userDetail =  await DatabaseService.getUserInfo(uid);
-    notifyListeners();
+    //notifyListeners();// we do not need to listen 
+   return _userDetail;
    }
 
 

@@ -1,3 +1,4 @@
+import 'package:OpenAndBuy/Controller/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:OpenAndBuy/Controller/constant.dart';
 import 'package:OpenAndBuy/Controller/loading.dart';
@@ -20,11 +21,11 @@ class _SignInState extends State<SignIn> {
   Widget build(BuildContext context) {
     
     return loading? Loading(): Scaffold(
-      backgroundColor: Colors.brown[100],
+      backgroundColor: Colors.pink[50],
       appBar: AppBar(
-        backgroundColor: Colors.brown[400],
+        backgroundColor: APPBARCOLOR,
         elevation: 0.0,
-        title: Text('Sing in to Volc'),
+        title: Text('Sign In'),
         actions: <Widget>[
           FlatButton.icon(
             onPressed: ()  {
@@ -63,7 +64,7 @@ class _SignInState extends State<SignIn> {
               ),
               SizedBox(height: 20.0,),
               RaisedButton(
-                color:Colors.pink[400],
+                color:APPBARCOLOR,
                 child: Text(
                   'Sing in',
                   style: TextStyle(color: Colors.white),

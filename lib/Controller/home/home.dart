@@ -24,19 +24,19 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    String userID = Provider.of<User>(context).uid;
-    StoreDatabaseService obj = new StoreDatabaseService();
-    StoreDetail storeDetail = new StoreDetail(
-        sid: '',
-        name: '',
-        location: '',
-        backgroundImage: '',
-        coveredArea: '',
-        storeType: '',
-        phoneNumber: '',
-        storeStatus: '',
-        latitude: '',
-        longitude: '');
+    // String userID = Provider.of<User>(context).uid;
+     StoreDatabaseService obj = new StoreDatabaseService();
+    // StoreDetail storeDetail = new StoreDetail(
+    //     sid: '',
+    //     name: '',
+    //     location: '',
+    //     backgroundImage: '',
+    //     coveredArea: '',
+    //     storeType: '',
+    //     phoneNumber: '',
+    //     storeStatus: '',
+    //     latitude: '',
+    //     longitude: '');
     return ChangeNotifierProvider<CartBloc>(
         create: (context) => CartBloc(),
         child: MaterialApp(

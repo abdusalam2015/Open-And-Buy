@@ -7,23 +7,7 @@ import 'package:OpenAndBuy/Service/user_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-Widget getDrawer(List<Category> categories, Function categoryIndexFunction,
-    BuildContext context) {
-//   UserDetail userDetail;
-//   StoreDetail storeDetail;
-//   List<Category> categories;
-
-//     UserNotifier userNotifier = Provider.of<UserNotifier>(context);
-//     userNotifier.getUserInfo();
-//     userDetail = userNotifier.userDetail;
-// //
-//     StoreNotifier storeNotifier = Provider.of<StoreNotifier>(context);
-//     storeNotifier.getStoreInfo();
-//     storeNotifier.getStoreCategories();
-//     categories = storeNotifier.categories;
-
-  //
-
+Widget getDrawer(List<Category> categories, Function categoryIndexFunction) {
   return Drawer(
     child: Container(
       //  color: Colors.blueGrey[200],
@@ -84,7 +68,7 @@ Widget getDrawer(List<Category> categories, Function categoryIndexFunction,
                       ),
                       onTap: () {
                         Navigator.of(context).pop();
-                        categoryIndexFunction(i);
+                         categoryIndexFunction(i);
                       },
                     );
                   })

@@ -8,10 +8,9 @@ import 'package:OpenAndBuy/Controller/orders_pages/order_confirmation.dart';
 import 'package:OpenAndBuy/Model/cart_bloc.dart';
 import 'package:OpenAndBuy/Model/user_detail.dart';
 class CartPage extends StatelessWidget {
-  final BuildContext cont;
- final  StoreDetail storeDetail;
+  final  StoreDetail storeDetail;
   final UserDetail userDetail;
-  CartPage(this.cont,this.storeDetail,this.userDetail);
+  CartPage( this.storeDetail,this.userDetail);
 //  CartPage({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context){
@@ -128,7 +127,7 @@ class CartPage extends StatelessWidget {
                      Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => OrderConfirmation(
-                            cont:cont,
+                             
                             storeDetail:storeDetail,
                             theOrderedProducts:theOrderedProducts,
                             userDetail:userDetail,
