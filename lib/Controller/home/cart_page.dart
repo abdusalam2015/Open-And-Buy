@@ -8,7 +8,6 @@ import 'package:OpenAndBuy/Model/store.dart';
 import 'package:OpenAndBuy/Controller/orders_pages/order_confirmation.dart';
 import 'package:OpenAndBuy/Model/cart_bloc.dart';
 import 'package:OpenAndBuy/Model/user_detail.dart';
-import 'package:OpenAndBuy/Model/order_calculation.dart';
 
 class CartPage extends StatelessWidget {
   final StoreDetail storeDetail;
@@ -62,7 +61,7 @@ class CartPage extends StatelessWidget {
                   );
                 }
                 return Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
+                  padding: const EdgeInsets.only(bottom: 10,top: 10.0),
                   child: ListTile(
                     leading: Container(
                       height: 70,
@@ -142,7 +141,8 @@ class CartPage extends StatelessWidget {
                             '  SEK')
                       ],
                     ),
-                    checkOutButton(context, theOrderedProducts, clearCart)
+                    storeDetail.storeStatus == "true"? checkOutButton(context, theOrderedProducts, clearCart):
+                     Text('CLOSED', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red),)
                   ],
                 ),
               ),
@@ -214,6 +214,7 @@ class CartPage extends StatelessWidget {
                 )));
       },
       textColor: Colors.white,
+      
       padding: const EdgeInsets.all(0.0),
       child: Container(
         decoration: const BoxDecoration(

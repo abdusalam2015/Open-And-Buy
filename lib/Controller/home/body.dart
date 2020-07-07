@@ -1,3 +1,4 @@
+import 'package:OpenAndBuy/Controller/constants/colors.dart';
 import 'package:OpenAndBuy/Controller/loading.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -141,19 +142,37 @@ class _BodyState extends State<Body> {
                   spreadRadius: 2.0,
                   blurRadius: 4.0)
             ],
-            color: Colors.green,
+            color: storeDetail.storeStatus == "true"? APPBARCOLOR : UNAVAILABLE ,
           ),
           child: Column(children: [
             Padding(
               padding: EdgeInsets.all(1.0),
-              child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                isFavorite
-                    ? Icon(Icons.star_half, color: Colors.yellow)
-                    : Icon(Icons.star, color: Colors.yellow),
-                Text(
+              child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween, 
+              children: [
+                Row(
+                  children: <Widget>[
+                    Icon(Icons.star_half, color: Colors.yellow),
+                    Text(
                   '5.0',
                   style: TextStyle(fontSize: 14, color: Colors.white),
                 ),
+                  ],
+                ),
+                storeDetail.storeStatus == "true" ? Padding(
+                 padding: const EdgeInsets.all(8.0),
+                 child: Text(
+                   'Shopping Now..',
+                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold,color: Colors.white),
+                 ),
+              ): Padding(
+                 padding: const EdgeInsets.all(8.0),
+                 child: Text(
+                   'Closed',
+                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold,color: Colors.red),
+                 ),
+              )
+
               ]),
             ),
             Hero(
