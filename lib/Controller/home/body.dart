@@ -58,8 +58,8 @@ class _BodyState extends State<Body> {
                   child: _buildCard(widget.storesList[i], false, context),
                   onTap: () async {
                     ProgressDialog dialog = new ProgressDialog(context);
-                    dialog.style(message: 'Please wait...');
                     await dialog.show();
+                    await welcome(dialog);
                     List<Category> categoryList;
                     try {
                       categoryList = await StoreDatabaseService.getcategories(
@@ -74,6 +74,33 @@ class _BodyState extends State<Body> {
                   });
             },
           );
+  }
+  Future welcome(ProgressDialog dialog){
+    dialog.style(backgroundColor: Colors.blue,  );
+    double percentage = 0.0;
+    Future.delayed(Duration(seconds: 2)).then((value) {
+        percentage += 40.0;
+        dialog.update(
+          progress: percentage, message: "Progressing"
+        );
+        
+    });
+    Future.delayed(Duration(seconds: 2)).then((value) {
+        percentage += 60.0;
+        dialog.update(
+          progress: percentage, message: "Almost done"
+    ); });
+    Future.delayed(Duration(seconds: 2)).then((value) {
+        dialog.update(
+          progress: percentage,
+          message: "WELCOME",
+    ); });
+    
+  
+    //return true;
+    
+
+     
   }
 
   Widget _buildCard(StoreDetail storeDetail, bool isFavorite, context) {
@@ -103,6 +130,7 @@ class _BodyState extends State<Body> {
             //       )));
             // },
             child: Container(
+              
           // height: 50,
           // width: 280,
           decoration: BoxDecoration(
@@ -113,7 +141,7 @@ class _BodyState extends State<Body> {
                   spreadRadius: 2.0,
                   blurRadius: 4.0)
             ],
-            color: Colors.pink[400],
+            color: Colors.green,
           ),
           child: Column(children: [
             Padding(

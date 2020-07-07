@@ -1,3 +1,4 @@
+import 'package:OpenAndBuy/Controller/constants/colors.dart';
 import 'package:OpenAndBuy/Controller/store_page.dart';
 import 'package:OpenAndBuy/Model/category.dart';
 import 'package:OpenAndBuy/Model/store.dart';
@@ -14,7 +15,7 @@ Widget getDrawer(List<Category> categories, Function categoryIndexFunction) {
       decoration: new BoxDecoration(
         gradient: LinearGradient(
             colors: [
-              Colors.purple[200],
+              BACKGROUNDCOLOR,
               Colors.amberAccent,
             ],
             begin: FractionalOffset.topLeft,
@@ -37,8 +38,10 @@ Widget getDrawer(List<Category> categories, Function categoryIndexFunction) {
                               decoration: new BoxDecoration(
                                 gradient: LinearGradient(
                                     colors: [
-                                      Color(0xff915fb5),
-                                      Color(0xffca436b)
+                                       APPBARCOLOR,
+                                       Colors.amberAccent,
+                                      // Color(0xff915fb5),
+                                      // Color(0xffca436b)
                                     ],
                                     begin: FractionalOffset.topLeft,
                                     end: FractionalOffset.bottomRight,

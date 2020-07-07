@@ -77,7 +77,8 @@ Future<List<StoreDetail>> getAllStores() async {
    return  qn.documents.map((doc){
       return StoreDetail(sid: doc.data['sid'],name:doc.data['name'],
       email:doc.data['email'],password:doc.data['password'],location:doc.data['location'],
-      backgroundImage:doc.data['backgroundImage'],coveredArea:doc.data['coveredArea'],storeType:doc.data['storeType'],
+      backgroundImage:doc.data['backgroundImage'],coveredArea:doc.data['coveredArea'],
+      storeType:doc.data['storeType'], services: doc.data['services'],deliveryFees: doc.data['deliveryFees'],
       phoneNumber:doc.data['phoneNumber'],storeStatus: doc.data['storeStatus'],
       latitude: doc.data['latitude'],longitude: doc.data['longitude']
      );

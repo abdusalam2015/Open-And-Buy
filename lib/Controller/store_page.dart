@@ -1,3 +1,4 @@
+import 'package:OpenAndBuy/Controller/constants/colors.dart';
 import 'package:OpenAndBuy/Controller/loading.dart';
 import 'package:OpenAndBuy/Service/storeDatabase.dart';
 import 'package:OpenAndBuy/Service/store_notifier.dart';
@@ -54,13 +55,10 @@ class _StorePage2State extends State<StorePage2>
     storeNotifier.getCategoryProduct(widget.categories[categoryIndex].categoryID);
     productsList =storeNotifier.categoryProducts;
     return Scaffold(
+      backgroundColor:BACKGROUNDCOLOR, //APPBARCOLOR,
             appBar: PreferredSize(
+              
               preferredSize: Size.fromHeight(55.0),
-              // here the desired height
-              /// we need to send StoreID to the appbar, because we need to check
-              /// if we are already inside a store or still in the home page.
-              /// if we are already inside a store then we can open the shopping cart for the user,
-              /// if not then we need to make it disable.
               child: AppBarWidget( widget.storeDetail),
             ),
             body: ListView(

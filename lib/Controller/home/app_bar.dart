@@ -1,3 +1,4 @@
+import 'package:OpenAndBuy/Controller/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:progress_dialog/progress_dialog.dart';
@@ -36,7 +37,7 @@ class _AppBarWidgetState extends State<AppBarWidget> {
       totalCount = bloc.cart.values.reduce((a, b) => a + b);
     }
     return AppBar(
-      backgroundColor: Colors.black,
+      backgroundColor: APPBARCOLOR,
       elevation: 0.0,
       centerTitle: true,
       // leading: IconButton(
@@ -62,19 +63,16 @@ class _AppBarWidgetState extends State<AppBarWidget> {
                     width: 30.0,
                     child: new GestureDetector(
                       onTap: () {
-                        widget.storeDetail.sid != '' &&
-                                widget.storeDetail.sid != null
-                            ? Navigator.push(
+                         Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => CartPage(
-                                     
                                     widget.storeDetail,
                                     userInfo,
                                   ),
                                 ),
-                              )
-                            : Text('No Store Registered');
+                              );
+                            
                       },
                       child: new Stack(
                         children: <Widget>[

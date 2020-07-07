@@ -1,3 +1,4 @@
+import 'package:OpenAndBuy/Controller/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
@@ -33,12 +34,23 @@ class _ProductListState extends State<ProductList> {
       setState(() {
         bloc.subToCart(index, product);
       });
+      if(bloc.cart[index]==0){
+        setState(() {
+        bloc.clear(index);
+      });
+      }
+
+    }
+    void _clear(String index) {
+      setState(() {
+        bloc.clear(index);
+      });
     }
 
-    return productsGridList(widget.productList, _increment, _decrement);
+    return productsGridList(widget.productList, _increment, _decrement,_clear);
   }
 
-  Widget productsGridList(productList, _increment, _decrement) {
+  Widget productsGridList(productList, _increment, _decrement,_clear) {
     //  product = new Product(id:'4', name:'Morabou',
     // imgPath:'assets/chocolate/3.png',price:'\$1.99',info: 'info');
     return productList != null
@@ -55,13 +67,13 @@ class _ProductListState extends State<ProductList> {
                 ),
                 itemBuilder: (BuildContext context, int index) {
                   return productCard(
-                      productList[index], _increment, _decrement, context);
+                      productList[index], _increment, _decrement, _clear,context);
                 }),
           )
         : Center(child: Text('No Products'));
   }
 
-  Widget productCard(Product product, Function increment, Function decrement,
+  Widget productCard(Product product, Function increment, Function decrement,clear,
       BuildContext context) {
     // SharedFunctions obj = new SharedFunctions();
     // Uint8List imageFile ;
@@ -84,7 +96,8 @@ class _ProductListState extends State<ProductList> {
                     blurRadius: 6.0,
                   )
                 ],
-                color: Colors.white),
+                color: PRODUCTCARD,
+                ),
             child: Column(
               children: <Widget>[
                 Padding(
@@ -207,7 +220,7 @@ class _ProductListState extends State<ProductList> {
                   ],
                   color: Colors.white),
               child:
-                  buttonToAdd(count, product, product.id, increment, decrement),
+                  buttonToAdd(count, product, product.id, increment, decrement,clear),
             ),
           ),
         ],
@@ -215,7 +228,8 @@ class _ProductListState extends State<ProductList> {
     );
   }
 
-  Widget buttonToAdd(int count, product, id, increment, decrement) {
+  Widget buttonToAdd(int count, product, id, increment, decrement,clear) {
+     
     return (count != 0 && count != null)
         ? Container(
             height: 30,
@@ -236,7 +250,9 @@ class _ProductListState extends State<ProductList> {
                 GestureDetector(
                   onTap: () {
                     product.numberOfItemsForAnOrder = count.toString();
-                    decrement(id, product);
+                     decrement(id, product);
+                    
+                   
                   },
                   child: Icon(Icons.remove_circle_outline,
                       color: Colors.pink[400], size: 24.0),

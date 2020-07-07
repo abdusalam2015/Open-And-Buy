@@ -1,4 +1,5 @@
 import 'package:OpenAndBuy/Controller/EditUserDetails/account_settings.dart';
+import 'package:OpenAndBuy/Controller/constants/colors.dart';
 
 import 'package:OpenAndBuy/Model/setting.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'package:OpenAndBuy/Service/storeDatabase.dart';
 import 'package:OpenAndBuy/Model/store.dart';
 import 'package:OpenAndBuy/Controller/home/body.dart';
-import 'package:OpenAndBuy/Model/user.dart';
 import 'package:OpenAndBuy/Model/cart_bloc.dart';
 import 'package:OpenAndBuy/Controller/settings/feedback.dart';
 
@@ -41,11 +41,12 @@ class _HomeState extends State<Home> {
         create: (context) => CartBloc(),
         child: MaterialApp(
           home: Scaffold(
+            backgroundColor: BACKGROUNDCOLOR,
             appBar: PreferredSize(
               preferredSize: Size.fromHeight(55.0), // here the desired height
               //child: AppBarWidget(context,storeDetail),
               child: AppBar(
-                backgroundColor: Colors.pink[400],
+                backgroundColor: APPBARCOLOR,
                 title: Text(value('title')),
                 actions: <Widget>[
                   PopupMenuButton<String>(
