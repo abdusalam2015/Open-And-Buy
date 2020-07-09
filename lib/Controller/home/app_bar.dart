@@ -1,4 +1,5 @@
 import 'package:OpenAndBuy/Controller/constants/colors.dart';
+import 'package:OpenAndBuy/Controller/settings/my_orders.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:progress_dialog/progress_dialog.dart';
@@ -17,8 +18,8 @@ import 'package:OpenAndBuy/Model/user_detail.dart';
 import 'package:OpenAndBuy/Service/user_notifier.dart';
 
 class AppBarWidget extends StatefulWidget {
-   final StoreDetail storeDetail;
-  AppBarWidget( this.storeDetail);
+  final StoreDetail storeDetail;
+  AppBarWidget(this.storeDetail);
   @override
   _AppBarWidgetState createState() => _AppBarWidgetState();
 }
@@ -36,83 +37,90 @@ class _AppBarWidgetState extends State<AppBarWidget> {
     if (bloc.cart.length > 0) {
       totalCount = bloc.cart.values.reduce((a, b) => a + b);
     }
-    return AppBar(
-      backgroundColor: APPBARCOLOR,
-      elevation: 0.0,
-      centerTitle: true,
-      // leading: IconButton(
-      //   icon: arrBack? Icon(Icons.arrow_back, color: Colors.white) :Icon(Icons.list, color: Colors.white),
-      //   onPressed: () {
-      //     if(arrBack){
-      //     Navigator.of(context).pop();
-      //     }
-      //   },
-      // ),
-      title: Text('Shoping Now',
-          style: TextStyle(
-            fontFamily: 'Varela',
-            fontSize: 18.0,
-            color: Colors.white,
-          )),
-      actions: <Widget>[
-        widget.storeDetail.sid != '' && widget.storeDetail.sid != null
-            ? Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: new Container(
-                    height: 150.0,
-                    width: 30.0,
-                    child: new GestureDetector(
-                      onTap: () {
-                         Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => CartPage(
-                                    widget.storeDetail,
-                                    userInfo,
-                                  ),
-                                ),
-                              );
-                            
-                      },
-                      child: new Stack(
-                        children: <Widget>[
-                          new IconButton(
-                            icon: new Icon(
-                              Icons.shopping_cart,
-                              color: Colors.white,
+    return  AppBar(
+        backgroundColor: APPBARCOLOR,
+        elevation: 0.0,
+        centerTitle: true,
+        // leading: IconButton(
+        //   icon: arrBack? Icon(Icons.arrow_back, color: Colors.white) :Icon(Icons.list, color: Colors.white),
+        //   onPressed: () {
+        //     if(arrBack){
+        //     Navigator.of(context).pop();
+        //     }
+        //   },
+        // ),
+        title: Text('Shoping Now',
+            style: TextStyle(
+              fontFamily: 'Varela',
+              fontSize: 18.0,
+              color: Colors.white,
+            )),
+        actions: <Widget>[
+          widget.storeDetail.sid != '' && widget.storeDetail.sid != null
+              ? Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: new Container(
+                      height: 150.0,
+                      width: 30.0,
+                      child: new GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CartPage(
+                                widget.storeDetail,
+                                userInfo,
+                              ),
                             ),
-                            onPressed: null,
-                          ),
-                          new Positioned(
-                              child: new Stack(
-                            children: <Widget>[
-                              new Icon(Icons.brightness_1,
-                                  size: 20.0, color: Colors.red[700]),
-                              new Positioned(
-                                  top: 3.0,
-                                  right: 7,
-                                  child: new Center(
-                                    child: new Text(
-                                      '$totalCount',
-                                      style: new TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 12.0,
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                  )),
-                            ],
-                          )),
-                        ],
-                      ),
-                    )),
-              )
-            : Container(),
-        IconButton(
-          icon: Icon(Icons.search, color: Colors.white),
-          onPressed: () {},
-        ),
-        
-      ],
+                          );
+                        },
+                        child: new Stack(
+                          children: <Widget>[
+                            new IconButton(
+                              icon: new Icon(
+                                Icons.shopping_cart,
+                                color: Colors.white,
+                              ),
+                              onPressed: null,
+                            ),
+                            new Positioned(
+                                child: new Stack(
+                              children: <Widget>[
+                                new Icon(Icons.brightness_1,
+                                    size: 20.0, color: Colors.red[700]),
+                                new Positioned(
+                                    top: 3.0,
+                                    right: 7,
+                                    child: new Center(
+                                      child: new Text(
+                                        '$totalCount',
+                                        style: new TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12.0,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                    )),
+                              ],
+                            )),
+                          ],
+                        ),
+                      )),
+                )
+              : Container(),
+          IconButton(
+            icon: Icon(Icons.history, color: Colors.white),
+            onPressed: () async {
+              await userNotifier.getOrders();
+              Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MyOrders(userNotifier.orders),
+                            ),
+                          );
+            },
+          ),
+        ],
+      
     );
   }
 

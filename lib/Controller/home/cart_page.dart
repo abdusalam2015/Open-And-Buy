@@ -1,4 +1,5 @@
 import 'package:OpenAndBuy/Controller/constants/colors.dart';
+import 'package:OpenAndBuy/Controller/payment/home_payment.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:OpenAndBuy/Model/order.dart';
@@ -9,6 +10,7 @@ import 'package:OpenAndBuy/Controller/orders_pages/order_confirmation.dart';
 import 'package:OpenAndBuy/Model/cart_bloc.dart';
 import 'package:OpenAndBuy/Model/user_detail.dart';
 
+
 class CartPage extends StatelessWidget {
   final StoreDetail storeDetail;
   final UserDetail userDetail;
@@ -16,10 +18,10 @@ class CartPage extends StatelessWidget {
 //  CartPage({Key key}) : super(key: key);
   List<double> productsPrices = new List<double>();
   double deliveryAndServices = 0.0;
-
+var bloc;
   @override
   Widget build(BuildContext context) {
-    var bloc = Provider.of<CartBloc>(context);
+    bloc = Provider.of<CartBloc>(context);
     void clearCart() {
       bloc.cart.clear();
       bloc.productInfo.clear();
@@ -141,7 +143,7 @@ class CartPage extends StatelessWidget {
                             '  SEK')
                       ],
                     ),
-                    storeDetail.storeStatus == "true"? checkOutButton(context, theOrderedProducts, clearCart):
+                    storeDetail.storeStatus == "true"? checkOutButton(context, theOrderedProducts):
                      Text('CLOSED', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red),)
                   ],
                 ),
@@ -173,18 +175,25 @@ class CartPage extends StatelessWidget {
     );
   }
 
-  Widget checkOutButton(context, theOrderedProducts, clearCart) {
+  
+  Widget checkOutButton(context, theOrderedProducts) {
+
+    double a = storeDetail.deliveryFees;
+    double b = storeDetail.services;
+    double c = bloc.total;
+    double  total = [a, b, c].reduce((a, b) => a + b);
+    print(total.toString() + " UUUUUUUUUU");
     return RaisedButton(
-      onPressed: () {
+      onPressed: ()async {
         String orderName = userDetail.firstName + ' ' + userDetail.lastName;
         Order order = new Order(
           clientID: userDetail.userID,
           items: theOrderedProducts,
           storeID: storeDetail.sid,
-          totalAmount: 130.4,
-          appFee: 20.9,
-          deleveryFee: 50.8,
-          discount: 0.1,
+          totalAmount: total,
+          appFee: 0.0,
+          deleveryFee: storeDetail.deliveryFees,
+          discount: 0.0,
           time: DateTime.now().toString(),
           orderName: orderName,
           orderImage: userDetail.photoURL,
@@ -192,26 +201,29 @@ class CartPage extends StatelessWidget {
           storePhoneNumber: storeDetail.phoneNumber,
           status: "waiting for response...",
           storeName: storeDetail.name,
+          services: storeDetail.services
         );
 
         /// register the order in the store side
-        OrderService obj = new OrderService(orderDetail: order);
-        obj.registerAnOrderInTheStoreDB();
+        
+        // OrderService obj = new OrderService(orderDetail: order);
+        // String orderID = await obj.registerAnOrderInTheStoreDB();
+
         // register the order in the user side
 
-        // clear the cart
-        clearCart();
 
-//
+        
+        /***************** */
+     //   clearCart();
         Navigator.pop(context);
         Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => OrderConfirmation(
-                  storeDetail: storeDetail,
-                  theOrderedProducts: theOrderedProducts,
-                  userDetail: userDetail,
-                  //categoriesList,
-                  //productsList
-                )));
+            builder: (context) => HomePayment( 
+                   userDetail: userDetail,
+                   storeDetail: storeDetail,
+                   order: order,
+            )));
+
+        /*********************** */
       },
       textColor: Colors.white,
       
@@ -232,3 +244,4 @@ class CartPage extends StatelessWidget {
     );
   }
 }
+

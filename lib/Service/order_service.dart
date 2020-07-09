@@ -9,7 +9,7 @@ class OrderService {
   Order orderDetail;
   OrderService({this.orderDetail});
 
-  Future registerAnOrderInTheStoreDB() async {
+  Future <String > registerAnOrderInTheStoreDB() async {
     final DocumentReference storeCollection = Firestore.instance
         .collection('stores')
         .document(orderDetail.storeID)
@@ -41,6 +41,7 @@ class OrderService {
     OrderServiceUserSide orderUserSide =
         new OrderServiceUserSide(orderDetail: orderDetail);
     orderUserSide.registerAnOrderInTheUserDB();
+          return orderDetail.orderID;
   }
 
   final CollectionReference storeCollection2 =
@@ -69,6 +70,7 @@ class OrderService {
       print(e.toString() + 'Iam inside registerOrderProducts function');
       return;
     }
+
   }
 
   Future getStoreProducts(String storeID, String categoryID) async {
@@ -328,5 +330,74 @@ class OrderService {
       if (orders[i].status != ACCEPTED && orders[i].status != REJECTED) count++;
     }
     return count;
+  }
+
+  static Future<Order> getOrder(String sid, String orderID)async{
+      try {
+    Order order = new Order();
+    List<Product> items = [];
+      var firestore = Firestore.instance;
+      await firestore
+          .collection('stores')
+          .document(sid)
+          .collection('Orders')
+          .document(orderID).get().then((doc) {
+            order = Order(
+            orderID: doc.data['orderID'], //
+            clientID: doc.data['clientID'],//
+            items: items, //
+            storeID: doc.data['storeID'],//
+            totalAmount: doc.data['totalAmount'],//
+            appFee: doc.data['appFee'],//
+            deleveryFee: doc.data['deleveryFee'],//
+            discount: doc.data['discount'],//
+            time: (doc.data['timestamp'] as Timestamp).toDate().toUtc().toString(),
+            orderName: doc.data['OrderName'],//
+            orderImage: doc.data['OrderImage'],//
+            storeName: doc.data['storeName'],//
+            clientPhoneNumber: doc.data['clientPhoneNumber'],
+            note: doc.data['note'],//
+            status: doc.data['status'],//
+            clientAddress: doc.data['clientAddress'], 
+            services: doc.data['services'],
+            storePhoneNumber: doc.data['storePhoneNumber']);
+          });
+      order =  await getTheOrderItems(order);
+      return order;
+    } catch (e) {
+      print(e.toString() + 'I am inside get the Order function');
+      return null;
+    }
+  }
+   
+  
+  static Future getTheOrderItems(
+       Order order) async {
+    try { 
+
+        var firestore = Firestore.instance;
+        QuerySnapshot qn = await firestore
+            .collection('stores')
+            .document(order.storeID)
+            .collection('Orders')
+            .document(order.orderID)
+            .collection('products')
+            .getDocuments();
+        order.items = qn.documents.map((doc){
+          return Product(
+            name: doc.data['name'],
+            price: doc.data['price'],
+            info: doc.data['ProductInfo'],
+            id: doc.data['productID'],
+            imgPath: doc.data['image'],
+            numberOfItemsForAnOrder: doc.data['NumberOfItems'],
+          );
+        }).toList();
+      
+      return order;
+    } catch (e) {
+      print(e.toString() + 'Iam inside getTheOrderItems function');
+      return;
+    }
   }
 }

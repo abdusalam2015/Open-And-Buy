@@ -114,8 +114,8 @@ class StripeService{
   }
   static Future<Map<String,dynamic> > createPaymentIntent(String amount, String currency) async{
     try{
-      Map<String , dynamic >body= {
-        'amount':amount,
+      Map<String , dynamic > body = {
+        'amount':amount.toString(),
         'currency':currency,
         'payment_method_types[]':'card' 
       }; 

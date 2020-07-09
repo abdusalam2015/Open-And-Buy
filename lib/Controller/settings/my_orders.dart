@@ -1,13 +1,10 @@
 import 'package:OpenAndBuy/Controller/constants/colors.dart';
 import 'package:OpenAndBuy/Model/localization/localizationConstants.dart';
 import 'package:OpenAndBuy/Model/order.dart';
-import 'package:OpenAndBuy/Model/user_detail.dart';
-import 'package:OpenAndBuy/Service/user_notifier.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class MyOrders extends StatefulWidget {
-  List<Order> myOrders;
+  final List<Order> myOrders;
   MyOrders(this.myOrders);
   @override
   _MyOrdersState createState() => _MyOrdersState();

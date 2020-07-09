@@ -1,5 +1,6 @@
 import 'package:OpenAndBuy/Controller/constants/colors.dart';
 import 'package:OpenAndBuy/Controller/loading.dart';
+import 'package:OpenAndBuy/Model/cart_bloc.dart';
 import 'package:OpenAndBuy/Model/localization/localizationConstants.dart';
 import 'package:OpenAndBuy/Service/storeDatabase.dart';
 import 'package:OpenAndBuy/Service/store_notifier.dart';
@@ -13,29 +14,29 @@ import 'package:OpenAndBuy/Controller/home/app_bar.dart';
 import 'package:OpenAndBuy/Controller/home/new_drawer.dart';
 import 'package:OpenAndBuy/Model/product.dart';
 
-class StorePage extends StatefulWidget {
+class StorePage extends StatelessWidget {
   final StoreDetail storeDetail;
   final List<Category> categories;
   StorePage({this.storeDetail, this.categories});
-  @override
-  _StorePageState createState() => _StorePageState();
-}
 
-class _StorePageState extends State<StorePage> {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider.value(
-        value: StoreNotifier(sid: widget.storeDetail.sid),
-        child: MaterialApp(
-            home: StorePage2(
-                storeDetail: widget.storeDetail,
-                categories: widget.categories)));
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider.value(value: StoreNotifier(sid: storeDetail.sid)),
+        ],
+        child: Scaffold(
+            body: StorePage2(
+                storeDetail: storeDetail,
+                categories: categories
+               )));
   }
 }
 
 class StorePage2 extends StatefulWidget {
   final StoreDetail storeDetail;
   final List<Category> categories;
+
   StorePage2({this.storeDetail, this.categories});
   @override
   _StorePage2State createState() => _StorePage2State();
@@ -43,8 +44,6 @@ class StorePage2 extends StatefulWidget {
 
 class _StorePage2State extends State<StorePage2>
     with SingleTickerProviderStateMixin {
-  
-
   int categoryIndex = 0;
   void _categoryIndexFunction(int index) {
     setState(() {
@@ -54,13 +53,16 @@ class _StorePage2State extends State<StorePage2>
 
   List<Product> productsList;
   bool finished = false;
-   String value(String key) {
-    return getTranslated(context, key);
-  }
+
   @override
   Widget build(BuildContext context) {
+    //print(context.toString());
+    String value(String key) {
+      return getTranslated(context, key);
+    }
+
     StoreNotifier storeNotifier = Provider.of<StoreNotifier>(context);
-   
+
     storeNotifier
         .getCategoryProduct(widget.categories[categoryIndex].categoryID);
     productsList = storeNotifier.categoryProducts;
@@ -75,7 +77,8 @@ class _StorePage2State extends State<StorePage2>
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                 widget.categories[categoryIndex].name + ' Category'  ,
+                widget.categories[categoryIndex].name +
+                    value("category").toString(),
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),

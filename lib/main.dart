@@ -1,4 +1,5 @@
 
+import 'package:OpenAndBuy/Model/cart_bloc.dart';
 import 'package:flutter/material.dart';
  
 import 'package:provider/provider.dart';
@@ -18,7 +19,9 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(MultiProvider(
       providers: [
+        
         StreamProvider<User>.value(value: AuthService().user),
+        ChangeNotifierProvider.value(value: CartBloc()),
         ChangeNotifierProvider<UserNotifier>(
             create: (context) => new UserNotifier(
                 uid: Provider.of<User>(context,listen: false).uid.toString())),

@@ -31,15 +31,15 @@ class _BodyState extends State<Body> {
     UserNotifier userNotifier = Provider.of<UserNotifier>(context);
     await userNotifier.getUserInfo();
     userDetail = userNotifier.userDetail;
-    if(this.mounted){
-    setState(() {
-      finished = true;
-    });
+    if (this.mounted) {
+      setState(() {
+        finished = true;
+      });
     }
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
     //print(widget.storesList[2].latitude.toString() + "  dfdfd");
     // Provider.of<UserNotifier>(context,listen: false) ;
     getUserData();
@@ -67,41 +67,39 @@ class _BodyState extends State<Body> {
                           widget.storesList[i].sid);
                     } catch (e) {}
                     await dialog.hide();
-                    Navigator.of(context).push(MaterialPageRoute(
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
                         builder: (context) => StorePage(
-                              storeDetail: widget.storesList[i],
-                              categories: categoryList,
-                            )));
+                            storeDetail: widget.storesList[i],
+                            categories: categoryList),
+                      ),
+                    );
                   });
             },
           );
   }
-  Future welcome(ProgressDialog dialog){
-    dialog.style(backgroundColor: Colors.blue,  );
+
+  Future welcome(ProgressDialog dialog) {
+    dialog.style(
+      backgroundColor: Colors.blue,
+    );
     double percentage = 0.0;
     Future.delayed(Duration(seconds: 2)).then((value) {
-        percentage += 40.0;
-        dialog.update(
-          progress: percentage, message: "Progressing"
-        );
-        
+      percentage += 40.0;
+      dialog.update(progress: percentage, message: "Progressing");
     });
     Future.delayed(Duration(seconds: 2)).then((value) {
-        percentage += 60.0;
-        dialog.update(
-          progress: percentage, message: "Almost done"
-    ); });
+      percentage += 60.0;
+      dialog.update(progress: percentage, message: "Almost done");
+    });
     Future.delayed(Duration(seconds: 2)).then((value) {
-        dialog.update(
-          progress: percentage,
-          message: "WELCOME",
-    ); });
-    
-  
-    //return true;
-    
+      dialog.update(
+        progress: percentage,
+        message: "WELCOME",
+      );
+    });
 
-     
+    //return true;
   }
 
   Widget _buildCard(StoreDetail storeDetail, bool isFavorite, context) {
@@ -113,25 +111,8 @@ class _BodyState extends State<Body> {
     return Padding(
         padding: EdgeInsets.all(5),
         child: InkWell(
-            // onTap: () async{
-            //   StoreDatabaseService obj = new StoreDatabaseService(sid: userDetail.userID);
-            //   List<Category> categoryList;
-            //   StoreDetail storeDetail;
-            //   List<Product> productsList;
-            //   try{categoryList  =  await obj.getcategories(userDetail.userID);}catch(e){}
-            //  // try{ storeDetail = await obj.getStoreInfo(userDetail.userID.toString());}catch(e){}
-            //   try{ productsList=  await obj.getStoreProducts(userDetail.userID,
-            //   (categoryList.length >0 ) ?categoryList[0].categoryID:'') ;}catch(e){}
-            //   Navigator.of(context).push(
-            //       MaterialPageRoute(builder: (context) => StorePage(
-            //         storeDetail:storeDetail,
-            //         cont: widget.cont,
-            //         categoryList:categoryList,
-            //         productsList:productsList,
-            //       )));
-            // },
+           
             child: Container(
-              
           // height: 50,
           // width: 280,
           decoration: BoxDecoration(
@@ -142,38 +123,46 @@ class _BodyState extends State<Body> {
                   spreadRadius: 2.0,
                   blurRadius: 4.0)
             ],
-            color: storeDetail.storeStatus == "true"? APPBARCOLOR : UNAVAILABLE ,
+            color:
+                storeDetail.storeStatus == "true" ? APPBARCOLOR : UNAVAILABLE,
           ),
           child: Column(children: [
             Padding(
               padding: EdgeInsets.all(1.0),
               child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween, 
-              children: [
-                Row(
-                  children: <Widget>[
-                    Icon(Icons.star_half, color: Colors.yellow),
-                    Text(
-                  '5.0',
-                  style: TextStyle(fontSize: 14, color: Colors.white),
-                ),
-                  ],
-                ),
-                storeDetail.storeStatus == "true" ? Padding(
-                 padding: const EdgeInsets.all(8.0),
-                 child: Text(
-                   'Shopping Now..',
-                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold,color: Colors.white),
-                 ),
-              ): Padding(
-                 padding: const EdgeInsets.all(8.0),
-                 child: Text(
-                   'Closed',
-                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold,color: Colors.red),
-                 ),
-              )
-
-              ]),
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: <Widget>[
+                        Icon(Icons.star_half, color: Colors.yellow),
+                        Text(
+                          '5.0',
+                          style: TextStyle(fontSize: 14, color: Colors.white),
+                        ),
+                      ],
+                    ),
+                    storeDetail.storeStatus == "true"
+                        ? Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              'Shopping Now..',
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white),
+                            ),
+                          )
+                        : Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              'Closed',
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red),
+                            ),
+                          )
+                  ]),
             ),
             Hero(
               tag: storeDetail.sid,

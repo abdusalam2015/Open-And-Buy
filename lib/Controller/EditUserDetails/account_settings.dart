@@ -215,7 +215,6 @@ class _AccountSettingsState extends State<AccountSettings> {
       onTap: () async {
         var result;
         finished = await userNotifier.getOrders();
-
         if (index == 1) {
           result = Navigator.of(context)
               .push(MaterialPageRoute(builder: (context) => Wallet()));

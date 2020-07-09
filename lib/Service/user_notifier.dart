@@ -25,11 +25,11 @@ import 'package:OpenAndBuy/Service/database.dart';
 
 
  Future<bool> getOrders() async {
-
     _orders =   await OrderService.getOrders(uid) ;
     notifyListeners();
     return true;
+}
 
-   }
+
 
  }

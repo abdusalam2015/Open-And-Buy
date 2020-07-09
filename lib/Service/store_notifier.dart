@@ -1,7 +1,9 @@
 
 import 'package:OpenAndBuy/Model/category.dart';
+import 'package:OpenAndBuy/Model/order.dart';
 import 'package:OpenAndBuy/Model/product.dart';
 import 'package:OpenAndBuy/Model/store.dart';
+import 'package:OpenAndBuy/Service/order_service.dart';
 import 'package:OpenAndBuy/Service/storeDatabase.dart';
 import 'package:flutter/material.dart'; 
 
@@ -17,10 +19,12 @@ import 'package:flutter/material.dart';
   StoreDetail _storeDetail ;
   List<Category> _categories;
   List<Product> _categoryProducts;
+  Order _order ;
 
   StoreDetail get storeDetail => _storeDetail;
   List<Category> get categories => _categories;
   List<Product> get categoryProducts => _categoryProducts;
+  Order get order => _order;
 
 
   Future<bool>  getStoreInfo() async {
@@ -40,6 +44,11 @@ import 'package:flutter/material.dart';
     notifyListeners();
     return true;
     }
+    Future<bool> getOrderDetails(String orderID) async {
+    _order =   await OrderService.getOrder(sid, orderID) ;
+    notifyListeners();
+    return true;
+}
 
     
  }

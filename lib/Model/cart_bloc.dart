@@ -9,7 +9,7 @@ class CartBloc with ChangeNotifier {
   Map<String, int> get cart => _cart;
   Map<String, Product> get productInfo => _cartInfo;
   double get total => _total;
-
+ 
   void addToCart(index, product) {
     if (_cart.containsKey(index)) {
       _cart[index] += 1;
@@ -43,6 +43,12 @@ class CartBloc with ChangeNotifier {
       notifyListeners();
     }
     
+  }
+  void clearTotal(){
+    _total = 0.0;
+    notifyListeners();
+
+
   }
 
   //  void  productsSummation(List<double> productsPrices) {

@@ -40,7 +40,7 @@ class _ExistingCardsPageState extends State<ExistingCardsPage> {
 
     );
     var response = await StripeService.payViaExistingCard(
-      amount:'2500' ,
+      amount: '00' ,
       currency:'USD',
       card: stripeCard
     );
