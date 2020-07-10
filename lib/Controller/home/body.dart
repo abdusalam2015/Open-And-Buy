@@ -67,13 +67,10 @@ class _BodyState extends State<Body> {
                           widget.storesList[i].sid);
                     } catch (e) {}
                     await dialog.hide();
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
+                    Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => StorePage(
                             storeDetail: widget.storesList[i],
-                            categories: categoryList),
-                      ),
-                    );
+                            categories: categoryList)));
                   });
             },
           );
@@ -111,7 +108,6 @@ class _BodyState extends State<Body> {
     return Padding(
         padding: EdgeInsets.all(5),
         child: InkWell(
-           
             child: Container(
           // height: 50,
           // width: 280,

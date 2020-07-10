@@ -22,10 +22,7 @@ var bloc;
   @override
   Widget build(BuildContext context) {
     bloc = Provider.of<CartBloc>(context);
-    void clearCart() {
-      bloc.cart.clear();
-      bloc.productInfo.clear();
-    }
+    
 
     String totalAmount() =>
         (storeDetail.services + storeDetail.deliveryFees + bloc.total)
@@ -182,7 +179,7 @@ var bloc;
     double b = storeDetail.services;
     double c = bloc.total;
     double  total = [a, b, c].reduce((a, b) => a + b);
-    print(total.toString() + " UUUUUUUUUU");
+
     return RaisedButton(
       onPressed: ()async {
         String orderName = userDetail.firstName + ' ' + userDetail.lastName;

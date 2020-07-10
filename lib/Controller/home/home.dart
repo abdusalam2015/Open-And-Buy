@@ -90,4 +90,5 @@ class _HomeState extends State<Home> {
           .push(MaterialPageRoute(builder: (context) => AccountSettings()));
     }
   }
+  
 }

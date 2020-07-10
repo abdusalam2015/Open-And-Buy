@@ -27,6 +27,8 @@
     "orderedOrder":" Ordered an order!",
     "total":"Total: ",
     "noOrders":"No orders!",
+    "noNotification":"No Notifications",
+    "noMessages":"No Messages",
     "addCategory":"Add A Category",
     "addedScuccessfully":"Added Scuccessfully!",
     "categoryName":"The Category Name ? ",

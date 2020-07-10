@@ -11,23 +11,20 @@ import 'package:provider/provider.dart';
 
 class OrderConfirmation extends StatelessWidget {
   final StoreDetail storeDetail;
-  final List<Product> theOrderedProducts;
   final UserDetail userDetail;
   final String orderID;
   OrderConfirmation(
       {this.storeDetail,
-      this.theOrderedProducts,
       this.userDetail,
       this.orderID});
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider.value(
       value: OrderNotifier(storeID: storeDetail.sid),
-          child: Scaffold(
+      child: Scaffold(
           body: OrderConfirmation2(
               storeDetail: storeDetail,
-              theOrderedProducts: theOrderedProducts,
-              userDetail: userDetail,
+               userDetail: userDetail,
               orderID: orderID)),
     );
   }
@@ -35,13 +32,11 @@ class OrderConfirmation extends StatelessWidget {
 
 class OrderConfirmation2 extends StatefulWidget {
   final StoreDetail storeDetail;
-  final List<Product> theOrderedProducts;
-  final UserDetail userDetail;
+   final UserDetail userDetail;
   final String orderID;
   OrderConfirmation2(
       {this.storeDetail,
-      this.theOrderedProducts,
-      this.userDetail,
+       this.userDetail,
       this.orderID});
 
   @override
@@ -57,9 +52,9 @@ class _OrderConfirmation2State extends State<OrderConfirmation2> {
     OrderNotifier orderNotifier = Provider.of<OrderNotifier>(context);
     orderNotifier.getOrderDetails(widget.orderID);
     _order = orderNotifier.order;
-    status = _order!=null?_order.status:'';
-    note = _order!=null?_order.note:'';
-    note == null? note = '': note;
+    status = _order != null ? _order.status : '';
+    note = _order != null ? _order.note : '';
+    note == null ? note = '' : note;
 
     return Scaffold(
       appBar: AppBar(
@@ -75,7 +70,7 @@ class _OrderConfirmation2State extends State<OrderConfirmation2> {
             storeDetails(),
             userDetails(),
             trackButton(),
-          //  feedback(),
+            //  feedback(),
           ],
         ),
       ),
@@ -183,7 +178,7 @@ class _OrderConfirmation2State extends State<OrderConfirmation2> {
                 'Note : ',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-              Text( note,
+              Text(note,
                   style: TextStyle(
                     fontSize: 20,
                     color: Colors.black,
@@ -208,19 +203,24 @@ class _OrderConfirmation2State extends State<OrderConfirmation2> {
                 Row(
                   children: <Widget>[
                     // Text('Total Items: 4 Items',),
-                    text('Store Name: ', _order!=null?_order.storeName:'', '')
+                    text('Store Name: ', _order != null ? _order.storeName : '',
+                        '')
                   ],
                 ),
                 Row(
                   children: <Widget>[
                     //Text('Subtotal: 303 SEK'),
-                    text('Subtotal: ', _order!=null? _order.totalAmount.toString():'', '  SEK')
+                    text(
+                        'Subtotal: ',
+                        _order != null ? _order.totalAmount.toString() : '',
+                        '  SEK')
                   ],
                 ),
                 Row(
                   children: <Widget>[
                     // Text('Delivery Fee: 10 SEK'),
-                    text('Tel.  : ',_order!=null? _order.storePhoneNumber:'', '')
+                    text('Tel.  : ',
+                        _order != null ? _order.storePhoneNumber : '', '')
                   ],
                 ),
                 Row(

@@ -1,4 +1,5 @@
 import 'package:OpenAndBuy/Controller/constant.dart';
+import 'package:OpenAndBuy/Model/message.dart';
 import 'package:OpenAndBuy/Model/order.dart';
 import 'package:OpenAndBuy/Model/product.dart';
 import 'package:OpenAndBuy/Model/user_detail.dart';
@@ -9,13 +10,14 @@ class OrderService {
   Order orderDetail;
   OrderService({this.orderDetail});
 
-  Future <String > registerAnOrderInTheStoreDB() async {
+  Future<String> registerAnOrderInTheStoreDB() async {
     final DocumentReference storeCollection = Firestore.instance
         .collection('stores')
         .document(orderDetail.storeID)
         .collection('Orders')
         .document();
-    await storeCollection.setData({ //17
+    await storeCollection.setData({
+      //17
       'orderID': storeCollection.documentID,
       'clientID': orderDetail.clientID,
       'storeID': orderDetail.storeID,
@@ -33,15 +35,19 @@ class OrderService {
       'note': orderDetail.note,
       'clientAddress': orderDetail.clientAddress,
     });
+
+
     //   FieldValue serverTimestamp() =>FieldValue._(_factory.serverTimestamp());
     await registerOrderProducts(storeCollection.documentID);
+
 
 // update the order and register it in the user
     orderDetail.orderID = storeCollection.documentID;
     OrderServiceUserSide orderUserSide =
         new OrderServiceUserSide(orderDetail: orderDetail);
     orderUserSide.registerAnOrderInTheUserDB();
-          return orderDetail.orderID;
+    return orderDetail.orderID;
+
   }
 
   final CollectionReference storeCollection2 =
@@ -70,7 +76,6 @@ class OrderService {
       print(e.toString() + 'Iam inside registerOrderProducts function');
       return;
     }
-
   }
 
   Future getStoreProducts(String storeID, String categoryID) async {
@@ -97,10 +102,9 @@ class OrderService {
     }
   }
 
-  static Future getTheOrderItemsToAllOrders(
-      List<Order> myOrders) async {
+  static Future getTheOrderItemsToAllOrders(List<Order> myOrders) async {
     try {
-      for ( int i = 0; i < myOrders.length; i++ ) {
+      for (int i = 0; i < myOrders.length; i++) {
         // UserDetail client = await getClientInfo(myOrders[i].clientID);
         // await editClientDataInTheOrdersSection(myOrders[i], client);
         // myOrders[i].orderImage = client.photoURL;
@@ -157,26 +161,25 @@ class OrderService {
 
         return Order(
             orderID: doc.data['orderID'], //
-            clientID: doc.data['clientID'],//
+            clientID: doc.data['clientID'], //
             items: items, //
-            storeID: doc.data['storeID'],//
-            totalAmount: doc.data['totalAmount'],//
-            appFee: doc.data['appFee'],//
-            deleveryFee: doc.data['deleveryFee'],//
-            discount: doc.data['discount'],//
-            time: time,//
-            orderName: doc.data['OrderName'],//
-            orderImage: doc.data['OrderImage'],//
-            storeName: doc.data['storeName'],//
+            storeID: doc.data['storeID'], //
+            totalAmount: doc.data['totalAmount'], //
+            appFee: doc.data['appFee'], //
+            deleveryFee: doc.data['deleveryFee'], //
+            discount: doc.data['discount'], //
+            time: time, //
+            orderName: doc.data['OrderName'], //
+            orderImage: doc.data['OrderImage'], //
+            storeName: doc.data['storeName'], //
             clientPhoneNumber: doc.data['clientPhoneNumber'],
-            note: doc.data['note'],//
-            status: doc.data['status'],//
-            clientAddress: doc.data['clientAddress'], 
+            note: doc.data['note'], //
+            status: doc.data['status'], //
+            clientAddress: doc.data['clientAddress'],
             services: doc.data['services'],
-            storePhoneNumber: doc.data['storePhoneNumber']);//
+            storePhoneNumber: doc.data['storePhoneNumber']); //
       }).toList();
-      myOrders =
-          await getTheOrderItemsToAllOrders(myOrders);
+      myOrders = await getTheOrderItemsToAllOrders(myOrders);
       return myOrders;
     } catch (e) {
       print(e.toString() + 'I am inside getOrders function');
@@ -324,80 +327,134 @@ class OrderService {
     }
   }
 
-  static int getNumberOfUncheckedOrders(List<Order> orders) {
+  static  int getNumberOfUncheckedOrders(List<Order> orders) {
     int count = 0;
-    for (int i = 0; i < orders.length; i++) {
+    if(orders != null){
+    for ( int i = 0 ; i < orders.length; i++ ) {
       if (orders[i].status != ACCEPTED && orders[i].status != REJECTED) count++;
     }
-    return count;
+    }
+    return  count;
+     
   }
 
-  static Future<Order> getOrder(String sid, String orderID)async{
-      try {
-    Order order = new Order();
-    List<Product> items = [];
+  static Future<Order> getOrder(String sid, String orderID) async {
+    try {
+      Order order = new Order();
+      List<Product> items = [];
       var firestore = Firestore.instance;
       await firestore
           .collection('stores')
           .document(sid)
           .collection('Orders')
-          .document(orderID).get().then((doc) {
-            order = Order(
+          .document(orderID)
+          .get()
+          .then((doc) {
+        order = Order(
             orderID: doc.data['orderID'], //
-            clientID: doc.data['clientID'],//
+            clientID: doc.data['clientID'], //
             items: items, //
-            storeID: doc.data['storeID'],//
-            totalAmount: doc.data['totalAmount'],//
-            appFee: doc.data['appFee'],//
-            deleveryFee: doc.data['deleveryFee'],//
-            discount: doc.data['discount'],//
-            time: (doc.data['timestamp'] as Timestamp).toDate().toUtc().toString(),
-            orderName: doc.data['OrderName'],//
-            orderImage: doc.data['OrderImage'],//
-            storeName: doc.data['storeName'],//
+            storeID: doc.data['storeID'], //
+            totalAmount: doc.data['totalAmount'], //
+            appFee: doc.data['appFee'], //
+            deleveryFee: doc.data['deleveryFee'], //
+            discount: doc.data['discount'], //
+            time: (doc.data['timestamp'] as Timestamp)
+                .toDate()
+                .toUtc()
+                .toString(),
+            orderName: doc.data['OrderName'], //
+            orderImage: doc.data['OrderImage'], //
+            storeName: doc.data['storeName'], //
             clientPhoneNumber: doc.data['clientPhoneNumber'],
-            note: doc.data['note'],//
-            status: doc.data['status'],//
-            clientAddress: doc.data['clientAddress'], 
+            note: doc.data['note'], //
+            status: doc.data['status'], //
+            clientAddress: doc.data['clientAddress'],
             services: doc.data['services'],
             storePhoneNumber: doc.data['storePhoneNumber']);
-          });
-      order =  await getTheOrderItems(order);
+      });
+      order = await getTheOrderItems(order);
       return order;
     } catch (e) {
       print(e.toString() + 'I am inside get the Order function');
       return null;
     }
   }
-   
-  
-  static Future getTheOrderItems(
-       Order order) async {
-    try { 
 
-        var firestore = Firestore.instance;
-        QuerySnapshot qn = await firestore
-            .collection('stores')
-            .document(order.storeID)
-            .collection('Orders')
-            .document(order.orderID)
-            .collection('products')
-            .getDocuments();
-        order.items = qn.documents.map((doc){
-          return Product(
-            name: doc.data['name'],
-            price: doc.data['price'],
-            info: doc.data['ProductInfo'],
-            id: doc.data['productID'],
-            imgPath: doc.data['image'],
-            numberOfItemsForAnOrder: doc.data['NumberOfItems'],
-          );
-        }).toList();
-      
+  static Future getTheOrderItems(Order order) async {
+    try {
+      var firestore = Firestore.instance;
+      QuerySnapshot qn = await firestore
+          .collection('stores')
+          .document(order.storeID)
+          .collection('Orders')
+          .document(order.orderID)
+          .collection('products')
+          .getDocuments();
+      order.items = qn.documents.map((doc) {
+        return Product(
+          name: doc.data['name'],
+          price: doc.data['price'],
+          info: doc.data['ProductInfo'],
+          id: doc.data['productID'],
+          imgPath: doc.data['image'],
+          numberOfItemsForAnOrder: doc.data['NumberOfItems'],
+        );
+      }).toList();
+
       return order;
     } catch (e) {
       print(e.toString() + 'Iam inside getTheOrderItems function');
       return;
     }
+  }
+
+  static Future<List<Order>> getActiveOrders(
+      String storeID, String userID) async {
+    try {
+      var firestore = Firestore.instance;
+      QuerySnapshot qn = await firestore
+          .collection('users')
+          .document(userID)
+          .collection('Orders')
+          .document(storeID)
+          .collection('Orders')
+          .getDocuments();
+      var myOrders = qn.documents.map((doc) {
+        List<Product> items = [];
+        Timestamp t = doc.data['timestamp'] as Timestamp;
+        String time = t.toDate().toUtc().toString();
+        return Order(
+            orderID: doc.data['orderID'], //
+            clientID: doc.data['clientID'], //
+            items: items, //
+            storeID: doc.data['storeID'], //
+            totalAmount: doc.data['totalAmount'], //
+            appFee: doc.data['appFee'], //
+            deleveryFee: doc.data['deleveryFee'], //
+            discount: doc.data['discount'], //
+            time: time, //
+            orderName: doc.data['OrderName'], //
+            orderImage: doc.data['OrderImage'], //
+            storeName: doc.data['storeName'], //
+            clientPhoneNumber: doc.data['clientPhoneNumber'],
+            note: doc.data['note'], //
+            status: doc.data['status'], //
+            clientAddress: doc.data['clientAddress'],
+            services: doc.data['services'],
+            storePhoneNumber: doc.data['storePhoneNumber']); //
+      }).toList();
+      myOrders = await getTheOrderItemsToAllOrders(myOrders);
+      return myOrders;
+    } catch (e) {
+      print(e.toString() + 'I am inside getOrders function');
+      return null;
+    }
+  }
+
+  static Future<List<Message>>getMessages( String userID){
+    List<Message> messages = new List<Message>();
+    // get the messages!
+    return null;
   }
 }

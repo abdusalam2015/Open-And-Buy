@@ -26,7 +26,8 @@ class _HomePaymentState extends State<HomePayment> {
         // pay via new card
         break;
       case 1:
-        Navigator.pushNamed(context, '/existing_cards');
+        //Navigator.pushNamed(context, '/existing_cards');
+        break;
     }
   }
 String fixTheAmountStripeStandars(String amount){
@@ -55,13 +56,12 @@ String fixTheAmountStripeStandars(String amount){
       OrderService obj = new OrderService(orderDetail: widget.order);
       String orderID = await obj.registerAnOrderInTheStoreDB();
 
+    // clear the basket
       bloc.cart.clear();
       bloc.productInfo.clear();
-       bloc.clearTotal();
-        var t = [1.1, 2.2, 3.3].reduce((a, b) => a + b); // 6.6
+      bloc.clearTotal();
 
-       print(bloc.total.toString() + " BLOC IS CLEAR  " + t.toString());
-       await dialog.hide();
+      await dialog.hide();
 
 
       Navigator.pop(context);
@@ -72,7 +72,7 @@ String fixTheAmountStripeStandars(String amount){
                 orderID: orderID,
               )));
     } else {
-
+      await dialog.hide();
       print(response.message);
     }
 

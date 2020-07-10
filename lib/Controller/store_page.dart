@@ -2,6 +2,7 @@ import 'package:OpenAndBuy/Controller/constants/colors.dart';
 import 'package:OpenAndBuy/Controller/loading.dart';
 import 'package:OpenAndBuy/Model/cart_bloc.dart';
 import 'package:OpenAndBuy/Model/localization/localizationConstants.dart';
+import 'package:OpenAndBuy/Service/order_notifier.dart';
 import 'package:OpenAndBuy/Service/storeDatabase.dart';
 import 'package:OpenAndBuy/Service/store_notifier.dart';
 import 'package:OpenAndBuy/Service/user_notifier.dart';
@@ -23,13 +24,14 @@ class StorePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider.value(value: StoreNotifier(sid: storeDetail.sid)),
+           ChangeNotifierProvider.value(
+      value: OrderNotifier(storeID: storeDetail.sid)),
+          ChangeNotifierProvider.value(
+              value: StoreNotifier(sid: storeDetail.sid)),
         ],
         child: Scaffold(
-            body: StorePage2(
-                storeDetail: storeDetail,
-                categories: categories
-               )));
+            body:
+                StorePage2(storeDetail: storeDetail, categories: categories)));
   }
 }
 
