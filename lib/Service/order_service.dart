@@ -36,10 +36,8 @@ class OrderService {
       'clientAddress': orderDetail.clientAddress,
     });
 
-
     //   FieldValue serverTimestamp() =>FieldValue._(_factory.serverTimestamp());
     await registerOrderProducts(storeCollection.documentID);
-
 
 // update the order and register it in the user
     orderDetail.orderID = storeCollection.documentID;
@@ -47,7 +45,6 @@ class OrderService {
         new OrderServiceUserSide(orderDetail: orderDetail);
     orderUserSide.registerAnOrderInTheUserDB();
     return orderDetail.orderID;
-
   }
 
   final CollectionReference storeCollection2 =
@@ -61,7 +58,7 @@ class OrderService {
             .document(orderDetail.storeID)
             .collection('Orders')
             .document(orderID)
-            .collection('products')
+            .collection('Products')
             .document(product.id)
             .setData({
           'name': product.name,
@@ -115,13 +112,16 @@ class OrderService {
         var firestore = Firestore.instance;
         String userID = myOrders[i].clientID;
         String orderID = myOrders[i].orderID;
+        String storeID = myOrders[i].storeID;
 
         QuerySnapshot qn = await firestore
             .collection('users')
             .document(userID)
+            .collection('Stores')
+            .document(storeID)
             .collection('Orders')
             .document(orderID)
-            .collection('products')
+            .collection('Products')
             .getDocuments();
         myOrders[i].items = qn.documents.map((doc) {
           return Product(
@@ -136,7 +136,7 @@ class OrderService {
       }
       return myOrders;
     } catch (e) {
-      print(e.toString() + 'Iam inside getTheOrderItems function');
+      print(e.toString() + 'I am yyinside getTheOrderItems function');
       return;
     }
   }
@@ -146,12 +146,14 @@ class OrderService {
 //   TimeRange.fromJson(_json)
 //   return timeago.format(t.toDate(), 'en_short');
 // }
-  static Future getOrders(String userID) async {
+  static Future getOrders(String userID, String storeID) async {
     try {
       var firestore = Firestore.instance;
       QuerySnapshot qn = await firestore
           .collection('users')
           .document(userID)
+          .collection('Stores')
+          .document(storeID)
           .collection('Orders')
           .getDocuments();
       var myOrders = qn.documents.map((doc) {
@@ -182,17 +184,19 @@ class OrderService {
       myOrders = await getTheOrderItemsToAllOrders(myOrders);
       return myOrders;
     } catch (e) {
-      print(e.toString() + 'I am inside getOrders function');
+      print(e.toString() + 'I kkkam inside getOrders function');
       return null;
     }
   }
 
-  Future getUserOrders(String userID) async {
+  Future getUserOrders(String userID, String storeID) async {
     try {
       var firestore = Firestore.instance;
       QuerySnapshot qn = await firestore
           .collection('users')
           .document(userID)
+          .collection('Stores')
+          .document(storeID)
           .collection('Orders')
           .getDocuments();
       var myOrders = qn.documents.map((doc) {
@@ -237,7 +241,7 @@ class OrderService {
             .document(userID)
             .collection('Orders')
             .document(orderID)
-            .collection('products')
+            .collection('Products')
             .getDocuments();
         myOrders[i].items = qn.documents.map((doc) {
           return Product(
@@ -257,10 +261,14 @@ class OrderService {
     }
   }
 
-  final CollectionReference storeCollection =
-      Firestore.instance.collection('stores');
+  // final CollectionReference storeCollection =
+  //     Firestore.instance.collection('stores');
   Future editOrderStatus(
       Order order, String status, String message, double currentBudget) async {
+    final CollectionReference storeCollection =
+        Firestore.instance.collection('stores');
+    final CollectionReference userCollection =
+        Firestore.instance.collection('users');
     await storeCollection
         .document(order.storeID)
         .collection('Orders')
@@ -269,18 +277,29 @@ class OrderService {
       'status': status,
       'note': message,
     });
-    if (status == 'Accepted') {
-      double finalTotal = order.totalAmount + currentBudget;
-      //print(finalTotal.toString() + 'uYYYYYYYYYYYYYY');
-      updateStoreBudget(order.storeID, finalTotal);
-    }
+    // update the order in the user side
+    await userCollection
+        .document(order.clientID)
+        .collection('Stores')
+        .document(order.storeID)
+        .collection('Orders')
+        .document(order.orderID)
+        .updateData({
+      'status': status,
+      'note': message,
+    });
   }
 
-  static Future updateStoreBudget(String storeID, double newValue) async {
+  static Future updateStoreBudget(
+      String storeID, double currentBudget, double newOrderVlaue) async {
+    print(currentBudget);
+    print(newOrderVlaue);
+
+    double newTotal = currentBudget + newOrderVlaue;
     final CollectionReference storeCollection =
         Firestore.instance.collection('stores');
     await storeCollection.document(storeID).updateData({
-      'budget': newValue,
+      'budget': newTotal,
     });
   }
 
@@ -327,15 +346,16 @@ class OrderService {
     }
   }
 
-  static  int getNumberOfUncheckedOrders(List<Order> orders) {
+  static int getNumberOfUncheckedOrders(List<Order> orders) {
+    
     int count = 0;
-    if(orders != null){
-    for ( int i = 0 ; i < orders.length; i++ ) {
-      if (orders[i].status != ACCEPTED && orders[i].status != REJECTED) count++;
+    if (orders != null) {
+      for (int i = 0; i < orders.length; i++) {
+        if (orders[i].status != 'Completed' && orders[i].status != REJECTED)
+          count++;
+      }
     }
-    }
-    return  count;
-     
+    return count;
   }
 
   static Future<Order> getOrder(String sid, String orderID) async {
@@ -389,7 +409,7 @@ class OrderService {
           .document(order.storeID)
           .collection('Orders')
           .document(order.orderID)
-          .collection('products')
+          .collection('Products')
           .getDocuments();
       order.items = qn.documents.map((doc) {
         return Product(
@@ -404,7 +424,7 @@ class OrderService {
 
       return order;
     } catch (e) {
-      print(e.toString() + 'Iam inside getTheOrderItems function');
+      print(e.toString() + 'I   am inside getTheOrderItems function');
       return;
     }
   }
@@ -416,7 +436,7 @@ class OrderService {
       QuerySnapshot qn = await firestore
           .collection('users')
           .document(userID)
-          .collection('Orders')
+          .collection('Stores')
           .document(storeID)
           .collection('Orders')
           .getDocuments();
@@ -424,25 +444,27 @@ class OrderService {
         List<Product> items = [];
         Timestamp t = doc.data['timestamp'] as Timestamp;
         String time = t.toDate().toUtc().toString();
-        return Order(
-            orderID: doc.data['orderID'], //
-            clientID: doc.data['clientID'], //
-            items: items, //
-            storeID: doc.data['storeID'], //
-            totalAmount: doc.data['totalAmount'], //
-            appFee: doc.data['appFee'], //
-            deleveryFee: doc.data['deleveryFee'], //
-            discount: doc.data['discount'], //
-            time: time, //
-            orderName: doc.data['OrderName'], //
-            orderImage: doc.data['OrderImage'], //
-            storeName: doc.data['storeName'], //
-            clientPhoneNumber: doc.data['clientPhoneNumber'],
-            note: doc.data['note'], //
-            status: doc.data['status'], //
-            clientAddress: doc.data['clientAddress'],
-            services: doc.data['services'],
-            storePhoneNumber: doc.data['storePhoneNumber']); //
+        
+          return Order(
+              orderID: doc.data['orderID'], //
+              clientID: doc.data['clientID'], //
+              items: items, //
+              storeID: doc.data['storeID'], //
+              totalAmount: doc.data['totalAmount'], //
+              appFee: doc.data['appFee'], //
+              deleveryFee: doc.data['deleveryFee'], //
+              discount: doc.data['discount'], //
+              time: time, //
+              orderName: doc.data['OrderName'], //
+              orderImage: doc.data['OrderImage'], //
+              storeName: doc.data['storeName'], //
+              clientPhoneNumber: doc.data['clientPhoneNumber'],
+              note: doc.data['note'], //
+              status: doc.data['status'], //
+              clientAddress: doc.data['clientAddress'],
+              services: doc.data['services'],
+              storePhoneNumber: doc.data['storePhoneNumber']);
+        
       }).toList();
       myOrders = await getTheOrderItemsToAllOrders(myOrders);
       return myOrders;
@@ -452,9 +474,57 @@ class OrderService {
     }
   }
 
-  static Future<List<Message>>getMessages( String userID){
+  static Future<List<Message>> getMessages(String userID) {
     List<Message> messages = new List<Message>();
     // get the messages!
     return null;
+  }
+
+  static Future<bool> confirmOrderCompletion(
+      {String orderID, String storeID, String clientID}) async {
+    final CollectionReference storeCollection =
+        Firestore.instance.collection('stores');
+
+    await storeCollection
+        .document(storeID)
+        .collection('Orders')
+        .document(orderID)
+        .updateData({
+      'status': 'Completed',
+    });
+
+    // update the order in the user side
+
+    final CollectionReference userCollection =
+        Firestore.instance.collection('users');
+    await userCollection
+        .document(clientID)
+        .collection('Stores')
+        .document(storeID)
+        .collection('Orders')
+        .document(orderID)
+        .updateData({
+      'status': 'Completed',
+    });
+
+    return true;
+  }
+
+  static Future<bool> addReview(String storeID, String orderID, String body,
+      UserDetail userDetail) async {
+    final CollectionReference storeCollection =
+        Firestore.instance.collection('stores');
+    await storeCollection
+        .document(storeID)
+        .collection('reviews')
+        .document()
+        .setData({
+      'body': body,
+      'userID': userDetail.userID,
+      'orderID': orderID,
+      'userName': userDetail.firstName + userDetail.lastName,
+      'date': DateTime.now(),
+    });
+    return true;
   }
 }

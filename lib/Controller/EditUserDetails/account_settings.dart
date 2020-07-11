@@ -214,7 +214,7 @@ class _AccountSettingsState extends State<AccountSettings> {
       ),
       onTap: () async {
         var result;
-        finished = await userNotifier.getOrders();
+       //finished = await userNotifier.getOrders();
         if (index == 1) {
           result = Navigator.of(context)
               .push(MaterialPageRoute(builder: (context) => Wallet()));
@@ -222,6 +222,8 @@ class _AccountSettingsState extends State<AccountSettings> {
           if (finished) {
             result = Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => MyOrders(userNotifier.orders)));
+          }else {
+            print(' I need to create a function to get all  the orders for all store');
           }
         } else if (index == 3) {
           result = Navigator.of(context).push(

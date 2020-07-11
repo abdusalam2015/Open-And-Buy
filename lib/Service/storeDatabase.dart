@@ -80,7 +80,7 @@ Future<List<StoreDetail>> getAllStores() async {
       backgroundImage:doc.data['backgroundImage'],coveredArea:doc.data['coveredArea'],
       storeType:doc.data['storeType'], services: doc.data['services'],deliveryFees: doc.data['deliveryFees'],
       phoneNumber:doc.data['phoneNumber'],storeStatus: doc.data['storeStatus'],
-      latitude: doc.data['latitude'],longitude: doc.data['longitude']
+      latitude: doc.data['latitude'],longitude: doc.data['longitude'],budget: doc.data['budget'],
      );
     }).toList();
   }catch(e){

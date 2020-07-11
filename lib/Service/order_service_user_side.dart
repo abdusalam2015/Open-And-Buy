@@ -10,7 +10,7 @@ class OrderServiceUserSide {
     final DocumentReference orderCollection = Firestore.instance
         .collection('users')
         .document(orderDetail.clientID)
-        .collection('Orders')
+        .collection('Stores')
         .document(orderDetail.storeID)
         .collection('Orders')
         .document(orderDetail.orderID);
@@ -34,21 +34,24 @@ class OrderServiceUserSide {
     });
     //   FieldValue serverTimestamp() =>FieldValue._(_factory.serverTimestamp());
 
-    await registerOrderProducts(orderCollection.documentID);
+    await registerOrderProducts(orderCollection.documentID, orderDetail.storeID);
   }
 
   final CollectionReference storeCollection2 =
       Firestore.instance.collection('users');
 
-  registerOrderProducts(orderID) async {
+  registerOrderProducts(String orderID,String storeID) async {
     Product product;
     for (int i = 0; i < orderDetail.items.length; i++) {
       product = orderDetail.items[i];
       await storeCollection2
           .document(orderDetail.clientID)
+          .collection('Stores')
+          
+          .document(storeID)
           .collection('Orders')
           .document(orderID)
-          .collection('products')
+          .collection('Products')
           .document(product.id)
           .setData({
         'name': product.name,

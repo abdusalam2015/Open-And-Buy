@@ -24,8 +24,8 @@ import 'package:OpenAndBuy/Service/database.dart';
    }
 
 
- Future<bool> getOrders() async {
-    _orders =   await OrderService.getOrders(uid) ;
+ Future<bool> getOrdersForSpecificStore(String storeID) async {
+    _orders =   await OrderService.getOrders(uid,storeID) ;
     notifyListeners();
     return true;
 }

@@ -1,6 +1,8 @@
+import 'package:OpenAndBuy/Controller/constant.dart';
 import 'package:OpenAndBuy/Controller/constants/colors.dart';
 import 'package:OpenAndBuy/Model/order.dart';
 import 'package:OpenAndBuy/Service/order_notifier.dart';
+import 'package:OpenAndBuy/Service/order_service.dart';
 import 'package:OpenAndBuy/Service/store_notifier.dart';
 import 'package:OpenAndBuy/Service/user_notifier.dart';
 import 'package:flutter/material.dart';
@@ -13,10 +15,7 @@ class OrderConfirmation extends StatelessWidget {
   final StoreDetail storeDetail;
   final UserDetail userDetail;
   final String orderID;
-  OrderConfirmation(
-      {this.storeDetail,
-      this.userDetail,
-      this.orderID});
+  OrderConfirmation({this.storeDetail, this.userDetail, this.orderID});
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider.value(
@@ -24,7 +23,7 @@ class OrderConfirmation extends StatelessWidget {
       child: Scaffold(
           body: OrderConfirmation2(
               storeDetail: storeDetail,
-               userDetail: userDetail,
+              userDetail: userDetail,
               orderID: orderID)),
     );
   }
@@ -32,12 +31,9 @@ class OrderConfirmation extends StatelessWidget {
 
 class OrderConfirmation2 extends StatefulWidget {
   final StoreDetail storeDetail;
-   final UserDetail userDetail;
+  final UserDetail userDetail;
   final String orderID;
-  OrderConfirmation2(
-      {this.storeDetail,
-       this.userDetail,
-      this.orderID});
+  OrderConfirmation2({this.storeDetail, this.userDetail, this.orderID});
 
   @override
   _OrderConfirmation2State createState() => _OrderConfirmation2State();
@@ -47,15 +43,80 @@ class _OrderConfirmation2State extends State<OrderConfirmation2> {
   Order _order = new Order();
   String status = '';
   String note = '';
+
+  confirmDailog() async {
+    String review = "";
+    return showDialog<String>(
+      context: context,
+      child: new AlertDialog(
+        contentPadding: const EdgeInsets.all(16.0),
+        content: new Row(
+          children: <Widget>[
+            new Expanded(
+              flex: 100,
+              child: new TextField(
+                  autofocus: true,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                  decoration: new InputDecoration(
+                      labelText: 'Write A Review',
+                      hintText: 'write your review'),
+                  onChanged: (val) {
+                    setState(() {
+                      review = val;
+                    });
+                  }),
+            )
+          ],
+        ),
+        actions: <Widget>[
+          new FlatButton(
+              child: const Text(
+                CANCEL,
+                style: TextStyle(color: Colors.red),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+          new FlatButton(
+              child: const Text(
+                'Confirm',
+                style: TextStyle(color: Colors.blue),
+              ),
+              onPressed: () async {
+                /// update the store's budget!
+                await OrderService.updateStoreBudget(_order.storeID,
+                    _order.totalAmount, widget.storeDetail.budget);
+
+                // Edit the order's status
+                await OrderService.confirmOrderCompletion(
+                    orderID: _order.orderID,
+                    storeID: _order.storeID,
+                    clientID: _order.clientID);
+
+                // Add review
+                (review != "" || review != null)
+                    ? OrderService.addReview(_order.storeID, _order.orderID,
+                        review, widget.userDetail)
+                    : '';
+
+                // finish
+                Navigator.pop(context);
+              })
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     OrderNotifier orderNotifier = Provider.of<OrderNotifier>(context);
     orderNotifier.getOrderDetails(widget.orderID);
     _order = orderNotifier.order;
+
     status = _order != null ? _order.status : '';
     note = _order != null ? _order.note : '';
     note == null ? note = '' : note;
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: APPBARCOLOR,
@@ -65,6 +126,11 @@ class _OrderConfirmation2State extends State<OrderConfirmation2> {
         color: BACKGROUNDCOLOR,
         child: ListView(
           children: <Widget>[
+            _order != null
+                ? (_order.status == 'Accepted'
+                    ? theOrderCompleted()
+                    : Container())
+                : Container(),
             orderStatus(),
             orderMsg(),
             storeDetails(),
@@ -118,7 +184,6 @@ class _OrderConfirmation2State extends State<OrderConfirmation2> {
                 )),
           ),
           ListTile(
-            // contentPadding: EdgeInsets.all(20),
             title: Text('Call the store',
                 style: TextStyle(
                   color: Colors.blue,
@@ -322,6 +387,38 @@ class _OrderConfirmation2State extends State<OrderConfirmation2> {
           )
         ],
       ),
+    );
+  }
+
+  Widget theOrderCompleted() {
+    return Row(
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+              width: 250,
+              child: Text(
+                  "Please confirm that you received the order! Thank You")),
+        ),
+        RaisedButton(
+          onPressed: confirmDailog,
+          textColor: Colors.white,
+          padding: const EdgeInsets.all(0.0),
+          child: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: <Color>[
+                  Color(0xFF0D47A1),
+                  Color(0xFF1976D2),
+                  Color(0xFF42A5F5),
+                ],
+              ),
+            ),
+            padding: const EdgeInsets.all(10.0),
+            child: const Text('Confirm', style: TextStyle(fontSize: 20)),
+          ),
+        ),
+      ],
     );
   }
 }
