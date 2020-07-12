@@ -25,10 +25,9 @@ class OrderNotifier extends ChangeNotifier {
   Future<bool> getActiveOrders(String userID) async {
      List<Order> _activeOrdersCopy = await OrderService.getActiveOrders(storeID, userID);
     _activeOrders  = filterOrders(_activeOrdersCopy);
-  
-
     notifyListeners();
-    return true;
+   if(_activeOrders == null) return false;
+   return true;
   }
   filterOrders(List<Order> _activeOrdersCopy){
     List<Order> newList = new List<Order>();
@@ -37,6 +36,7 @@ class OrderNotifier extends ChangeNotifier {
       
       if(_activeOrdersCopy[i].status  != 'Completed' && _activeOrdersCopy[i].status  != 'Rejected'){
         newList.add(_activeOrdersCopy[i]);
+      // print(_activeOrdersCopy[i].status);
       } 
     }
 

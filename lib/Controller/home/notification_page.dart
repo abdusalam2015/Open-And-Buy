@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 class NotificationPage extends StatelessWidget {
   StoreDetail storeDetail;
   UserDetail userDetail;
-  NotificationPage( {this.storeDetail, this.userDetail});
+  NotificationPage({this.storeDetail, this.userDetail});
 
   @override
   Widget build(BuildContext context) {
@@ -37,21 +37,30 @@ class _NotificationPage2State extends State<NotificationPage2> {
     return getTranslated(context, key);
   }
 
+  bool loading = false;
+  OrderNotifier orderNotifier;
+  getTheData() async {
+      loading = await orderNotifier.getActiveOrders(widget.userDetail.userID);
+  }
   @override
   Widget build(BuildContext context) {
-    OrderNotifier orderNotifier = Provider.of<OrderNotifier>(context);
+    orderNotifier = Provider.of<OrderNotifier>(context);
     orderNotifier.getActiveOrders(widget.userDetail.userID);
-    //print(orderNotifier.activeOrders.length);
-
+    getTheData();
     return Scaffold(
-      appBar: AppBar(backgroundColor: APPBARCOLOR, title: Text(value('title'))),
-      body: (orderNotifier.activeOrders != null)
-          ? (orderNotifier.activeOrders.length != 0)
-              ? ordersList(orderNotifier)
-              : Center(child: Text(value('noNotification')))
-          : Center(child: Text(value('noNotification'))),
-    );
+        appBar:
+            AppBar(backgroundColor: APPBARCOLOR, title: Text(value('title'))),
+        body: loading
+            ? ((orderNotifier.activeOrders != null)
+                ? (orderNotifier.activeOrders.length != 0)
+                    ? ordersList(orderNotifier)
+                    : Center(child: Text(value('noNotification')))
+                : Center(child: Text(value('noNotification'))))
+            : Center(
+                child: CircularProgressIndicator(),
+              ));
   }
+  //return Center(child: CircularProgressIndicator(),);
 
   Widget ordersList(OrderNotifier orderNotifier) {
     return orderNotifier.activeOrders != null

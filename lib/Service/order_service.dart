@@ -1,4 +1,5 @@
 import 'package:OpenAndBuy/Controller/constant.dart';
+import 'package:OpenAndBuy/Model/app_budget.dart';
 import 'package:OpenAndBuy/Model/message.dart';
 import 'package:OpenAndBuy/Model/order.dart';
 import 'package:OpenAndBuy/Model/product.dart';
@@ -303,6 +304,39 @@ class OrderService {
     });
   }
 
+  static Future updateAppBudget() async {
+    // get the current budget and the number of orders
+    ApplicationBudget appBudgetInfo = await getAppBudget();
+    double newBudget =
+        appBudgetInfo.currentBudget + appBudgetInfo.applicationFee;
+    double ordersNumber = appBudgetInfo.numberOfOrders + 1.0;
+
+    final CollectionReference appCollection =
+        Firestore.instance.collection('ApplicationBudget');
+    await appCollection.document(APPLICATIONID).setData({
+      'budget': newBudget,
+      'numberOfOrders': ordersNumber,
+      'ApplicationFees': APPLICATIONFEES,
+    });
+    return true;
+  }
+
+  static Future<ApplicationBudget> getAppBudget() async {
+    ApplicationBudget applicationBudgetDetails = new ApplicationBudget();
+    await Firestore.instance
+        .collection('ApplicationBudget')
+        .document(APPLICATIONID)
+        .get()
+        .then((onValue) {
+      applicationBudgetDetails.numberOfOrders =
+         onValue['numberOfOrders'] ?? 0.0 ;
+      applicationBudgetDetails.currentBudget =  onValue['budget'] ?? 0.0;
+      applicationBudgetDetails.applicationFee =
+          onValue['ApplicationFees'] ?? 0.0;
+    });
+    return applicationBudgetDetails;
+  }
+
   static Future editClientDataInTheOrdersSection(
       Order order, UserDetail client) async {
     final CollectionReference _storeCollection =
@@ -347,7 +381,6 @@ class OrderService {
   }
 
   static int getNumberOfUncheckedOrders(List<Order> orders) {
-    
     int count = 0;
     if (orders != null) {
       for (int i = 0; i < orders.length; i++) {
@@ -444,27 +477,26 @@ class OrderService {
         List<Product> items = [];
         Timestamp t = doc.data['timestamp'] as Timestamp;
         String time = t.toDate().toUtc().toString();
-        
-          return Order(
-              orderID: doc.data['orderID'], //
-              clientID: doc.data['clientID'], //
-              items: items, //
-              storeID: doc.data['storeID'], //
-              totalAmount: doc.data['totalAmount'], //
-              appFee: doc.data['appFee'], //
-              deleveryFee: doc.data['deleveryFee'], //
-              discount: doc.data['discount'], //
-              time: time, //
-              orderName: doc.data['OrderName'], //
-              orderImage: doc.data['OrderImage'], //
-              storeName: doc.data['storeName'], //
-              clientPhoneNumber: doc.data['clientPhoneNumber'],
-              note: doc.data['note'], //
-              status: doc.data['status'], //
-              clientAddress: doc.data['clientAddress'],
-              services: doc.data['services'],
-              storePhoneNumber: doc.data['storePhoneNumber']);
-        
+
+        return Order(
+            orderID: doc.data['orderID'], //
+            clientID: doc.data['clientID'], //
+            items: items, //
+            storeID: doc.data['storeID'], //
+            totalAmount: doc.data['totalAmount'], //
+            appFee: doc.data['appFee'], //
+            deleveryFee: doc.data['deleveryFee'], //
+            discount: doc.data['discount'], //
+            time: time, //
+            orderName: doc.data['OrderName'], //
+            orderImage: doc.data['OrderImage'], //
+            storeName: doc.data['storeName'], //
+            clientPhoneNumber: doc.data['clientPhoneNumber'],
+            note: doc.data['note'], //
+            status: doc.data['status'], //
+            clientAddress: doc.data['clientAddress'],
+            services: doc.data['services'],
+            storePhoneNumber: doc.data['storePhoneNumber']);
       }).toList();
       myOrders = await getTheOrderItemsToAllOrders(myOrders);
       return myOrders;
@@ -525,6 +557,31 @@ class OrderService {
       'userName': userDetail.firstName + userDetail.lastName,
       'date': DateTime.now(),
     });
+    return true;
+  }
+
+  static Future<bool> deleteTheOrder(
+      {String orderID, String storeID, String clientID}) async {
+    final CollectionReference storeCollection =
+        Firestore.instance.collection('stores');
+
+    await storeCollection
+        .document(storeID)
+        .collection('Orders')
+        .document(orderID)
+        .delete();
+
+    // delete the order in the user side
+
+    final CollectionReference userCollection =
+        Firestore.instance.collection('users');
+    await userCollection
+        .document(clientID)
+        .collection('Stores')
+        .document(storeID)
+        .collection('Orders')
+        .document(orderID)
+        .delete();
     return true;
   }
 }

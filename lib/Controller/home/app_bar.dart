@@ -1,6 +1,9 @@
+import 'package:OpenAndBuy/Controller/EditUserDetails/account_settings.dart';
 import 'package:OpenAndBuy/Controller/constants/colors.dart';
 import 'package:OpenAndBuy/Controller/home/messages_page.dart';
 import 'package:OpenAndBuy/Controller/home/notification_page.dart';
+import 'package:OpenAndBuy/Controller/settings/feedback.dart';
+import 'package:OpenAndBuy/Model/setting.dart';
 import 'package:OpenAndBuy/Service/order_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -10,7 +13,6 @@ import 'package:OpenAndBuy/Controller/home/cart_page.dart';
 import 'package:OpenAndBuy/Model/cart_bloc.dart';
 import 'package:OpenAndBuy/Model/user_detail.dart';
 import 'package:OpenAndBuy/Service/user_notifier.dart';
-
 
 class AppBarWidget extends StatefulWidget {
   StoreDetail storeDetail;
@@ -58,7 +60,7 @@ class _AppBarWidgetState extends State<AppBarWidget> {
       //     }
       //   },
       // ),
-      title: Text('Shoping Now',
+      title: Text('',
           style: TextStyle(
             fontFamily: 'Varela',
             fontSize: 18.0,
@@ -68,8 +70,33 @@ class _AppBarWidgetState extends State<AppBarWidget> {
         messages(userNotifier),
         cart(),
         notification(userNotifier),
+        pupUpMenue(),
       ],
     );
+  }
+
+  Widget pupUpMenue() {
+    return PopupMenuButton<String>(
+      onSelected: actionChoice,
+      itemBuilder: (BuildContext context) {
+        return SettingClass.choices.map((String choice) {
+          return PopupMenuItem<String>(
+            value: choice,
+            child: Text(choice),
+          );
+        }).toList();
+      },
+    );
+  }
+
+  void actionChoice(String choice) async {
+    if (choice == 'Feedback') {
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => FeedBack()));
+    } else if (choice == 'Setting') {
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => AccountSettings()));
+    }
   }
 
   Widget cart() {
@@ -138,7 +165,7 @@ class _AppBarWidgetState extends State<AppBarWidget> {
   Widget notification(UserNotifier userNotifier) {
     return InkWell(
       child: Padding(
-        padding: const EdgeInsets.only(right: 8.0, top: 10, left: 10.0),
+        padding: const EdgeInsets.only(right: 0.0, top: 10, left: 10.0),
         child: GestureDetector(
           child: new Stack(
             children: <Widget>[
@@ -197,7 +224,7 @@ class _AppBarWidgetState extends State<AppBarWidget> {
   Widget messages(UserNotifier userNotifier) {
     return InkWell(
       child: Padding(
-        padding: const EdgeInsets.only(right: 8.0, top: 10, left: 10.0),
+        padding: const EdgeInsets.only(right: 0.0, top: 10, left: 10.0),
         child: GestureDetector(
           child: new Stack(
             children: <Widget>[

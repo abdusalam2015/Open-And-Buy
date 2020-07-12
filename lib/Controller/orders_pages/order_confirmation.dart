@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:OpenAndBuy/Model/product.dart';
 import 'package:OpenAndBuy/Model/store.dart';
 import 'package:OpenAndBuy/Model/user_detail.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 
 class OrderConfirmation extends StatelessWidget {
@@ -44,70 +45,6 @@ class _OrderConfirmation2State extends State<OrderConfirmation2> {
   String status = '';
   String note = '';
 
-  confirmDailog() async {
-    String review = "";
-    return showDialog<String>(
-      context: context,
-      child: new AlertDialog(
-        contentPadding: const EdgeInsets.all(16.0),
-        content: new Row(
-          children: <Widget>[
-            new Expanded(
-              flex: 100,
-              child: new TextField(
-                  autofocus: true,
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null,
-                  decoration: new InputDecoration(
-                      labelText: 'Write A Review',
-                      hintText: 'write your review'),
-                  onChanged: (val) {
-                    setState(() {
-                      review = val;
-                    });
-                  }),
-            )
-          ],
-        ),
-        actions: <Widget>[
-          new FlatButton(
-              child: const Text(
-                CANCEL,
-                style: TextStyle(color: Colors.red),
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-              }),
-          new FlatButton(
-              child: const Text(
-                'Confirm',
-                style: TextStyle(color: Colors.blue),
-              ),
-              onPressed: () async {
-                /// update the store's budget!
-                await OrderService.updateStoreBudget(_order.storeID,
-                    _order.totalAmount, widget.storeDetail.budget);
-
-                // Edit the order's status
-                await OrderService.confirmOrderCompletion(
-                    orderID: _order.orderID,
-                    storeID: _order.storeID,
-                    clientID: _order.clientID);
-
-                // Add review
-                (review != "" || review != null)
-                    ? OrderService.addReview(_order.storeID, _order.orderID,
-                        review, widget.userDetail)
-                    : '';
-
-                // finish
-                Navigator.pop(context);
-              })
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     OrderNotifier orderNotifier = Provider.of<OrderNotifier>(context);
@@ -128,9 +65,18 @@ class _OrderConfirmation2State extends State<OrderConfirmation2> {
           children: <Widget>[
             _order != null
                 ? (_order.status == 'Accepted'
-                    ? theOrderCompleted()
+                    ? completedOrProblemButtons()
                     : Container())
                 : Container(),
+
+            _order != null
+                ? (_order.status != 'Accepted' &&
+                        _order.status != 'Rejected' &&
+                        _order.status != 'Completed')
+                    ? cancelOrder()
+                    : Container()
+                : Container(),
+
             orderStatus(),
             orderMsg(),
             storeDetails(),
@@ -390,35 +336,230 @@ class _OrderConfirmation2State extends State<OrderConfirmation2> {
     );
   }
 
-  Widget theOrderCompleted() {
+  Widget completedOrProblemButtons() {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Container(
-              width: 250,
-              child: Text(
-                  "Please confirm that you received the order! Thank You")),
-        ),
-        RaisedButton(
-          onPressed: confirmDailog,
-          textColor: Colors.white,
-          padding: const EdgeInsets.all(0.0),
-          child: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: <Color>[
-                  Color(0xFF0D47A1),
-                  Color(0xFF1976D2),
-                  Color(0xFF42A5F5),
-                ],
-              ),
-            ),
-            padding: const EdgeInsets.all(10.0),
-            child: const Text('Confirm', style: TextStyle(fontSize: 20)),
-          ),
-        ),
+        button(problemDailog, 'THERE WAS A PROBLEM', Colors.white),
+        button(confirmDailog, 'ORDER COMPLETED', Colors.red),
       ],
     );
+  }
+
+  Widget button(Function action, String name, Color color) {
+    return RaisedButton(
+      onPressed: action, //confirmDailog,
+      textColor: Colors.white,
+      padding: const EdgeInsets.all(0.0),
+      child: Container(
+        color: color,
+        // decoration: const BoxDecoration(
+        //   gradient: LinearGradient(
+        //     colors: <Color>[
+        //       Colors.red,
+        //       Color(0xFF1976D2),
+        //       Colors.red,
+        //     ],
+        //   ),
+        // ),
+        padding: const EdgeInsets.all(10.0),
+        child: Text(name,
+            style: TextStyle(
+                fontSize: 14,
+                color:
+                    (name != 'ORDER COMPLETED') ? Colors.black : Colors.white)),
+      ),
+    );
+  }
+
+  confirmDailog() async {
+    String review = "";
+    return showDialog<String>(
+      context: context,
+      child: new AlertDialog(
+        contentPadding: const EdgeInsets.all(16.0),
+        content: new Row(
+          children: <Widget>[
+            new Expanded(
+              flex: 100,
+              child: new TextField(
+                  autofocus: true,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                  decoration: new InputDecoration(
+                      labelText: 'Write A Review',
+                      hintText: 'write your review'),
+                  onChanged: (val) {
+                    setState(() {
+                      review = val;
+                    });
+                  }),
+            )
+          ],
+        ),
+        actions: <Widget>[
+          new FlatButton(
+              child: const Text(
+                CANCEL,
+                style: TextStyle(color: Colors.red),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+          new FlatButton(
+              child: const Text(
+                'Confirm',
+                style: TextStyle(color: Colors.blue),
+              ),
+              onPressed: () async {
+                /// update the store's budget!
+                await OrderService.updateStoreBudget(_order.storeID,
+                    _order.totalAmount, widget.storeDetail.budget);
+
+                /// Add the Application fees to the total budget
+                 await OrderService.updateAppBudget();
+
+                // Edit the order's status
+                await OrderService.confirmOrderCompletion(
+                    orderID: _order.orderID,
+                    storeID: _order.storeID,
+                    clientID: _order.clientID);
+
+                // Add review
+                (review != "" || review != null)
+                    ? OrderService.addReview(_order.storeID, _order.orderID,
+                        review, widget.userDetail)
+                    : '';
+
+                // finish
+                Navigator.pop(context);
+              })
+        ],
+      ),
+    );
+  }
+
+  problemDailog() async {
+    String review = "";
+    return showDialog<String>(
+      context: context,
+      child: new AlertDialog(
+        contentPadding: const EdgeInsets.all(16.0),
+        content: new Row(
+          children: <Widget>[
+            new Expanded(
+              flex: 100,
+              child: new TextField(
+                  autofocus: true,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                  decoration: new InputDecoration(
+                      labelText: 'Descripe the problem',
+                      hintText: 'write your review'),
+                  onChanged: (val) {
+                    setState(() {
+                      review = val;
+                    });
+                  }),
+            )
+          ],
+        ),
+        actions: <Widget>[
+          new FlatButton(
+              child: const Text(
+                CANCEL,
+                style: TextStyle(color: Colors.red),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+          new FlatButton(
+              child: const Text(
+                'Confirm',
+                style: TextStyle(color: Colors.blue),
+              ),
+              onPressed: () async {
+                // /// update the store's budget!
+                // await OrderService.updateStoreBudget(_order.storeID,
+                //     _order.totalAmount, widget.storeDetail.budget);
+
+                // // Edit the order's status
+                // await OrderService.confirmOrderCompletion(
+                //     orderID: _order.orderID,
+                //     storeID: _order.storeID,
+                //     clientID: _order.clientID);
+
+                // // Add review
+                // (review != "" || review != null)
+                //     ? OrderService.addReview(_order.storeID, _order.orderID,
+                //         review, widget.userDetail)
+                //     : '';
+
+                // finish
+                Navigator.pop(context);
+              })
+        ],
+      ),
+    );
+  }
+
+  Widget cancelOrder() {
+    bool deleted = false;
+    return Center(
+        child: ButtonTheme(
+            minWidth: 100,
+            height: 40,
+            child: RaisedButton(
+                elevation: 0.0,
+                color: Colors.red,
+                highlightColor: Colors.red,
+                child: Text(
+                  'CANCEL THE ORDER',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                  ),
+                ),
+                onPressed: () async {
+                  await showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text('Confirmation'),
+                        content: Text('The order will be deleted!'),
+                        actions: <Widget>[
+                          new FlatButton(
+                            onPressed: () {
+                              Navigator.of(context, rootNavigator: true).pop(
+                                  false); // dismisses only the dialog and returns false
+                            },
+                            child: Text('No'),
+                          ),
+                          FlatButton(
+                            onPressed: () async {
+                              ProgressDialog dialog =
+                                  new ProgressDialog(context);
+                              dialog.style(message: 'Please wait...');
+                              await dialog.show();
+                              await OrderService.deleteTheOrder(
+                                  orderID: widget.orderID,
+                                  clientID: widget.userDetail.userID,
+                                  storeID: widget.storeDetail.sid);
+                              // await StoreDatabaseService().deleteCategory(newCategory,storeDetail.sid);
+
+                              Navigator.of(context, rootNavigator: true)
+                                  .pop(true);
+                              deleted = true;
+                              await dialog.hide();
+                            },
+                            child: Text('Yes'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+
+                  deleted ? Navigator.of(context).pop('deleted') : null;
+                })));
   }
 }

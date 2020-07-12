@@ -17,10 +17,13 @@ import 'package:flutter/material.dart';
 
     
 
+const APPLICATIONID = "ABCD123456789";
+const APPLICATIONFEES = 10.0;
 
 const ACCEPTED = 'Accepted';
 const REJECTED = 'Rejected';
 const CANCEL = 'Cancel';
+
 
 //Language Code
 
