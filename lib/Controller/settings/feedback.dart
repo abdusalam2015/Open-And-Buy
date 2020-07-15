@@ -1,3 +1,4 @@
+import 'package:OpenAndBuy/Controller/constants/colors.dart';
 import 'package:OpenAndBuy/Model/localization/localizationConstants.dart';
 import 'package:OpenAndBuy/Model/user_detail.dart';
 import 'package:OpenAndBuy/Service/storeDatabase.dart';
@@ -25,8 +26,9 @@ class _FeedBackState extends State<FeedBack> {
     userNotifier.getUserInfo();
 
     return Scaffold(
+      backgroundColor: BACKGROUNDCOLOR,
       appBar: AppBar(
-        backgroundColor: Colors.pink[400],
+        backgroundColor:APPBARCOLOR ,
         title: Text(value('feedback')),
       ),
       body: Builder(
@@ -85,7 +87,7 @@ class _FeedBackState extends State<FeedBack> {
                       height: 55,
                       child: RaisedButton(
                         elevation: 0.0,
-                        color: Colors.pink[400],
+                        color: Colors.green[400],
                         highlightColor: Colors.red,
                         child: Text(
                           value('submit'),

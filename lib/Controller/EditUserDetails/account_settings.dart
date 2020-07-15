@@ -1,3 +1,4 @@
+import 'package:OpenAndBuy/Controller/constants/colors.dart';
 import 'package:OpenAndBuy/Model/localization/localizationConstants.dart';
 import 'package:OpenAndBuy/Service/user_notifier.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +37,7 @@ class _AccountSettingsState extends State<AccountSettings> {
     return loading
         ? Loading()
         : Scaffold(
+          backgroundColor: BACKGROUNDCOLOR,
             body: CustomScrollView(
             slivers: <Widget>[
               SliverAppBar(
@@ -48,7 +50,7 @@ class _AccountSettingsState extends State<AccountSettings> {
                     style: TextStyle(fontSize: 22, color: Colors.white),
                   ),
                 ),
-                backgroundColor: Colors.black,
+                backgroundColor: APPBARCOLOR,
               ),
               SliverList(
                 delegate: SliverChildBuilderDelegate(

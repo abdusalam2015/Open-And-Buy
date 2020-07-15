@@ -1,4 +1,5 @@
 import 'package:OpenAndBuy/Controller/constants/colors.dart';
+import 'package:OpenAndBuy/Controller/home/product_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
@@ -34,23 +35,23 @@ class _ProductListState extends State<ProductList> {
       setState(() {
         bloc.subToCart(index, product);
       });
-      if(bloc.cart[index]==0){
+      if (bloc.cart[index] == 0) {
         setState(() {
-        bloc.clear(index);
-      });
+          bloc.clear(index);
+        });
       }
-
     }
+
     void _clear(String index) {
       setState(() {
         bloc.clear(index);
       });
     }
 
-    return productsGridList(widget.productList, _increment, _decrement,_clear);
+    return productsGridList(widget.productList, _increment, _decrement, _clear);
   }
 
-  Widget productsGridList(productList, _increment, _decrement,_clear) {
+  Widget productsGridList(productList, _increment, _decrement, _clear) {
     //  product = new Product(id:'4', name:'Morabou',
     // imgPath:'assets/chocolate/3.png',price:'\$1.99',info: 'info');
     return productList != null
@@ -66,19 +67,15 @@ class _ProductListState extends State<ProductList> {
                       (MediaQuery.of(context).size.height),
                 ),
                 itemBuilder: (BuildContext context, int index) {
-                  return productCard(
-                      productList[index], _increment, _decrement, _clear,context);
+                  return productCard(productList[index], _increment, _decrement,
+                      _clear, context);
                 }),
           )
         : Center(child: Text('No Products'));
   }
 
-  Widget productCard(Product product, Function increment, Function decrement,clear,
-      BuildContext context) {
-    // SharedFunctions obj = new SharedFunctions();
-    // Uint8List imageFile ;
-    // imageFile = obj.getmg(); //getProductImage('hello','Drinks',productList[index].name);
-    // print(imageFile.toString() + ' HY');
+  Widget productCard(Product product, Function increment, Function decrement,
+      clear, BuildContext context) {
     var bloc = Provider.of<CartBloc>(context);
     var cart = bloc.cart;
     int count = cart[product.id];
@@ -86,8 +83,9 @@ class _ProductListState extends State<ProductList> {
       padding: EdgeInsets.only(top: 3, left: 3, right: 3, bottom: 1),
       child: Column(
         children: <Widget>[
-          Container(
-            decoration: BoxDecoration(
+          InkWell(
+            child: Container(
+              decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(),
                 boxShadow: [
                   BoxShadow(
@@ -97,94 +95,101 @@ class _ProductListState extends State<ProductList> {
                   )
                 ],
                 color: PRODUCTCARD,
-                ),
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(5.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      //   true ? Icon(Icons.favorite, color: Colors.pink[400] ):
-                      Icon(
-                        Icons.favorite_border,
-                        color: Colors.pink[400],
-                      )
-                    ],
+              ),
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.all(5.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        //   true ? Icon(Icons.favorite, color: Colors.pink[400] ):
+                        Icon(
+                          Icons.favorite_border,
+                          color: Colors.pink[400],
+                        )
+                      ],
+                    ),
                   ),
-                ),
-                Hero(
-                  tag: product.imgPath + product.id,
-                  child: product.imgPath != '' && product.imgPath != null
-                      ? Stack(children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 30.0),
-                            child: Center(
+                  Hero(
+                    tag: product.imgPath + product.id,
+                    child: product.imgPath != '' && product.imgPath != null
+                        ? Stack(children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 30.0),
+                              child: Center(
+                                child: Container(
+                                    height: 40,
+                                    width: 40,
+                                    child: SpinKitFadingCircle(
+                                      color: Colors.red,
+                                      size: 30.0,
+                                      // controller: AnimationController(  duration: const Duration(milliseconds: 1200)),
+                                    )
+                                    // CircularProgressIndicator()
+                                    ),
+                              ),
+                            ),
+                            Center(
                               child: Container(
-                                  height: 40,
-                                  width: 40,
-                                  child: SpinKitFadingCircle(
-                                    color: Colors.red,
-                                    size: 30.0,
-                                    // controller: AnimationController(  duration: const Duration(milliseconds: 1200)),
-                                  )
-                                  // CircularProgressIndicator()
-                                  ),
+                                height: 90.0,
+                                width: 90.0,
+                                child: FadeInImage.memoryNetwork(
+                                  height: 100,
+                                  // fadeOutCurve: Curves.bounceIn,
+                                  fadeInDuration: const Duration(seconds: 1),
+                                  placeholder: kTransparentImage,
+                                  image: product.imgPath,
+                                ),
+                              ),
                             ),
-                          ),
-                          Container(
-                            height: 90.0,
-                            width: 90.0,
-                            child: FadeInImage.memoryNetwork(
-                              height: 100,
-                              // fadeOutCurve: Curves.bounceIn,
-                              fadeInDuration: const Duration(seconds: 1),
-                              placeholder: kTransparentImage,
-                              image: product.imgPath,
-                            ),
-                          ),
-                          //  Container(
-                          //   height: 90.0,
-                          //   width: 90.0,
-                          //   decoration: BoxDecoration(
-                          //     image: DecorationImage(
-                          //     image: product.imgPath !='' && product.imgPath != null  ?
-                          //     // profile pic is updated
-                          //     NetworkImage(product.imgPath)
-                          //     //Image.memory(imageFile)
-                          //     // profile picture is not updated , so we will go with the default one
-                          //     :AssetImage('assets/chocolate/3.png'),
-                          //     fit: BoxFit.contain
-                          //     )
-                          //   ),
-                          // ),
-                        ])
-                      : Container(
-                          height: 90,
-                          width: 90,
-                          child: Center(child: Text('No image!'))),
-                ),
-                SizedBox(height: 7.0),
-                Text(
-                  product.price,
-                  style: TextStyle(
-                      color: Colors.pink[400],
-                      fontFamily: 'Varela',
-                      fontSize: 14.0),
-                ),
-                Container(
-                  height: 50,
-                  width: 100,
-                  child: Text(
-                    product.name,
-                    style: TextStyle(
-                        color: Color(0xFF575E67),
-                        fontFamily: 'Varela',
-                        fontSize: 14.0),
+                            //  Container(
+                            //   height: 90.0,
+                            //   width: 90.0,
+                            //   decoration: BoxDecoration(
+                            //     image: DecorationImage(
+                            //     image: product.imgPath !='' && product.imgPath != null  ?
+                            //     // profile pic is updated
+                            //     NetworkImage(product.imgPath)
+                            //     //Image.memory(imageFile)
+                            //     // profile picture is not updated , so we will go with the default one
+                            //     :AssetImage('assets/chocolate/3.png'),
+                            //     fit: BoxFit.contain
+                            //     )
+                            //   ),
+                            // ),
+                          ])
+                        : Container(
+                            height: 90,
+                            width: 90,
+                            child: Center(child: Text('No image!'))),
                   ),
-                ),
-              ],
+                  SizedBox(height: 7.0),
+                  Text(
+                    product.price + ' SKE',
+                    style: TextStyle(
+                        color: Colors.pink[800],
+                        fontFamily: 'Varela',
+                        fontSize: 18.0),
+                  ),
+                  Container(
+                    height: 50,
+                    width: 100,
+                    child: Text(
+                      product.name,
+                      style: TextStyle(
+                          color: Color(0xFF575E67),
+                          fontFamily: 'Varela',
+                          fontSize: 16.0),
+                    ),
+                  ),
+                ],
+              ),
             ),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => ProductDetailPage(product)));
+            },
           ),
           Padding(
             padding: EdgeInsets.all(0.0),
@@ -219,8 +224,8 @@ class _ProductListState extends State<ProductList> {
                     )
                   ],
                   color: Colors.white),
-              child:
-                  buttonToAdd(count, product, product.id, increment, decrement,clear),
+              child: buttonToAdd(
+                  count, product, product.id, increment, decrement, clear),
             ),
           ),
         ],
@@ -228,8 +233,7 @@ class _ProductListState extends State<ProductList> {
     );
   }
 
-  Widget buttonToAdd(int count, product, id, increment, decrement,clear) {
-     
+  Widget buttonToAdd(int count, product, id, increment, decrement, clear) {
     return (count != 0 && count != null)
         ? Container(
             height: 30,
@@ -250,9 +254,7 @@ class _ProductListState extends State<ProductList> {
                 GestureDetector(
                   onTap: () {
                     product.numberOfItemsForAnOrder = count.toString();
-                     decrement(id, product);
-                    
-                   
+                    decrement(id, product);
                   },
                   child: Icon(Icons.remove_circle_outline,
                       color: Colors.pink[400], size: 24.0),

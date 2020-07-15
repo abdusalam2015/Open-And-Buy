@@ -36,19 +36,22 @@ class _MyOrdersState extends State<MyOrders> {
               child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
                 child: FittedBox(
+                  
                   child: DataTable(
                     columns: [
-                      DataColumn(label: Text(value('n'))),
-                      DataColumn(label: Text(value('storeName'))),
-                      DataColumn(label: Text(value('date'))),
-                      DataColumn(label: Text(value('totalOrders'))),
+                      DataColumn(label: text2(value('n'))),
+                      DataColumn(label: text2(value('storeName'))),
+                      DataColumn(label: text2(value('date'))),
+                      DataColumn(label: text2('Order Status')),
+                      DataColumn(label: text2(value('totalOrders'))),
                     ],
                     rows: myOrders
                         .map(((order) => DataRow(cells: <DataCell>[
-                              DataCell(Text((++counter).toString())),
-                              DataCell(Text(order.storeName.toString())),
-                              DataCell(Text('03/04/2020')),
-                              DataCell(Text(order.totalAmount.toString())),
+                              DataCell(text((++counter).toString())),
+                              DataCell(text(order.storeName.toString())),
+                              DataCell(text(order.time.toString())),
+                              DataCell(text(order.status.toString())),
+                              DataCell(text(order.totalAmount.toString())),
                             ])))
                         .toList(),
                   ),
@@ -57,5 +60,17 @@ class _MyOrdersState extends State<MyOrders> {
             )
           : Center(child: Text(value('noOrders'))),
     );
+    
   }
+  Widget text(String value){
+    return Text(
+      value,style: TextStyle(color: Colors.black,fontSize: 24),
+    );
+  }
+   Widget text2(String value){
+    return Text(
+      value,style: TextStyle(color: Colors.black,fontSize: 24,fontWeight: FontWeight.bold),
+    );
+  }
+
 }

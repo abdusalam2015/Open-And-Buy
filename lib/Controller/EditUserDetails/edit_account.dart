@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:OpenAndBuy/Controller/constants/colors.dart';
 import 'package:OpenAndBuy/Model/localization/localizationConstants.dart';
 import 'package:OpenAndBuy/Service/user_notifier.dart';
 import 'package:country_code_picker/country_code_picker.dart';
@@ -37,6 +38,7 @@ class _EditAccountState extends State<EditAccount> {
 
     userDetail = userNotifier.userDetail;
     return Scaffold(
+      
         body: Builder(
       builder: (context) => CustomScrollView(
         slivers: <Widget>[
@@ -50,7 +52,7 @@ class _EditAccountState extends State<EditAccount> {
                 style: TextStyle(fontSize: 22, color: Colors.white),
               ),
             ),
-            backgroundColor: Colors.black,
+            backgroundColor:APPBARCOLOR,
           ),
           SliverList(
             delegate: SliverChildBuilderDelegate(
