@@ -214,14 +214,15 @@ class _AccountSettingsState extends State<AccountSettings> {
       ),
       onTap: () async {
         var result;
-       //finished = await userNotifier.getOrders();
+
+       finished = await userNotifier.getAllUserOrders();
         if (index == 1) {
           result = Navigator.of(context)
               .push(MaterialPageRoute(builder: (context) => Wallet()));
         } else if (index == 2) {
           if (finished) {
             result = Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => MyOrders(userNotifier.orders)));
+                builder: (context) => MyOrders(userNotifier.allUserOrders)));
           }else {
             print(' I need to create a function to get all  the orders for all store');
           }

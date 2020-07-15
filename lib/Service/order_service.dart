@@ -244,6 +244,7 @@ class OrderService {
             .document(orderID)
             .collection('Products')
             .getDocuments();
+        //String x = qn.documents[0].documentID;
         myOrders[i].items = qn.documents.map((doc) {
           return Product(
             name: doc.data['name'],
@@ -329,8 +330,8 @@ class OrderService {
         .get()
         .then((onValue) {
       applicationBudgetDetails.numberOfOrders =
-         onValue['numberOfOrders'] ?? 0.0 ;
-      applicationBudgetDetails.currentBudget =  onValue['budget'] ?? 0.0;
+          onValue['numberOfOrders'] ?? 0.0;
+      applicationBudgetDetails.currentBudget = onValue['budget'] ?? 0.0;
       applicationBudgetDetails.applicationFee =
           onValue['ApplicationFees'] ?? 0.0;
     });
@@ -583,5 +584,5 @@ class OrderService {
         .document(orderID)
         .delete();
     return true;
-  }
+  } 
 }

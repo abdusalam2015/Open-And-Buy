@@ -39,7 +39,7 @@ class _MyOrdersState extends State<MyOrders> {
                   child: DataTable(
                     columns: [
                       DataColumn(label: Text(value('n'))),
-                      DataColumn(label: Text(value('clientName'))),
+                      DataColumn(label: Text(value('storeName'))),
                       DataColumn(label: Text(value('date'))),
                       DataColumn(label: Text(value('totalOrders'))),
                     ],

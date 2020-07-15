@@ -3,6 +3,7 @@ import 'package:OpenAndBuy/Controller/constants/colors.dart';
 import 'package:OpenAndBuy/Model/order.dart';
 import 'package:OpenAndBuy/Service/order_notifier.dart';
 import 'package:OpenAndBuy/Service/order_service.dart';
+import 'package:OpenAndBuy/Service/order_service_user_side.dart';
 import 'package:OpenAndBuy/Service/store_notifier.dart';
 import 'package:OpenAndBuy/Service/user_notifier.dart';
 import 'package:flutter/material.dart';
@@ -425,12 +426,16 @@ class _OrderConfirmation2State extends State<OrderConfirmation2> {
                     storeID: _order.storeID,
                     clientID: _order.clientID);
 
-                // Add review
+
+                
+
+                 // Add review
                 (review != "" || review != null)
                     ? OrderService.addReview(_order.storeID, _order.orderID,
                         review, widget.userDetail)
                     : '';
-
+            // regiser the order in the user side (History)
+            await OrderServiceUserSide.registerOrderUserHistory(_order);
                 // finish
                 Navigator.pop(context);
               })

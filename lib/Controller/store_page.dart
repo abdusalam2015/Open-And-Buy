@@ -97,6 +97,6 @@ class _StorePage2State extends State<StorePage2>
                   )
           ],
         ),
-        drawer: getDrawer(widget.categories, _categoryIndexFunction));
+        drawer: getDrawer(widget.categories, _categoryIndexFunction,context));
   }
 }
