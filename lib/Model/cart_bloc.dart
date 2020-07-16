@@ -3,11 +3,11 @@ import 'package:OpenAndBuy/Model/product.dart';
 
 class CartBloc with ChangeNotifier {
   Map<String, Map<String, int>> _cart = {};
-  Map<String, Map<String, Product>> _cartInfo = {};
+  Map<dynamic, Map<dynamic, dynamic>> _cartInfo = {};
   Map<String, double> _total = {};
 
   Map<String, Map<String, int>> get cart => _cart;
-  Map<String, Map<String, Product>> get productInfo => _cartInfo;
+  Map<dynamic, Map<dynamic, dynamic>> get productInfo => _cartInfo;
   Map<String, double> get total => _total;
 
   void addToCart(index, product, storeID) {

@@ -1,3 +1,4 @@
+import 'package:OpenAndBuy/Controller/constants/colors.dart';
 import 'package:OpenAndBuy/Controller/orders_pages/order_confirmation.dart';
 import 'package:OpenAndBuy/Model/cart_bloc.dart';
 import 'package:OpenAndBuy/Model/order.dart';
@@ -93,7 +94,9 @@ var bloc;
      bloc = Provider.of<CartBloc>(context);
     ThemeData theme = Theme.of(context);
     return Scaffold(
+      backgroundColor: BACKGROUNDCOLOR,
       appBar: AppBar(
+        backgroundColor: APPBARCOLOR,
         title: Text('Home Page'),
       ),
       body: Builder(

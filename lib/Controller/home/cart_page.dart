@@ -30,7 +30,7 @@ var bloc;
             .toString();
 
   if(bloc.cart[storeID] == null) bloc.cart[storeID] = {};
-    if(bloc.productInfo[storeID] == null) bloc.productInfo[storeID] = {};
+  if(bloc.productInfo[storeID] == null) bloc.productInfo[storeID] = {};
 
     var cart = bloc.cart[storeID];
     var productInfo = bloc.productInfo[storeID];
