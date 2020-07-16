@@ -21,15 +21,19 @@ class CartPage extends StatelessWidget {
 var bloc;
   @override
   Widget build(BuildContext context) {
+    String storeID = storeDetail.sid;
     bloc = Provider.of<CartBloc>(context);
-    
+    if(bloc.total[storeID] == null) bloc.total[storeID] = 0.0; 
 
     String totalAmount() =>
-        (storeDetail.services + storeDetail.deliveryFees + bloc.total)
+        (storeDetail.services + storeDetail.deliveryFees + bloc.total[storeID])
             .toString();
 
-    var cart = bloc.cart;
-    var productInfo = bloc.productInfo;
+  if(bloc.cart[storeID] == null) bloc.cart[storeID] = {};
+    if(bloc.productInfo[storeID] == null) bloc.productInfo[storeID] = {};
+
+    var cart = bloc.cart[storeID];
+    var productInfo = bloc.productInfo[storeID];
     List<Product> theOrderedProducts = new List<Product>();
     return Scaffold(
       backgroundColor: BACKGROUNDCOLOR,
@@ -85,7 +89,7 @@ var bloc;
                       elevation: 1.0,
                       splashColor: Colors.white,
                       onPressed: () {
-                        bloc.clear(freqIndex);
+                        bloc.clear(freqIndex,storeID);
                       },
                     ),
                   ),
@@ -119,7 +123,7 @@ var bloc;
                     Row(
                       children: <Widget>[
                         //Text('Subtotal: 303 SEK'),
-                        text('Subtotal: ', '${bloc.total.toString()}', '  SEK')
+                        text('Subtotal: ', '${bloc.total[storeID].toString()}', '  SEK')
                       ],
                     ),
                     Row(
@@ -177,7 +181,8 @@ var bloc;
 
     double a = storeDetail.deliveryFees;
     double b = storeDetail.services;
-    double c = bloc.total;
+    double c = bloc.total[storeDetail.sid];
+    if(c == null) c= 0.0;
     double  total = [a, b, c].reduce((a, b) => a + b);
 
     return RaisedButton(

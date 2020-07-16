@@ -2,53 +2,60 @@ import 'package:flutter/material.dart';
 import 'package:OpenAndBuy/Model/product.dart';
 
 class CartBloc with ChangeNotifier {
-  Map<String, int> _cart = {};
-  Map<String, Product> _cartInfo = {};
-  double _total = 0.0;
+  Map<String, Map<String, int>> _cart = {};
+  Map<String, Map<String, Product>> _cartInfo = {};
+  Map<String, double> _total = {};
 
-  Map<String, int> get cart => _cart;
-  Map<String, Product> get productInfo => _cartInfo;
-  double get total => _total;
- 
-  void addToCart(index, product) {
-    if (_cart.containsKey(index)) {
-      _cart[index] += 1;
-      
+  Map<String, Map<String, int>> get cart => _cart;
+  Map<String, Map<String, Product>> get productInfo => _cartInfo;
+  Map<String, double> get total => _total;
+
+  void addToCart(index, product, storeID) {
+    if (_cart[storeID] == null) _cart[storeID] = {};
+        if (total[storeID] == null) total[storeID] = 0.0;
+
+
+    if (_cart[storeID].containsKey(index)) {
+      _cart[storeID][index] += 1;
+      // _cart[index] += 1;
     } else {
-      _cart[index] = 1;
+      _cart[storeID][index] = 1;
+      // _cart[index] = 1;
     }
-    _cartInfo[index] = product;
-    _total += double.parse(_cartInfo[index].price).toDouble();
+    if (_cartInfo[storeID] == null) _cartInfo[storeID] = {};
+    _cartInfo[storeID][index] = product;
+    _total[storeID] += double.parse(_cartInfo[storeID][index].price).toDouble();
 
     notifyListeners();
   }
 
-  void subToCart(index, product) {
-    if (_cart.containsKey(index)) {
-      _cart[index] -= 1;       
+  void subToCart(index, product, storeID) {
+    if (_cart[storeID].containsKey(index)) {
+      _cart[storeID][index] -= 1;
+      // _cart[index] -= 1;
     } else {
-      _cart[index] = 1;
+      _cart[storeID][index] = 1;
+      //_cart[index] = 1;
     }
-    _cartInfo[index] = product;
-    _total -= double.parse(_cartInfo[index].price).toDouble();
+    _cartInfo[storeID][index] = product;
+    _total[storeID] -= double.parse(_cartInfo[storeID][index].price).toDouble();
     notifyListeners();
   }
 
-  void clear(index) {
-    if (_cart.containsKey(index) ) {
-      _total -=
-          (double.parse(_cartInfo[index].price).toDouble()) * _cart[index];
-      _cart.remove(index);
-      _cartInfo.remove(index);
+  void clear(index, storeID) {
+    if (_cart[storeID].containsKey(index)) {
+      _total[storeID] -=
+          (double.parse(_cartInfo[storeID][index].price).toDouble()) *
+              _cart[storeID][index];
+      _cart[storeID].remove(index);
+      _cartInfo[storeID].remove(index);
       notifyListeners();
     }
-    
   }
-  void clearTotal(){
-    _total = 0.0;
+
+  void clearTotal(storeID) {
+    _total[storeID] = 0.0;
     notifyListeners();
-
-
   }
 
   //  void  productsSummation(List<double> productsPrices) {

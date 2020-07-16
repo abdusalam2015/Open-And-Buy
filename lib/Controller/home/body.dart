@@ -141,7 +141,7 @@ class _BodyState extends State<Body> {
                         ? Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              'Shopping Now..',
+                              'Opened',
                               style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,

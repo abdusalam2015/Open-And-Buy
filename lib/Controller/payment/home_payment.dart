@@ -57,9 +57,9 @@ String fixTheAmountStripeStandars(String amount){
       String orderID = await obj.registerAnOrderInTheStoreDB();
 
     // clear the basket
-      bloc.cart.clear();
-      bloc.productInfo.clear();
-      bloc.clearTotal();
+      bloc.cart[widget.storeDetail.sid].clear();
+      bloc.productInfo[widget.storeDetail.sid].clear();
+      bloc.clearTotal(widget.storeDetail.sid);
 
       await dialog.hide();
 

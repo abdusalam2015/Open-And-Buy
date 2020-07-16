@@ -45,8 +45,9 @@ class _AppBarWidgetState extends State<AppBarWidget> {
     //print(orderNotifier.activeOrders);
 
     var bloc = Provider.of<CartBloc>(context);
-    if (bloc.cart.length > 0) {
-      totalCount = bloc.cart.values.reduce((a, b) => a + b);
+    if(bloc.cart[widget.storeDetail.sid] == null)bloc.cart[widget.storeDetail.sid]={};
+    if (bloc.cart[widget.storeDetail.sid].length > 0) {
+      totalCount = bloc.cart[widget.storeDetail.sid].values.reduce((a, b) => a + b);
     }
     return AppBar(
       backgroundColor: APPBARCOLOR,

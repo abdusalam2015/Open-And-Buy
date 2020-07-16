@@ -73,8 +73,7 @@ class _StorePage2State extends State<StorePage2>
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(55.0),
           child: AppBarWidget(widget.storeDetail),
-        ),
-        body: ListView(
+        ), body: ListView(
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -85,7 +84,7 @@ class _StorePage2State extends State<StorePage2>
               ),
             ),
             productsList != null && productsList.length > 0
-                ? ProductList(productsList)
+                ? ProductList(productsList,widget.storeDetail.sid)
                 : Container(
                     height: 600,
                     width: 50,

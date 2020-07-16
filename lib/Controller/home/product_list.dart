@@ -9,42 +9,50 @@ import 'package:OpenAndBuy/Model/cart_bloc.dart';
 
 class ProductList extends StatefulWidget {
   final List<Product> productList;
-  ProductList(this.productList);
+  String storeID;
+
+  ProductList(this.productList, this.storeID);
   @override
   _ProductListState createState() => _ProductListState();
 }
 
 class _ProductListState extends State<ProductList> {
+  String storeID = "";
   @override
   Widget build(BuildContext context) {
+    storeID = widget.storeID;
     var bloc = Provider.of<CartBloc>(context);
     int totalCount = 0;
-    if (bloc.cart.length > 0) {
-      totalCount = bloc.cart.values.reduce((a, b) => a + b);
+   // print(storeID + " bloc.cart.length>0");
+    //bloc.cart.length>0
+    // aNVyji3ENJ4pMnJjRYmX
+    if(bloc.cart[storeID] == null)bloc.cart[storeID]={};
+    if (bloc.cart[storeID].length > 0) {
+      totalCount = bloc.cart[storeID].values.reduce((a, b) => a + b);
     } else {
       totalCount = totalCount;
     }
     // Product product ;
     void _increment(String index, Product product) {
       setState(() {
-        bloc.addToCart(index, product);
+        bloc.addToCart(index, product, storeID);
       });
     }
 
     void _decrement(String index, Product product) {
       setState(() {
-        bloc.subToCart(index, product);
+        bloc.subToCart(index, product, storeID);
       });
-      if (bloc.cart[index] == 0) {
+      if (bloc.cart[storeID][index] == 0) {
         setState(() {
-          bloc.clear(index);
+          bloc.clear(index, storeID);
         });
       }
     }
 
     void _clear(String index) {
       setState(() {
-        bloc.clear(index);
+        bloc.clear(index, storeID);
       });
     }
 
@@ -77,8 +85,13 @@ class _ProductListState extends State<ProductList> {
   Widget productCard(Product product, Function increment, Function decrement,
       clear, BuildContext context) {
     var bloc = Provider.of<CartBloc>(context);
-    var cart = bloc.cart;
-    int count = cart[product.id];
+    var cart = bloc.cart[storeID];
+    //     print(product.id + "  PRODUCT CARD");
+    int count = 0;
+    if (cart != null) {
+      count = cart[product.id];
+    }
+
     return Padding(
       padding: EdgeInsets.only(top: 3, left: 3, right: 3, bottom: 1),
       child: Column(
