@@ -13,6 +13,7 @@ import 'package:OpenAndBuy/Model/store.dart';
 import 'package:OpenAndBuy/Model/user_detail.dart';
 import 'package:OpenAndBuy/Model/location.dart';
 import 'package:OpenAndBuy/Service/user_notifier.dart';
+import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 class Body extends StatefulWidget {
   final BuildContext cont;
@@ -112,18 +113,179 @@ class _BodyState extends State<Body> {
           // height: 50,
           // width: 280,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5.0),
+            borderRadius: BorderRadius.circular(6.0),
             boxShadow: [
               BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 2.0,
-                  blurRadius: 4.0)
+                  color: Colors.grey[400], spreadRadius: 0.0, blurRadius: 2.0)
             ],
             color:
-                storeDetail.storeStatus == "true" ? APPBARCOLOR : UNAVAILABLE,
+                storeDetail.storeStatus == "true" ? Colors.white : Colors.white ,// UNAVAILABLE,
           ),
-          child: Column(children: [
-            Padding(
+          child: Column(
+              //  mainAxisAlignment: MainAxisAlignment.start,
+
+              children: [
+                Hero(
+                  tag: storeDetail.sid,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 4.0),
+                    child: Container(
+                      height: 190.0,
+                      width: 327.0,
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                        image: storeDetail.backgroundImage != '' &&
+                                storeDetail.backgroundImage != null
+                            ? NetworkImage(storeDetail.backgroundImage)
+                            : AssetImage('assets/storesImages/netto.png'),
+                        fit: BoxFit.fill,
+                      )),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 30.0,
+                ),
+                // Container(color: Colors.black, height: 1.0),
+                Padding(
+                  padding: EdgeInsets.all(5.0),
+                  child: Row(
+                      //mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Row(
+                              children: <Widget>[
+                                Container(
+                                  width: 120,
+                                  child: Text(storeDetail.name,
+                                      style: TextStyle(
+                                          fontFamily: 'Varela',
+                                          color: Colors.black,
+                                          fontSize: 20.0,
+                                          fontWeight: FontWeight.bold)),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 65.0),
+                                  child: openButton(),
+                                ),
+                              ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 20.0, bottom: 10.0),
+                              child: Container(
+                                color: Colors.grey,
+                                width: 320,
+                                height: 1,
+                              ),
+                            ),
+                            Row(
+                              children: <Widget>[
+                                storeDetail.storeStatus == "true"
+                                    ? Container(
+                                        child: Text(
+                                          'Opened',
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.green),
+                                        ),
+                                      )
+                                    : Container(
+                                        child: Text(
+                                          'Closed',
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.red),
+                                        ),
+                                      ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 120.0),
+                                  child: stars(),
+                                ),
+                              ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 20.0,bottom: 3.0),
+                              child: Row(
+                                // mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  Icon(Icons.location_on,
+                                      color: Colors.grey, size: 24.0),
+                                  Text(
+                                      Location.calculateDistance(
+                                              double.parse(storeDetail.latitude
+                                                      .toString())
+                                                  .toDouble(),
+                                              double.parse(storeDetail.longitude
+                                                      .toString())
+                                                  .toDouble(),
+                                              double.parse(userLat).toDouble(),
+                                              double.parse(userLong).toDouble())
+                                          .toString(),
+                                      style: TextStyle(
+                                          fontFamily: 'Varela',
+                                          color: Colors.grey,
+                                          fontSize: 18.0)),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ]),
+                ),
+              ]),
+        )));
+  }
+}
+
+Widget openButton() {
+  return Container(
+    width: 130,
+    height: 35,
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(35.0),
+      gradient: LinearGradient(
+        colors: <Color>[
+          Colors.green[400],
+          //Color(0xFF0D47A1),
+          //Color(0xFF1976D2),
+          Colors.green[400],
+          Colors.greenAccent,
+          // Color(0xFF42A5F5),
+        ],
+      ),
+    ),
+    padding: const EdgeInsets.all(0.0),
+    child: Center(
+        child: Text('OPEN',
+            style: TextStyle(fontSize: 15, color: Colors.white))),
+  );
+}
+
+double rating = 0;
+Widget stars() {
+  return SmoothStarRating(
+      allowHalfRating: true,
+      onRated: (v) {
+        rating = v;
+      },
+      starCount: 5,
+      rating: rating,
+      size: 30.0,
+      isReadOnly: true, // read only ,
+      filledIconData: Icons.blur_off,
+      halfFilledIconData: Icons.blur_on,
+      color: Colors.yellow,
+      borderColor: Colors.grey,
+      spacing: 0.0);
+}
+
+/*
+Padding(
               padding: EdgeInsets.all(1.0),
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -145,7 +307,7 @@ class _BodyState extends State<Body> {
                               style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.white),
+                                  color: Colors.black),
                             ),
                           )
                         : Padding(
@@ -160,60 +322,4 @@ class _BodyState extends State<Body> {
                           )
                   ]),
             ),
-            Hero(
-              tag: storeDetail.sid,
-              child: Container(
-                height: 140.0,
-                width: 300.0,
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                  image: storeDetail.backgroundImage != '' &&
-                          storeDetail.backgroundImage != null
-                      ? NetworkImage(storeDetail.backgroundImage)
-                      : AssetImage('assets/storesImages/netto.png'),
-                  fit: BoxFit.contain,
-                )),
-              ),
-            ),
-            // Container(color: Colors.black, height: 1.0),
-            Padding(
-              padding: EdgeInsets.all(1.0),
-              child:
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Column(
-                  children: <Widget>[
-                    Text(storeDetail.name,
-                        style: TextStyle(
-                            fontFamily: 'Varela',
-                            color: Colors.white,
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold)),
-                    Row(
-                      children: <Widget>[
-                        Icon(Icons.location_on,
-                            color: Colors.white, size: 24.0),
-                        Text(
-                            Location.calculateDistance(
-                                    double.parse(
-                                            storeDetail.latitude.toString())
-                                        .toDouble(),
-                                    double.parse(
-                                            storeDetail.longitude.toString())
-                                        .toDouble(),
-                                    double.parse(userLat).toDouble(),
-                                    double.parse(userLong).toDouble())
-                                .toString(),
-                            style: TextStyle(
-                                fontFamily: 'Varela',
-                                color: Colors.white,
-                                fontSize: 18.0)),
-                      ],
-                    ),
-                  ],
-                ),
-              ]),
-            ),
-          ]),
-        )));
-  }
-}
+            */

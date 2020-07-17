@@ -40,6 +40,7 @@ class _HomeState extends State<Home> {
         preferredSize: Size.fromHeight(55.0), // here the desired height
         //child: AppBarWidget(context,storeDetail),
         child: AppBar(
+          elevation: 0.0,
           backgroundColor: APPBARCOLOR,
           title: Text(value('title')),
           actions: <Widget>[

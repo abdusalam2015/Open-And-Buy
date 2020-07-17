@@ -59,6 +59,7 @@ dependencies:
   shared_preferences: ^0.5.7+3
   catcher: ^0.3.14
   flutter_launcher_icons: ^0.7.5
+  smooth_star_rating: ^1.1.1
 
 dev_dependencies:
   flutter_test:

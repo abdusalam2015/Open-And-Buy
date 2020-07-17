@@ -18,12 +18,14 @@ Widget getDrawer(
       decoration: new BoxDecoration(
         gradient: LinearGradient(
             colors: [
-              Colors.green[300],
-              Colors.green[200],
+              Colors.green[100],
+                            Colors.white,
+              Colors.grey[100],
+
             ],
             begin: FractionalOffset.topLeft,
             end: FractionalOffset.bottomRight,
-            stops: [1.0, 0.0],
+            stops: [1.0, 0.0,1.0],
             tileMode: TileMode.clamp),
       ),
       child: Padding(

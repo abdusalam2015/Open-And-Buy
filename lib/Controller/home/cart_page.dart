@@ -10,7 +10,6 @@ import 'package:OpenAndBuy/Controller/orders_pages/order_confirmation.dart';
 import 'package:OpenAndBuy/Model/cart_bloc.dart';
 import 'package:OpenAndBuy/Model/user_detail.dart';
 
-
 class CartPage extends StatelessWidget {
   final StoreDetail storeDetail;
   final UserDetail userDetail;
@@ -18,19 +17,19 @@ class CartPage extends StatelessWidget {
 //  CartPage({Key key}) : super(key: key);
   List<double> productsPrices = new List<double>();
   double deliveryAndServices = 0.0;
-var bloc;
+  var bloc;
   @override
   Widget build(BuildContext context) {
     String storeID = storeDetail.sid;
     bloc = Provider.of<CartBloc>(context);
-    if(bloc.total[storeID] == null) bloc.total[storeID] = 0.0; 
+    if (bloc.total[storeID] == null) bloc.total[storeID] = 0.0;
 
     String totalAmount() =>
         (storeDetail.services + storeDetail.deliveryFees + bloc.total[storeID])
             .toString();
 
-  if(bloc.cart[storeID] == null) bloc.cart[storeID] = {};
-  if(bloc.productInfo[storeID] == null) bloc.productInfo[storeID] = {};
+    if (bloc.cart[storeID] == null) bloc.cart[storeID] = {};
+    if (bloc.productInfo[storeID] == null) bloc.productInfo[storeID] = {};
 
     var cart = bloc.cart[storeID];
     var productInfo = bloc.productInfo[storeID];
@@ -64,7 +63,7 @@ var bloc;
                   );
                 }
                 return Padding(
-                  padding: const EdgeInsets.only(bottom: 10,top: 10.0),
+                  padding: const EdgeInsets.only(bottom: 10, top: 10.0),
                   child: ListTile(
                     leading: Container(
                       height: 70,
@@ -89,7 +88,7 @@ var bloc;
                       elevation: 1.0,
                       splashColor: Colors.white,
                       onPressed: () {
-                        bloc.clear(freqIndex,storeID);
+                        bloc.clear(freqIndex, storeID);
                       },
                     ),
                   ),
@@ -107,46 +106,71 @@ var bloc;
           ? Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
-                color: APPBARCOLOR,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(3),
+                      topRight: Radius.circular(3)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey[400].withOpacity(0.0),
+                      spreadRadius: 4.0,
+                      blurRadius: 6.0,
+                    )
+                  ],
+                  color: PRODUCTCARD,
+                ),
+                // color: APPBARCOLOR,
                 height: 300,
                 width: 100,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        // Text('Total Items: 4 Items',),
-                        text(
-                            'Number of Products: ', '${productInfo.length}', '')
-                      ],
-                    ),
-                    Row(
-                      children: <Widget>[
-                        //Text('Subtotal: 303 SEK'),
-                        text('Subtotal: ', '${bloc.total[storeID].toString()}', '  SEK')
-                      ],
-                    ),
-                    Row(
-                      children: <Widget>[
-                        // Text('Delivery Fee: 10 SEK'),
-                        text('Delivery Fee: ', '${storeDetail.deliveryFees}',
-                            '  SEK')
-                      ],
-                    ),
-                    Row(
-                      children: <Widget>[
-                        text('Services: ', '${storeDetail.services} ', '  SEK')
-                      ],
-                    ),
-                    Row(
-                      children: <Widget>[
-                        text('Total Amount: ', '${totalAmount().toString()} ',
-                            '  SEK')
-                      ],
-                    ),
-                    storeDetail.storeStatus == "true"? checkOutButton(context, theOrderedProducts):
-                     Text('CLOSED', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red),)
-                  ],
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          // Text('Total Items: 4 Items',),
+                          text('Number of Products: ', '${productInfo.length}',
+                              '')
+                        ],
+                      ),
+                      Row(
+                        children: <Widget>[
+                          //Text('Subtotal: 303 SEK'),
+                          text('Subtotal: ',
+                              '${bloc.total[storeID].toString()}', '  SEK')
+                        ],
+                      ),
+                      Row(
+                        children: <Widget>[
+                          // Text('Delivery Fee: 10 SEK'),
+                          text('Delivery Fee: ', '${storeDetail.deliveryFees}',
+                              '  SEK')
+                        ],
+                      ),
+                      Row(
+                        children: <Widget>[
+                          text(
+                              'Services: ', '${storeDetail.services} ', '  SEK')
+                        ],
+                      ),
+                      Row(
+                        children: <Widget>[
+                          text('Total Amount: ', '${totalAmount().toString()} ',
+                              '  SEK')
+                        ],
+                      ),
+                      storeDetail.storeStatus == "true"
+                          ? checkOutButton(context, theOrderedProducts)
+                          : Text(
+                              'CLOSED',
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red),
+                            )
+                    ],
+                  ),
                 ),
               ),
             )
@@ -176,74 +200,70 @@ var bloc;
     );
   }
 
-  
   Widget checkOutButton(context, theOrderedProducts) {
-
     double a = storeDetail.deliveryFees;
     double b = storeDetail.services;
     double c = bloc.total[storeDetail.sid];
-    if(c == null) c= 0.0;
-    double  total = [a, b, c].reduce((a, b) => a + b);
+    if (c == null) c = 0.0;
+    double total = [a, b, c].reduce((a, b) => a + b);
 
-    return RaisedButton(
-      onPressed: ()async {
+    return InkWell(
+      onTap: () async {
         String orderName = userDetail.firstName + ' ' + userDetail.lastName;
         Order order = new Order(
-          clientID: userDetail.userID,
-          items: theOrderedProducts,
-          storeID: storeDetail.sid,
-          totalAmount: total,
-          appFee: 0.0,
-          deleveryFee: storeDetail.deliveryFees,
-          discount: 0.0,
-          time: DateTime.now().toString(),
-          orderName: orderName,
-          orderImage: userDetail.photoURL,
-          clientPhoneNumber: userDetail.phoneNumber,
-          storePhoneNumber: storeDetail.phoneNumber,
-          status: "waiting for response...",
-          storeName: storeDetail.name,
-          services: storeDetail.services
-        );
+            clientID: userDetail.userID,
+            items: theOrderedProducts,
+            storeID: storeDetail.sid,
+            totalAmount: total,
+            appFee: 0.0,
+            deleveryFee: storeDetail.deliveryFees,
+            discount: 0.0,
+            time: DateTime.now().toString(),
+            orderName: orderName,
+            orderImage: userDetail.photoURL,
+            clientPhoneNumber: userDetail.phoneNumber,
+            storePhoneNumber: storeDetail.phoneNumber,
+            status: "waiting for response...",
+            storeName: storeDetail.name,
+            services: storeDetail.services);
 
         /// register the order in the store side
-        
+
         // OrderService obj = new OrderService(orderDetail: order);
         // String orderID = await obj.registerAnOrderInTheStoreDB();
 
         // register the order in the user side
 
-
-        
         /***************** */
-     //   clearCart();
+        //   clearCart();
         Navigator.pop(context);
         Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => HomePayment( 
-                   userDetail: userDetail,
-                   storeDetail: storeDetail,
-                   order: order,
-            )));
+            builder: (context) => HomePayment(
+                  userDetail: userDetail,
+                  storeDetail: storeDetail,
+                  order: order,
+                )));
 
         /*********************** */
       },
-      textColor: Colors.white,
-      
-      padding: const EdgeInsets.all(0.0),
+      // textColor: Colors.white,
+
+      //  padding: const EdgeInsets.all(0.0),
       child: Container(
         decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
           gradient: LinearGradient(
-            colors: <Color>[
-              Color(0xFF0D47A1),
-              Color(0xFF1976D2),
-              Color(0xFF42A5F5),
+            colors: [
+              Colors.green,
+              Colors.lightGreen,
+              Colors.green,
             ],
           ),
         ),
         padding: const EdgeInsets.all(10.0),
-        child: const Text('Check Out', style: TextStyle(fontSize: 20)),
+        child: const Text('Check Out',
+            style: TextStyle(fontSize: 20, color: Colors.white)),
       ),
     );
   }
 }
-
