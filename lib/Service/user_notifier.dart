@@ -24,7 +24,7 @@ import 'package:OpenAndBuy/Service/database.dart';
 
    Future<UserDetail>  getUserInfo() async {
     _userDetail =  await DatabaseService.getUserInfo(uid);
-    //notifyListeners();// we do not need to listen 
+    notifyListeners(); 
    return _userDetail;
    }
 

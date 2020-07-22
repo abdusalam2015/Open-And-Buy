@@ -66,9 +66,8 @@ class _ProductListState extends State<ProductList> {
         ? Center(
             child: Container(
               color: Colors.grey[200],
-              //padding: EdgeInsets.only(right: 10.0),
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width - 0.0,
+              height: MediaQuery.of(context).size.height - 150.0,
               child: GridView.builder(
                   itemCount: productList != null ? productList.length : 0,
                   gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(

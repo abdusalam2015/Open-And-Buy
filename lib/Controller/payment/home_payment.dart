@@ -31,39 +31,41 @@ class _HomePaymentState extends State<HomePayment> {
         break;
     }
   }
-String fixTheAmountStripeStandars(String amount){
-// StrpeStandars is that we need to add 00 by the end of the amount if we have an integer number and 
-//  if we have  a double number then we need to hadle that.
-//example: if i want to add  25 to  stipe I need to add  2500 .... 
-  var newAmount = amount.split('.');
-  return newAmount[0] + ((newAmount[1].length > 1 )? newAmount[1] :  (newAmount[1]+'0') ) ;
-}
-  payViaNewCard(BuildContext context) async {
 
+  String fixTheAmountStripeStandars(String amount) {
+// StrpeStandars is that we need to add 00 by the end of the amount if we have an integer number and
+//  if we have  a double number then we need to hadle that.
+//example: if i want to add  25 to  stipe I need to add  2500 ....
+    var newAmount = amount.split('.');
+    return newAmount[0] +
+        ((newAmount[1].length > 1) ? newAmount[1] : (newAmount[1] + '0'));
+  }
+
+  payViaNewCard(BuildContext context) async {
     ProgressDialog dialog = new ProgressDialog(context);
     dialog.style(message: 'Please wait...');
     await dialog.show();
-      // int i = d.toInt(); // i = 20
-      // int i = d.round(); // i = 21
-      // int i = d.ceil();  // i = 21
-       
-      String totalAmount = fixTheAmountStripeStandars(widget.order.totalAmount.toString());
-       print(totalAmount+ " Total  ");
+    // int i = d.toInt(); // i = 20
+    // int i = d.round(); // i = 21
+    // int i = d.ceil();  // i = 21
 
-   var response =
-        await StripeService.payWithNewCard(amount: totalAmount , currency: 'SEK');
-   
-    if (response.success){
+    String totalAmount =
+        fixTheAmountStripeStandars(widget.order.totalAmount.toStringAsFixed(2));
+    print(totalAmount + " Total  ");
+
+    var response = await StripeService.payWithNewCard(
+        amount: totalAmount, currency: 'SEK');
+
+    if (response.success) {
       OrderService obj = new OrderService(orderDetail: widget.order);
       String orderID = await obj.registerAnOrderInTheStoreDB();
 
-    // clear the basket
+      // clear the basket
       bloc.cart[widget.storeDetail.sid].clear();
       bloc.productInfo[widget.storeDetail.sid].clear();
       bloc.clearTotal(widget.storeDetail.sid);
 
       await dialog.hide();
-
 
       Navigator.pop(context);
       Navigator.of(context).push(MaterialPageRoute(
@@ -88,10 +90,11 @@ String fixTheAmountStripeStandars(String amount){
     super.initState();
     StripeService.init();
   }
-var bloc;
+
+  var bloc;
   @override
   Widget build(BuildContext context) {
-     bloc = Provider.of<CartBloc>(context);
+    bloc = Provider.of<CartBloc>(context);
     ThemeData theme = Theme.of(context);
     return Scaffold(
       backgroundColor: BACKGROUNDCOLOR,
@@ -108,11 +111,11 @@ var bloc;
                 Text text;
                 switch (index) {
                   case 0:
-                    icon = Icon(Icons.add_circle, color: theme.primaryColor);
+                    icon = Icon(Icons.add_circle, color: Colors.green[400]);
                     text = Text('Pay via new card');
                     break;
                   case 1:
-                    icon = Icon(Icons.credit_card, color: theme.primaryColor);
+                    icon = Icon(Icons.credit_card, color: Colors.green[400]);
                     text = Text('Pay via existing card');
                     break;
                 }

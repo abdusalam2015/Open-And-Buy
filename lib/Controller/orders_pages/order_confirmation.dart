@@ -224,7 +224,7 @@ class _OrderConfirmation2State extends State<OrderConfirmation2> {
                     //Text('Subtotal: 303 SEK'),
                     text(
                         'Subtotal: ',
-                        _order != null ? _order.totalAmount.toString() : '',
+                        _order != null ? _order.totalAmount.toStringAsFixed(2): '',
                         '  SEK')
                   ],
                 ),

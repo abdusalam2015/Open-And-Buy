@@ -233,7 +233,7 @@ class _EditAccountState extends State<EditAccount> {
       onTap: () async {
         // Navigator.pop(context);
         final result = await Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => EditFirstName()));
+            .push(MaterialPageRoute(builder: (context) => EditFirstName()));  
         // make sure that if it is already updated or not
         result != null
             ? Scaffold.of(context).showSnackBar(SnackBar(
